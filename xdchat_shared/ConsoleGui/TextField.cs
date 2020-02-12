@@ -28,7 +28,7 @@
             throw new System.NotImplementedException();
         }
 
-        public override void OnHover()
+        public override void OnHover(int x, int y)
         {
             throw new System.NotImplementedException();
         }

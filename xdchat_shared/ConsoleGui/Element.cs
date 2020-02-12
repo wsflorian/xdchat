@@ -12,6 +12,8 @@ namespace ConsoleGui
 
         public ElemPos Position { get; set; }
             = new ElemPos(0,0);
+        
+        public string Id { get; set; }
 
         public Element(Element parent)
         {
@@ -40,7 +42,7 @@ namespace ConsoleGui
         public abstract void Render();
         public abstract void OnFocus();
         public abstract void OnBlur();
-        public abstract void OnHover();
+        public abstract void OnHover(int x, int y);
         public abstract void OnScroll();
 
         public static bool IsPointInConsole(int x, int y)

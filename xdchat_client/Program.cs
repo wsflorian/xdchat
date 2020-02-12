@@ -24,19 +24,26 @@ namespace xdchat_client {
             };
             var ChatMessageBox = new Box()
             {
-                Size = new ElemSize(43,75)
+                Size = new ElemSize(43,75),
+                Id = "ChtBox"
             };
             var ChatUsersBox = new Box()
             {
                 Size = new ElemSize(43, 15),
-                Position = new ElemPos(0,75)
+                Position = new ElemPos(0,75),
+                Id = "UsrBox"
             };
             var MessageBox = new Box()
             {
                 Size = new ElemSize(7, 90),
-                Position = new ElemPos(43, 0)
+                Position = new ElemPos(43, 0),
+                Id = "MsgBox"
             };
             
+            MouseListener.RegisteredElements.Add(ChatMessageBox);
+            MouseListener.RegisteredElements.Add(ChatUsersBox);
+            MouseListener.RegisteredElements.Add(MessageBox);
+
             frame.AddChild(ChatMessageBox);
             frame.AddChild(ChatUsersBox);
             frame.AddChild(MessageBox);

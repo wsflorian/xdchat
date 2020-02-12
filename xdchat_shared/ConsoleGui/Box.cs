@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using XdChatShared.ConsoleMouseListener;
 
 namespace ConsoleGui
 {
@@ -50,9 +51,15 @@ namespace ConsoleGui
             throw new NotImplementedException();
         }
 
-        public override void OnHover()
+        public override void OnHover(int x, int y)
         {
-            throw new NotImplementedException();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            this.Render();
+            Console.ForegroundColor = ConsoleColor.Gray;
+            
+            var pos = this.GetAbsolutePos() + new ElemPos(1, 1);
+            Console.SetCursorPosition(pos.X,pos.Y);
+            Console.Write($"Hovered:{Id}");
         }
 
         public override void OnScroll()

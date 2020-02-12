@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using ConsoleGui;
+
 
 namespace XdChatShared.ConsoleMouseListener
 {
     public class MouseListener
     {
+        public static List<Element> RegisteredElements { get; private set; } = new List<Element>();
+        private static List<Element> PrevHovered { get; set; }
         private static bool ConsoleLocked { get; set; } = false;
         private static Thread ListenThread { get; set; }
         private static bool Running { get; set; }
@@ -23,6 +28,8 @@ namespace XdChatShared.ConsoleMouseListener
                 ListenThread.Abort();
             }
             ListenThread = new Thread(RunThread);
+            
+            RegisteredElements = new List<Element>();
             
             _handle = NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE);
             _mode = 0;
@@ -41,6 +48,7 @@ namespace XdChatShared.ConsoleMouseListener
         private static void RunThread()
         {
             Running = true;
+            PrevHovered = new List<Element>();
             var record = new NativeMethods.INPUT_RECORD();
             uint recordLen = 0;
             while (Running)
@@ -53,11 +61,26 @@ namespace XdChatShared.ConsoleMouseListener
                 switch (record.EventType)
                 {
                     case NativeMethods.MOUSE_EVENT:
+                        int x = record.MouseEvent.dwMousePosition.X / 2;
+                        int y = record.MouseEvent.dwMousePosition.Y;
                         if (!ConsoleLocked)
                         {
                             Console.SetCursorPosition(0,0);
-                            Console.Write($"X:{record.MouseEvent.dwMousePosition.X/2} Y:{record.MouseEvent.dwMousePosition.Y}          ");
+                            Console.Write($"X:{x} Y:{y}          ");
                         }
+                        var hoveredElems = RegisteredElements.Where(el => el.IsPointInside(2*x, y));
+                            
+                        foreach (var elem in hoveredElems.Where(el => !PrevHovered.Contains(el)))
+                        {
+                            elem.OnHover(x,y);
+                        }
+
+                        foreach (var elem in PrevHovered.Where(el => !hoveredElems.Contains(el)))
+                        {
+                            elem.Render();
+                        }
+
+                        PrevHovered = hoveredElems.ToList();
                         // do something at mouse event
                         break;
 

@@ -1,0 +1,15 @@
+/.idea
+nuget.config
+
+/xdchat_client/bin
+/xdchat_client/obj
+/xdchat_client/runtimes
+
+/xdchat_server/bin
+/xdchat_server/obj
+/xdchat_server/runtimes
+
+/xdchat_shared/bin
+/xdchat_shared/obj
+/xdchat_shared/runtimes
+

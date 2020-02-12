@@ -17,6 +17,7 @@ namespace xdchat_client {
             // XdServerConnection client = new XdServerConnection("192.168.28.203", 10001);
             // XdServerConnection client = new XdServerConnection(ConsoleExtend.ReadLinePrefill("Enter server address: ", "localhost"), 10000);
             // client.Connect();
+            // git test
             var frame = new Box()
             {
                 Size = new ElemSize(50,90)

@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace XdChatShared.Scheduler {
     public class XdScheduler {
+        public static XdScheduler Instance { get; } = new XdScheduler();
+        
         private readonly SyncTaskScheduler mainThreadScheduler = new SyncTaskScheduler("MainThread");
         private readonly ConcurrentDictionary<int, Thread> asyncThreads = new ConcurrentDictionary<int, Thread>();
 
+        private XdScheduler() {}
+        
         public int QueuedSyncTasks => mainThreadScheduler.ScheduledTaskCount;
         public int RunningAsyncTasks => asyncThreads.Count;
 
@@ -16,7 +20,7 @@ namespace XdChatShared.Scheduler {
             Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, this.mainThreadScheduler);
         }
 
-        public void RunAsync(string name, Action action) {
+        public Thread RunAsync(string name, Action action) {
             Thread thread = new Thread(() => {
                 action.Invoke();
                 asyncThreads.TryRemove(Thread.CurrentThread.ManagedThreadId, out _);
@@ -26,9 +30,15 @@ namespace XdChatShared.Scheduler {
             thread.Name = $"AsyncThread-{name}-{thread.ManagedThreadId}-";
             
             thread.Start();
+            return thread;
+        }
+        public static Timeout RunTimeout(Action action, long timeoutTime) {
+            Timeout timeout = new Timeout(action, timeoutTime);
+            timeout.Start();
+            return timeout;
         }
         
-        public void CheckIsMainThread() {
+        public void CheckIsSync() {
             if (mainThreadScheduler.IsMainThread) return;
             throw new InvalidOperationException("Not running on main thread");
         }

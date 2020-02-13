@@ -3,6 +3,7 @@ using System.Linq;
 using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 using XdChatShared;
 using XdChatShared.Packets;
 

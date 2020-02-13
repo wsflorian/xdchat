@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using SimpleLogger;
 using xdchat_server.Listeners;
 using XdChatShared.Packets;
+using XdChatShared.Scheduler;
 
 namespace xdchat_server {
     class XdServer {
@@ -26,6 +27,7 @@ namespace xdchat_server {
         }
 
         public void Start() {
+            XdScheduler.Instance.CheckIsSync();
             this.consoleHandler = new ConsoleHandler(HandleConsoleInput);
 
             if (serverSocket != null)
@@ -41,19 +43,23 @@ namespace xdchat_server {
                 Logger.Log(Logger.Level.Error, $"Cannot start server :( {e}");
                 return;
             }
-
-            Logger.Log("Started! :)");
-            try {
-                while (this.serverSocket != null) {
-                    XdClientConnection client = new XdClientConnection(this, serverSocket.AcceptTcpClient());
-                    this.Clients.Add(client);
+            
+            XdScheduler.Instance.RunAsync("Accept-Thread", () => {
+                Logger.Log("Started! :)");
+                try {
+                    while (this.serverSocket != null) {
+                        XdClientConnection client = new XdClientConnection(this, serverSocket.AcceptTcpClient());
+                        this.Clients.Add(client);
+                    }
+                } catch (SocketException) {
+                    Logger.Log("Server stopped");
                 }
-            } catch (SocketException) {
-                Logger.Log("Server stopped");
-            }
+            });
         }
         
         public void Stop() {
+            XdScheduler.Instance.CheckIsSync();
+            
             Logger.Log("Stopping handlers...");
             consoleHandler.Stop();
 
@@ -66,10 +72,10 @@ namespace xdchat_server {
         }
         
         private void HandleConsoleInput(string input) {
-            EmitCommand(ConsoleCommandSender, input);
+            XdScheduler.Instance.RunSync(() => EmitCommand(ConsoleCommandSender, input));
         }
 
-        public void EmitCommand(ICommandSender sender, String commandText) {
+        public void EmitCommand(ICommandSender sender, string commandText) {
             CommandEvent commandEvent = EventEmitter.Emit(new CommandEvent(sender, commandText));
             
             if (!commandEvent.Handled) {
@@ -99,9 +105,9 @@ namespace xdchat_server {
         }
 
         public void Broadcast(Packet packet, Predicate<XdClientConnection> predicate) {
-            lock (this) {
-                Clients.FindAll(predicate).ForEach(con => con.Send(packet));
-            }
+            XdScheduler.Instance.CheckIsSync();
+            
+            Clients.FindAll(predicate).ForEach(con => con.Send(packet));
         }
 
     }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
+using XdChatShared.Scheduler;
 
 namespace xdchat_server {
     static class Program {
@@ -7,7 +9,7 @@ namespace xdchat_server {
             Console.InputEncoding = Encoding.UTF8;
             Console.OutputEncoding = Encoding.UTF8;
 
-            XdServer.Instance.Start(); // This is blocking
+            XdScheduler.Instance.RunSync(() => XdServer.Instance.Start());
         }
     }
 }

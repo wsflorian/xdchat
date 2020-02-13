@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using XdChatShared.Scheduler;
 
 namespace XdChatShared {
-    public class TimeoutThread {
+    public class Timeout {
         private Action action;
-        private Thread thread;
         private long timeout;
         private long start;
+        private Thread thread;
 
-        private TimeoutThread(Action action, long timeout) {
+        internal Timeout(Action action, long timeout) {
             this.action = action;
             this.timeout = timeout;
-            this.thread = new Thread(RunThread);
         }
 
         private void RunThread() {
@@ -24,9 +24,9 @@ namespace XdChatShared {
             action.Invoke();
         }
 
-        public void Start() {
+        internal void Start() {
             this.start = CurrentTimeMillis();
-            this.thread.Start();
+            this.thread = XdScheduler.Instance.RunAsync("Timeout-Thread", RunThread);
         }
 
         public void Cancel() {
@@ -35,12 +35,6 @@ namespace XdChatShared {
 
         private static long CurrentTimeMillis() {
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        }
-
-        public static TimeoutThread SetTimeout(Action action, long timeoutTime) {
-            TimeoutThread timeout = new TimeoutThread(action, timeoutTime);
-            timeout.Start();
-            return timeout;
         }
     }
 }

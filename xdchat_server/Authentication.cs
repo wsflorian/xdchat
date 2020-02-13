@@ -5,9 +5,9 @@ using XdChatShared.Packets;
 
 namespace xdchat_server {
     public class Authentication {
-        public string Nickname { get; private set; }
-        public string Uuid { get; private set; }
-        public string HashedUuid { get; private set; }
+        public string Nickname { get; }
+        public string Uuid { get; }
+        public string HashedUuid { get; }
 
         public Authentication(string nickname, string uuid) {
             this.Nickname = nickname;

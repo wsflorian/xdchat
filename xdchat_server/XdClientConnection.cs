@@ -4,16 +4,19 @@ using System.IO;
 using System.Net.Sockets;
 using XdChatShared;
 using XdChatShared.Packets;
+using XdChatShared.Scheduler;
 
 namespace xdchat_server {
     class XdClientConnection : XdConnection, ICommandSender {
         private readonly XdServer server;
-        private readonly TimeoutThread authTimeout;
+        private readonly Timeout authTimeout;
         public Authentication Auth { get; private set; }
 
-        public XdClientConnection(XdServer server, TcpClient client) : base(client) {
+        public XdClientConnection(XdServer server, TcpClient client) {
+            Initialize(client);
+            
             this.server = server;
-            this.authTimeout = TimeoutThread.SetTimeout(HandleTimeout, 2500);
+            this.authTimeout = XdScheduler.RunTimeout(HandleTimeout, 2500);
             
             Logger.Log($"Client connected: {this.RemoteIp}");
         }

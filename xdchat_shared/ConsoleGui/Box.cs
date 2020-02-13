@@ -8,7 +8,7 @@ namespace ConsoleGui
 {
     public class Box : Element
     {
-        private List<Element> Children { get; set; }
+        public List<Element> Children { get; private set; }
             = new List<Element>();
 
         public BorderType BorderType { get; set; }

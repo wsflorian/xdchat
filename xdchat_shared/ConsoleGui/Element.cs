@@ -20,6 +20,46 @@ namespace ConsoleGui
             this.Parent = parent;
         }
 
+        private bool _focus;
+        public bool IsFocused
+        {
+            get => _focus;
+            set
+            {
+                if (value)
+                {
+                    if (_focus == false)
+                    {
+                        var parent = this.Parent;
+                        while (parent.Parent != null)
+                        {
+                            parent = parent.Parent;
+                        }
+                        SetElemFocus(parent);
+                        _focus = true;
+                        OnFocus();
+                    }
+                }
+                else
+                {
+                    _focus = false;
+                }
+            }
+        }
+
+        private void SetElemFocus(Element elem)
+        {
+            elem.IsFocused = false;
+            
+            if (elem.GetType() == typeof(Box))
+            {
+                foreach (var child in ((Box)elem).Children)
+                {
+                    SetElemFocus(child);
+                }
+            }
+        }
+
         public ElemPos GetAbsolutePos()
             => (Parent != null ? Position + Parent.Position : Position);
 

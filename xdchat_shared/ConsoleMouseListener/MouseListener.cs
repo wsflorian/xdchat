@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using ConsoleGui;
 
@@ -13,7 +11,7 @@ namespace XdChatShared.ConsoleMouseListener
     {
         public static List<Element> RegisteredElements { get; private set; } = new List<Element>();
         private static List<Element> PrevHovered { get; set; }
-        private static bool ConsoleLocked { get; set; } = false;
+        private static bool ConsoleLocked { get; set; }
         private static Thread ListenThread { get; set; }
         private static bool Running { get; set; }
         
@@ -81,20 +79,16 @@ namespace XdChatShared.ConsoleMouseListener
 
         public static async void ExecuteEvents(IEnumerable<Element> hoveredElems, int x, int y)
         {
-            foreach (var elem in hoveredElems.Where(el => !PrevHovered.Contains(el)))
+            foreach (Element elem in hoveredElems.Where(el => !PrevHovered.Contains(el)))
             {
                 elem.OnHover(x,y);
             }
 
-            foreach (var elem in PrevHovered.Where(el => !hoveredElems.Contains(el)))
+            foreach (Element elem in PrevHovered.Where(el => !hoveredElems.Contains(el)))
             {
                 elem.Render();
             }
         }
 
-        public static void LockConsole(bool locked)
-        {
-            ConsoleLocked = locked;
-        }
     }
 }

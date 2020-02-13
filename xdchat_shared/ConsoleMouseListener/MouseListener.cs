@@ -63,22 +63,10 @@ namespace XdChatShared.ConsoleMouseListener
                     case NativeMethods.MOUSE_EVENT:
                         int x = record.MouseEvent.dwMousePosition.X / 2;
                         int y = record.MouseEvent.dwMousePosition.Y;
-                        if (!ConsoleLocked)
-                        {
-                            Console.SetCursorPosition(0,0);
-                            Console.Write($"X:{x} Y:{y}          ");
-                        }
-                        var hoveredElems = RegisteredElements.Where(el => el.IsPointInside(2*x, y));
-                            
-                        foreach (var elem in hoveredElems.Where(el => !PrevHovered.Contains(el)))
-                        {
-                            elem.OnHover(x,y);
-                        }
 
-                        foreach (var elem in PrevHovered.Where(el => !hoveredElems.Contains(el)))
-                        {
-                            elem.Render();
-                        }
+                        var hoveredElems = RegisteredElements.Where(el => el.IsPointInside(2*x, y));
+                        
+                        ExecuteEvents(hoveredElems, x, y);
 
                         PrevHovered = hoveredElems.ToList();
                         // do something at mouse event
@@ -88,6 +76,19 @@ namespace XdChatShared.ConsoleMouseListener
                         // do something at key event
                         break;
                 }
+            }
+        }
+
+        public static async void ExecuteEvents(IEnumerable<Element> hoveredElems, int x, int y)
+        {
+            foreach (var elem in hoveredElems.Where(el => !PrevHovered.Contains(el)))
+            {
+                elem.OnHover(x,y);
+            }
+
+            foreach (var elem in PrevHovered.Where(el => !hoveredElems.Contains(el)))
+            {
+                elem.Render();
             }
         }
 

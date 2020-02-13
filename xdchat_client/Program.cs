@@ -13,7 +13,6 @@ namespace xdchat_client {
             Console.InputEncoding = Encoding.UTF8;
             Console.OutputEncoding = Encoding.UTF8;
             Console.CursorVisible = false;
-            MouseListener.RestartListenThread();
             // XdServerConnection client = new XdServerConnection("192.168.28.203", 10001);
             // XdServerConnection client = new XdServerConnection(ConsoleExtend.ReadLinePrefill("Enter server address: ", "localhost"), 10000);
             // client.Connect();
@@ -39,10 +38,6 @@ namespace xdchat_client {
                 Position = new ElemPos(43, 0),
                 Id = "MsgBox"
             };
-            
-            MouseListener.RegisteredElements.Add(ChatMessageBox);
-            MouseListener.RegisteredElements.Add(ChatUsersBox);
-            MouseListener.RegisteredElements.Add(MessageBox);
 
             frame.AddChild(ChatMessageBox);
             frame.AddChild(ChatUsersBox);
@@ -50,6 +45,12 @@ namespace xdchat_client {
             
             frame.SetupAsFrame();
             frame.Render();
+            
+            MouseListener.RestartListenThread();
+            MouseListener.RegisteredElements.Add(ChatMessageBox);
+            MouseListener.RegisteredElements.Add(ChatUsersBox);
+            MouseListener.RegisteredElements.Add(MessageBox);
+            
             Console.ReadKey();
         }
     }

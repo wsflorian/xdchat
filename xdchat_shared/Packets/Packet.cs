@@ -35,7 +35,7 @@ namespace XdChatShared.Packets {
 
                 string validationError = packet.Validate();
                 if (validationError != null) {
-                    throw new ProtocolException($"Packet validation failed: {validationError}");
+                    throw new ProtocolException($"Packet validation failed for type {packetType}: {validationError}");
                 }
 
                 return packet;

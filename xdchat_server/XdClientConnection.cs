@@ -23,7 +23,7 @@ namespace xdchat_server {
 
         private void HandleTimeout() {
             if (this.Connected) {
-                this.Disconnect("Authentication timeout");
+                XdScheduler.Instance.RunSync(() => this.Disconnect("Authentication timeout"));
             }
         }
         

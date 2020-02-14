@@ -5,6 +5,7 @@ using System.Text;
 using ConsoleGui;
 using XdChatShared;
 using XdChatShared.ConsoleMouseListener;
+using XdChatShared.Scheduler;
 
 namespace xdchat_client {
     class Program {
@@ -14,8 +15,17 @@ namespace xdchat_client {
             Console.OutputEncoding = Encoding.UTF8;
             Console.CursorVisible = false;
             // XdServerConnection client = new XdServerConnection("192.168.28.203", 10001);
-            // XdServerConnection client = new XdServerConnection(ConsoleExtend.ReadLinePrefill("Enter server address: ", "localhost"), 10000);
-            // client.Connect();
+
+            if (Environment.GetEnvironmentVariable("DBG_RUN_CLIENT") == "1") {
+                XdServerConnection client = new XdServerConnection(ConsoleExtend.ReadLinePrefill("Enter server address: ", "localhost"), 10000);
+            
+                XdScheduler.Instance.RunAsync("Connection-Thread", () => {
+                    client.Connect();
+                });
+                
+                return;
+            }
+
             // git test
             var frame = new Box()
             {

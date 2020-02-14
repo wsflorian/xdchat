@@ -31,14 +31,15 @@ namespace XdChatShared {
                 this.reader = new BinaryReader(this.Client.GetStream());
                 
                 while (this.Client.Connected) {
+                    Packet packet = Packet.FromJson(reader.ReadString());
                     XdScheduler.Instance.RunSync(() => {
-                        OnPacketReceived(Packet.FromJson(reader.ReadString()));
+                        OnPacketReceived(packet);
                     });
                 }
 
                 XdScheduler.Instance.RunSync(() => OnDisconnect(null));
             } catch (Exception e) {
-                XdScheduler.Instance.RunSync(() => OnDisconnect(null));
+                XdScheduler.Instance.RunSync(() => OnDisconnect(e));
             } finally {
                 this.Client = DisposeAndNull(this.Client);
                 this.reader = DisposeAndNull(this.reader);

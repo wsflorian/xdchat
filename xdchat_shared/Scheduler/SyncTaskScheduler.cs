@@ -8,18 +8,20 @@ using System.Threading.Tasks;
 namespace XdChatShared.Scheduler {
     public class SyncTaskScheduler : TaskScheduler, IDisposable {
         private readonly ConcurrentQueue<Task> tasks = new ConcurrentQueue<Task>();
-
         private readonly Thread workingThread;
+        
+        private readonly AutoResetEvent queueSignal = new AutoResetEvent(false);
 
-        private readonly AutoResetEvent signalThread = new AutoResetEvent(false);
-
-        private bool stopThread;
-
-        private bool disposed;
+        private bool stopThread, disposed;
+        
+        private volatile WatchdogInfo watchdogInfo;
 
         public SyncTaskScheduler(string name) {
-            workingThread = new Thread(RunThread) {Name = name};
+            workingThread = new Thread(RunWorkingThread) {Name = name};
             workingThread.Start();
+
+            Thread watchdogThread = new Thread(RunWatchdogThread) {Name = $"{name}-watchdog"};
+            watchdogThread.Start();
         }
         
         protected sealed override void QueueTask(Task task) {
@@ -28,19 +30,37 @@ namespace XdChatShared.Scheduler {
             }
 
             tasks.Enqueue(task);
-            signalThread.Set();
+            queueSignal.Set();
         }
 
-        private void RunThread() {
+        private void RunWorkingThread() {
             while (true) {
                 if (stopThread && tasks.IsEmpty)
                     return;
+                
+                queueSignal.WaitOne();
 
-                signalThread.WaitOne();
-
-                while (tasks.TryDequeue(out Task item)) {
-                    this.TryExecuteTask(item);
+                while (tasks.TryDequeue(out Task result)) {
+                    watchdogInfo = new WatchdogInfo();
+                    
+                    this.TryExecuteTask(result);
+                    
+                    watchdogInfo = null;
                 }
+            }
+        }
+
+        private void RunWatchdogThread() {
+            while (true) {
+                if (stopThread && tasks.IsEmpty)
+                    return;
+                
+                while (this.watchdogInfo != null) {
+                    this.watchdogInfo?.CheckStuck();
+                    Thread.Sleep(5);
+                }
+                
+                Thread.Sleep(5);
             }
         }
 
@@ -81,12 +101,32 @@ namespace XdChatShared.Scheduler {
 
             if (disposing) {
                 stopThread = true;
-                signalThread.Set();
+                queueSignal.Set();
             }
 
             disposed = true;
         }
 
         #endregion
+    }
+
+    class WatchdogInfo {
+        private readonly long lastExecutionStart;
+        private bool notified;
+        
+        public WatchdogInfo() {
+            this.lastExecutionStart = XdScheduler.Instance.CurrentTimeMillis();
+        }
+
+        public void CheckStuck() {
+            if (notified || !IsStuck()) return;
+            
+            notified = true;
+            Console.Error.WriteLine("WorkingThread task takes >1s to execute");
+        }
+
+        private bool IsStuck() {
+            return lastExecutionStart + 1000 < XdScheduler.Instance.CurrentTimeMillis();
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace XdChatShared {
         }
 
         private void RunThread() {
-            while (start + timeout > CurrentTimeMillis()) {
+            while (start + timeout > XdScheduler.Instance.CurrentTimeMillis()) {
                 Thread.Sleep(100);
             }
             if (this.timeout == -1) return; // cancel
@@ -25,7 +25,7 @@ namespace XdChatShared {
         }
 
         internal void Start() {
-            this.start = CurrentTimeMillis();
+            this.start = XdScheduler.Instance.CurrentTimeMillis();
             this.thread = XdScheduler.Instance.RunAsync("Timeout-Thread", RunThread);
         }
 
@@ -33,8 +33,6 @@ namespace XdChatShared {
             this.timeout = -1;
         }
 
-        private static long CurrentTimeMillis() {
-            return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        }
+        
     }
 }

@@ -11,7 +11,8 @@ namespace XdChatShared.Scheduler {
         private readonly SyncTaskScheduler mainThreadScheduler = new SyncTaskScheduler("MainThread");
         private readonly ConcurrentDictionary<int, Thread> asyncThreads = new ConcurrentDictionary<int, Thread>();
 
-        private XdScheduler() {}
+        private XdScheduler() {
+        }
         
         public int QueuedSyncTasks => mainThreadScheduler.ScheduledTaskCount;
         public int RunningAsyncTasks => asyncThreads.Count;
@@ -36,6 +37,10 @@ namespace XdChatShared.Scheduler {
             Timeout timeout = new Timeout(action, timeoutTime);
             timeout.Start();
             return timeout;
+        }
+        
+        public long CurrentTimeMillis() {
+            return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
         
         public void CheckIsSync() {

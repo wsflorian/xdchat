@@ -61,7 +61,7 @@ namespace ConsoleGui
         }
 
         public ElemPos GetAbsolutePos()
-            => (Parent != null ? Position + Parent.Position : Position);
+            => (Parent != null ? Position + Parent.GetAbsolutePos() : Position);
 
         public ElemPos GetCursorOffset()
             => (Parent != null

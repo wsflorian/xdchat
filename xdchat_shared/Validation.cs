@@ -6,7 +6,7 @@ namespace XdChatShared {
     public static class Validation {
         public static bool IsValidMessageText(string text) {
             if (string.IsNullOrEmpty(text) || text.Length > 1024) return false;
-            return !text.Any(ch => char.IsControl(ch) || char.IsSeparator(ch));
+            return !text.Any(ch => char.IsControl(ch) || char.IsSeparator(ch) && ch != ' ');
         }
 
         public static bool IsHex(string text, int length) {

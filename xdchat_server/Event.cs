@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SimpleLogger;
+using XdChatShared.Scheduler;
 
 namespace xdchat_server {
     public class Event {}
@@ -19,6 +20,7 @@ namespace xdchat_server {
         }
         
         public T Emit<T>(T ev) where T : Event {
+            XdScheduler.Instance.CheckIsSync();
             listeners.ForEach(listener => listener.Emit(ev));
             return ev;
         }
@@ -50,6 +52,8 @@ namespace xdchat_server {
         }
 
         public void Emit<T>(T ev) where T: Event {
+            XdScheduler.Instance.CheckIsSync();
+            
             GetHandlerMethods(ev.GetType()).ForEach(info => {
                 info.Invoke(this, new object[] { ev });
             });

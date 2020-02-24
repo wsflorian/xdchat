@@ -3,7 +3,7 @@
         public string Text { get; set; }
 
         public override string Validate() {
-            return string.IsNullOrEmpty(Text) ? "Text is invalid" : null;
+            return !Validation.IsValidMessageText(Text) ? "Text is invalid" : null;
         }
     }
 }

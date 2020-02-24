@@ -3,8 +3,10 @@ using System.Linq;
 using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 using XdChatShared;
 using XdChatShared.Packets;
+using XdChatShared.Scheduler;
 
 namespace xdchat_client {
     class XdServerConnection : XdConnection {
@@ -60,17 +62,20 @@ namespace xdchat_client {
                 }
 
                 base.Initialize(new TcpClient(ServerAddress, Port));
-                
-                base.Send(new ClientPacketAuth() {
-                    Uuid = Uuid, Nickname = Nickname
+                XdScheduler.Instance.RunSync(() => {
+                    base.Send(new ClientPacketAuth() {
+                        Nickname = Nickname, Uuid = Uuid
+                    });
                 });
-                
+
                 while (base.Connected) {
                     Console.Write("Message: ");
-                    SendMessage(Console.ReadLine());
+                    string message = Console.ReadLine();
+                    
+                    XdScheduler.Instance.RunSync(() => SendMessage(message));
                 }
             } catch (SocketException e) {
-                Console.WriteLine($"RunThread error: {e}");
+                Console.WriteLine($"Connect error: {e}");
             } catch (IOException e) {
                 Console.WriteLine($"Connection-Error: {e}");
             } 

@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using SimpleLogger;
 using SimpleLogger.Logging;
+using XdChatShared.Scheduler;
 
 namespace xdchat_server {
     public class ConsoleHandler {
         private readonly List<string> lineBuffer = new List<string>();
-        private readonly Thread readThread;
         private readonly Action<string> inputHandler;
         private bool readMode, running = true;
 
         public ConsoleHandler(Action<string> inputHandler) {
             this.inputHandler = inputHandler;
 
-            readThread = new Thread(RunReadThread);
-            readThread.Start();
-            
+            XdScheduler.Instance.RunAsync("Console-Read-Thread", RunReadThread);
+
             Logger.LoggerHandlerManager.AddHandler(new LoggingHandler(this));
         }
 

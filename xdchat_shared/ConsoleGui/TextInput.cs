@@ -32,8 +32,6 @@ namespace ConsoleGui
                     stringToWrite += " ";
                 }
             }
-            Console.SetCursorPosition(0,0);
-            Console.Write($"X:{pos.X} Y:{pos.Y}");
             Console.SetCursorPosition((pos.X < 0 ? 0 : pos.X), (pos.Y < 0 ? 0 : pos.Y));
             Console.Write(stringToWrite);
         }
@@ -46,7 +44,12 @@ namespace ConsoleGui
 
             while (this.IsFocused && newChar.Key != ConsoleKey.Enter)
             {
-                
+                newChar = Console.ReadKey();
+            }
+
+            if (newChar.Key == ConsoleKey.Enter)
+            {
+                // send msg to server
             }
         }
 

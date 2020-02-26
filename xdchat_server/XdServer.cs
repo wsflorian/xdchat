@@ -10,7 +10,7 @@ using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server {
-    class XdServer {
+    public class XdServer {
         public static XdServer Instance { get; } = new XdServer();
         public List<XdClientConnection> Clients { get; } = new List<XdClientConnection>();
         public EventEmitter EventEmitter { get; } = new EventEmitter();

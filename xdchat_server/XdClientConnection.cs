@@ -3,12 +3,13 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using xdchat_server.Commands;
+using xdchat_server.Events;
 using XdChatShared;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server {
-    class XdClientConnection : XdConnection, ICommandSender {
+    public class XdClientConnection : XdConnection, ICommandSender {
         private readonly XdServer server;
         private readonly Timeout authTimeout;
         public Authentication Auth { get; private set; }
@@ -41,6 +42,8 @@ namespace xdchat_server {
             
             Packet.InvokeActionIfType<ClientPacketAuth>(packet, HandleAuthPacket);
             Packet.InvokeActionIfType<ClientPacketChatMessage>(packet, HandleChatPacket);
+            
+            server.EventEmitter.Emit(new PacketReceivedEvent(this, packet));
         }
 
         private void HandleAuthPacket(ClientPacketAuth packet) {

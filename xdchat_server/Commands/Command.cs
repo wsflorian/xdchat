@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using SimpleLogger;
+using xdchat_server.Events;
 
-namespace xdchat_server {
+namespace xdchat_server.Commands {
     public interface ICommandSender {
         void SendMessage(string text);
         string GetName();
@@ -52,7 +53,7 @@ namespace xdchat_server {
             this.aliases = new List<string>(aliases);
         }
 
-        [EventHandler]
+        [Events.EventHandler]
         public void OnCommandEvent(CommandEvent ev) {
             if (!EqualsIgnoreCase(command, ev.CommandName) 
                 && aliases.All(alias => !EqualsIgnoreCase(alias, ev.CommandName))) return;

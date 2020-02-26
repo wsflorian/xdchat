@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-namespace xdchat_server.Listeners {
+namespace xdchat_server.Commands {
     public class KickCommand : CommandListener {
         public KickCommand() : base("kick") {}
 

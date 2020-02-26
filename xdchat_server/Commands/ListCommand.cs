@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
+﻿using System.Collections.Generic;
 using System.Text;
 
-namespace xdchat_server.Listeners {
+namespace xdchat_server.Commands {
     public class ListCommand : CommandListener {
         public ListCommand() : base("list") { }
 

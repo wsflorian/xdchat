@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace xdchat_server.Listeners {
+namespace xdchat_server.Commands {
     public class WhisperCommand : CommandListener {
         public WhisperCommand() : base("whisper", "msg", "w") {
         }

@@ -5,29 +5,9 @@ using System.Reflection;
 using SimpleLogger;
 using XdChatShared.Scheduler;
 
-namespace xdchat_server {
-    public class Event {}
-
-    public class CancelableEvent : Event {
-        public bool Cancelled { get; set; } = false;
-    }
-
-    public class EventEmitter {
-        private readonly List<EventListener> listeners = new List<EventListener>();
-
-        public void RegisterListener(EventListener listener) {
-            listener.Register(listeners.Add);
-        }
-        
-        public T Emit<T>(T ev) where T : Event {
-            XdScheduler.Instance.CheckIsSync();
-            listeners.ForEach(listener => listener.Emit(ev));
-            return ev;
-        }
-    }
-    
+namespace xdchat_server.Events {
     public class EventListener {
-        private readonly IDictionary<Type, List<MethodInfo>> methods = new Dictionary<Type, List<MethodInfo>>();
+        private readonly IDictionary<Type, List<EventRegistration>> registrations = new Dictionary<Type, List<EventRegistration>>();
 
         public void Register(Action<EventListener> listenerConsumer) {
             GetType().GetMethods().ToList().ForEach(info => {
@@ -45,7 +25,7 @@ namespace xdchat_server {
                     return;
                 }
                 
-                GetHandlerMethods(parameterType).Add(info);
+                GetHandlerMethods(parameterType).Add(new EventRegistration((EventHandler) attributes[0], info));
             });
             
             listenerConsumer.Invoke(this);
@@ -55,19 +35,34 @@ namespace xdchat_server {
             XdScheduler.Instance.CheckIsSync();
             
             GetHandlerMethods(ev.GetType()).ForEach(info => {
-                info.Invoke(this, new object[] { ev });
+                if (ev.GetType().IsSubclassOf(typeof(IEventFilter)) && info.HandlerInfo.Filter != null) {
+                    IEventFilter filter = (IEventFilter) ev;
+
+                    if (!filter.DoesMatch(info.HandlerInfo.Filter)) {
+                        return;
+                    }
+                }
+
+                info.Method.Invoke(this, new object[] {ev});
             });
         }
         
-        private List<MethodInfo> GetHandlerMethods(Type type) {
-            if (!methods.TryGetValue(type, out List<MethodInfo> listeners)) {
-                methods[type] = listeners = new List<MethodInfo>();
+        private List<EventRegistration> GetHandlerMethods(Type type) {
+            if (!registrations.TryGetValue(type, out List<EventRegistration> listeners)) {
+                registrations[type] = listeners = new List<EventRegistration>();
             }
 
             return listeners;
         }
     }
     
-    [AttributeUsage(AttributeTargets.Method)]  
-    public class EventHandler : Attribute {}
+    public class EventRegistration {
+        public EventHandler HandlerInfo { get; }
+        public MethodInfo Method { get; }
+
+        public EventRegistration(EventHandler handlerInfo, MethodInfo method) {
+            HandlerInfo = handlerInfo;
+            Method = method;
+        }
+    }
 }

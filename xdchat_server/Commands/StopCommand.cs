@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace xdchat_server.Listeners {
+namespace xdchat_server.Commands {
     public class StopCommand : CommandListener {
         public StopCommand() : base("stop", "end", "gtfo") {
         }

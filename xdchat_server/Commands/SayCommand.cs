@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
 namespace xdchat_server.Commands {
-    public class SayCommand: CommandListener {
+    public class SayCommand: Command {
         public SayCommand() : base("broadcast", "bc", "say") {
         }
 
-        protected override void OnCommand(ICommandSender sender, List<string> args) {
+        public override void OnCommand(ICommandSender sender, List<string> args) {
             if (sender != XdServer.Instance.ConsoleCommandSender) {
                 sender.SendMessage("No permission");
                 return;

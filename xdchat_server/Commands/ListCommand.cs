@@ -2,10 +2,10 @@
 using System.Text;
 
 namespace xdchat_server.Commands {
-    public class ListCommand : CommandListener {
+    public class ListCommand : Command {
         public ListCommand() : base("list") { }
 
-        protected override void OnCommand(ICommandSender sender, List<string> args) {
+        public override void OnCommand(ICommandSender sender, List<string> args) {
             List<XdClientConnection> clients = XdServer.Instance.GetAuthenticatedClients();
             StringBuilder builder = new StringBuilder();
 

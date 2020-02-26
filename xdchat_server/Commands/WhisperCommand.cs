@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
 namespace xdchat_server.Commands {
-    public class WhisperCommand : CommandListener {
+    public class WhisperCommand : Command {
         public WhisperCommand() : base("whisper", "msg", "w") {
         }
 
-        protected override void OnCommand(ICommandSender sender, List<string> args) {
+        public override void OnCommand(ICommandSender sender, List<string> args) {
             if (args.Count < 2) {
                 sender.SendMessage("Usage: /whisper <nickname> <message>");
                 return;

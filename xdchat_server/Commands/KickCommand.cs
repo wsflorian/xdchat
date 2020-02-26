@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
 namespace xdchat_server.Commands {
-    public class KickCommand : CommandListener {
+    public class KickCommand : Command {
         public KickCommand() : base("kick") {}
 
-        protected override void OnCommand(ICommandSender sender, List<string> args) {
+        public override void OnCommand(ICommandSender sender, List<string> args) {
             if (sender != XdServer.Instance.ConsoleCommandSender) {
                 sender.SendMessage("No permission");
                 return;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using SimpleLogger;
 using xdchat_server.Commands;
 using xdchat_server.Events;
@@ -21,13 +20,17 @@ namespace xdchat_server {
         private TcpListener serverSocket;
 
         private XdServer() {
-            EventEmitter.RegisterListener(new KickCommand());
-            EventEmitter.RegisterListener(new ListCommand());
-            EventEmitter.RegisterListener(new WhisperCommand());
-            EventEmitter.RegisterListener(new StopCommand());
-            EventEmitter.RegisterListener(new SayCommand());
+            this.RegisterCommand(new KickCommand());
+            this.RegisterCommand(new ListCommand());
+            this.RegisterCommand(new WhisperCommand());
+            this.RegisterCommand(new StopCommand());
+            this.RegisterCommand(new SayCommand());
         }
 
+        private void RegisterCommand(Command command) {
+            this.EventEmitter.RegisterListener(new CommandListener(command));
+        }
+        
         public void Start() {
             XdScheduler.Instance.CheckIsSync();
             this.consoleHandler = new ConsoleHandler(HandleConsoleInput);

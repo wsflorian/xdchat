@@ -20,32 +20,40 @@ namespace xdchat_server.Commands {
         }
     }
 
-    public abstract class CommandListener : EventListener {
-        private readonly List<string> aliases;
-        private readonly string command;
+    public abstract class Command {
+        public string CommandName { get; }
+        public List<string> Aliases { get; }
+        
+        protected Command(string commandName, params string[] aliases) {
+            this.CommandName = commandName;
+            this.Aliases = new List<string>(aliases);
+        }
+        
+        public abstract void OnCommand(ICommandSender sender, List<string> args);
+        
+        protected static string JoinArguments(IEnumerable<string> args, int from, int to) {
+            return string.Join(' ', args.Take(to).Skip(from));
+        }
+    }
 
-        protected CommandListener(string command, params string[] aliases) {
+    public class CommandListener : EventListener {
+        private readonly Command command;
+
+        public CommandListener(Command command) {
             this.command = command;
-            this.aliases = new List<string>(aliases);
         }
 
         [Events.EventHandler]
         public void OnCommandEvent(CommandEvent ev) {
-            if (!EqualsIgnoreCase(command, ev.CommandName) 
-                && aliases.All(alias => !EqualsIgnoreCase(alias, ev.CommandName))) return;
+            if (!EqualsIgnoreCase(command.CommandName, ev.CommandName) 
+                && command.Aliases.All(alias => !EqualsIgnoreCase(alias, ev.CommandName))) return;
             
-            this.OnCommand(ev.Sender, ev.Args);
+            command.OnCommand(ev.Sender, ev.Args);
             ev.SetHandled();
         }
 
-        protected abstract void OnCommand(ICommandSender sender, List<string> args);
-
         private static bool EqualsIgnoreCase(string a, string b) {
             return string.Compare(a, b, StringComparison.OrdinalIgnoreCase) == 0;
-        }
-
-        protected static string JoinArguments(IEnumerable<string> args, int from, int to) {
-            return string.Join(' ', args.Take(to).Skip(from));
         }
     }
 }

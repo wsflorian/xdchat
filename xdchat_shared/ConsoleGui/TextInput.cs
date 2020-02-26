@@ -1,4 +1,6 @@
-﻿namespace ConsoleGui
+﻿using System;
+
+namespace ConsoleGui
 {
     public class TextInput : Element
     {
@@ -15,12 +17,40 @@
         
         public override void Render()
         {
-            throw new System.NotImplementedException();
+            var pos = this.GetCursorOffset();
+            var stringToWrite = $"{Prompt}{Value}";
+            stringToWrite = stringToWrite.Remove(0, (pos.X < 0 ? pos.X : 0));
+
+            if (stringToWrite.Length > Size.Width)
+            {
+                stringToWrite = stringToWrite.Remove(Size.Width - 1);
+            }
+            else
+            {
+                for (int i = 0; i < Size.Width - stringToWrite.Length; i++)
+                {
+                    stringToWrite += " ";
+                }
+            }
+            Console.SetCursorPosition((pos.X < 0 ? 0 : pos.X), (pos.Y < 0 ? 0 : pos.Y));
+            Console.Write(stringToWrite);
         }
 
         public override void OnFocus()
         {
-            throw new System.NotImplementedException();
+            Console.CursorVisible = true;
+            this.Render();
+            ConsoleKeyInfo newChar = Console.ReadKey();
+
+            while (this.IsFocused && newChar.Key != ConsoleKey.Enter)
+            {
+                newChar = Console.ReadKey();
+            }
+
+            if (newChar.Key == ConsoleKey.Enter)
+            {
+                // send msg to server
+            }
         }
 
         public override void OnBlur()
@@ -34,6 +64,11 @@
         }
 
         public override void OnScroll()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnSubmit()
         {
             throw new System.NotImplementedException();
         }

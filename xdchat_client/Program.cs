@@ -33,33 +33,41 @@ namespace xdchat_client {
             };
             var ChatMessageBox = new Box()
             {
-                Size = new ElemSize(43,75),
+                Size = new ElemSize(45,75),
                 Id = "ChtBox"
             };
             var ChatUsersBox = new Box()
             {
-                Size = new ElemSize(43, 15),
+                Size = new ElemSize(45, 15),
                 Position = new ElemPos(0,75),
                 Id = "UsrBox"
             };
             var MessageBox = new Box()
             {
-                Size = new ElemSize(7, 90),
-                Position = new ElemPos(43, 0),
+                Size = new ElemSize(5, 90),
+                Position = new ElemPos(45, 0),
                 Id = "MsgBox"
+            };
+            var TextInput = new TextInput()
+            {
+                Position = new ElemPos(2,2),
+                Size = new ElemSize(1, 20),
+                Prompt = "Msg: ",
+                Value = "A"
             };
 
             frame.AddChild(ChatMessageBox);
             frame.AddChild(ChatUsersBox);
             frame.AddChild(MessageBox);
+            MessageBox.AddChild(TextInput);
             
             frame.SetupAsFrame();
             frame.Render();
             
-            MouseListener.RestartListenThread();
-            MouseListener.RegisteredElements.Add(ChatMessageBox);
-            MouseListener.RegisteredElements.Add(ChatUsersBox);
-            MouseListener.RegisteredElements.Add(MessageBox);
+            // MouseListener.RestartListenThread();
+            // MouseListener.RegisteredElements.Add(ChatMessageBox);
+            // MouseListener.RegisteredElements.Add(ChatUsersBox);
+            // MouseListener.RegisteredElements.Add(MessageBox);
             
             Console.ReadKey();
         }

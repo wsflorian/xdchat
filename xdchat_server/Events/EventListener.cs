@@ -25,29 +25,13 @@ namespace xdchat_server.Events {
                     return;
                 }
                 
-                GetHandlerMethods(parameterType).Add(new EventRegistration((EventHandler) attributes[0], info));
+                GetEventRegistrations(parameterType).Add(new EventRegistration((EventHandler) attributes[0], info, this));
             });
             
             listenerConsumer.Invoke(this);
         }
 
-        public void Emit<T>(T ev) where T: Event {
-            XdScheduler.Instance.CheckIsSync();
-            
-            GetHandlerMethods(ev.GetType()).ForEach(info => {
-                if (ev.GetType().IsSubclassOf(typeof(IEventFilter)) && info.HandlerInfo.Filter != null) {
-                    IEventFilter filter = (IEventFilter) ev;
-
-                    if (!filter.DoesMatch(info.HandlerInfo.Filter)) {
-                        return;
-                    }
-                }
-
-                info.Method.Invoke(this, new object[] {ev});
-            });
-        }
-        
-        private List<EventRegistration> GetHandlerMethods(Type type) {
+        public List<EventRegistration> GetEventRegistrations(Type type) {
             if (!registrations.TryGetValue(type, out List<EventRegistration> listeners)) {
                 registrations[type] = listeners = new List<EventRegistration>();
             }
@@ -59,10 +43,12 @@ namespace xdchat_server.Events {
     public class EventRegistration {
         public EventHandler HandlerInfo { get; }
         public MethodInfo Method { get; }
+        public EventListener Listener { get;  }
 
-        public EventRegistration(EventHandler handlerInfo, MethodInfo method) {
+        public EventRegistration(EventHandler handlerInfo, MethodInfo method, EventListener listener) {
             HandlerInfo = handlerInfo;
             Method = method;
+            Listener = listener;
         }
     }
 }

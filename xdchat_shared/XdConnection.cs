@@ -11,8 +11,6 @@ namespace XdChatShared {
         private BinaryWriter writer;
         private BinaryReader reader;
 
-        //private Thread readThread;
-        
         public TcpClient Client { get; private set; }
         public string RemoteIp { get; private set; }
         

@@ -25,6 +25,7 @@ namespace xdchat_server {
             EventEmitter.RegisterListener(new ListCommand());
             EventEmitter.RegisterListener(new WhisperCommand());
             EventEmitter.RegisterListener(new StopCommand());
+            EventEmitter.RegisterListener(new SayCommand());
         }
 
         public void Start() {

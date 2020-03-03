@@ -3,16 +3,16 @@ using XdChatShared.Packets;
 
 namespace xdchat_server.Events {
     public class PacketReceivedEvent : Event, IEventFilter {
-        private XdClientConnection client;
-        private Packet packet;
+        public XdClientConnection Client { get; }
+        public Packet Packet { get; }
 
         public PacketReceivedEvent(XdClientConnection client, Packet packet) {
-            this.client = client;
-            this.packet = packet;
+            this.Client = client;
+            this.Packet = packet;
         }
 
-        public bool DoesMatch(string filter) {
-            return packet.GetType().Name.Equals(filter);
+        public bool DoesMatch(object filter) {
+            return Packet.GetType().Equals(filter);
         }
     }
 }

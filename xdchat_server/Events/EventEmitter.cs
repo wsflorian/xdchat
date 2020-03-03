@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using XdChatShared.Scheduler;
 
@@ -31,17 +30,5 @@ namespace xdchat_server.Events {
             
             return ev;
         }
-    }
-    
-    public enum EventPriority {
-        Internal, // Used for internal connection things (e.g. Auth packets)
-        Default
-    }
-    
-    [AttributeUsage(AttributeTargets.Method)]
-    public class EventHandler : Attribute {
-        public string Filter { get; set; }
-
-        public EventPriority Priority { get; } = EventPriority.Default;
     }
 }

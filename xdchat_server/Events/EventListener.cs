@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using SimpleLogger;
 using XdChatShared.Scheduler;
 
@@ -37,18 +36,6 @@ namespace xdchat_server.Events {
             }
 
             return listeners;
-        }
-    }
-    
-    public class EventRegistration {
-        public EventHandler HandlerInfo { get; }
-        public MethodInfo Method { get; }
-        public EventListener Listener { get;  }
-
-        public EventRegistration(EventHandler handlerInfo, MethodInfo method, EventListener listener) {
-            HandlerInfo = handlerInfo;
-            Method = method;
-            Listener = listener;
         }
     }
 }

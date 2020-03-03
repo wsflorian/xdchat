@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using SimpleLogger;
+using xdchat_server.ClientCon;
 using xdchat_server.Commands;
 using xdchat_server.Events;
 using XdChatShared.Packets;
@@ -25,6 +26,9 @@ namespace xdchat_server {
             this.RegisterCommand(new WhisperCommand());
             this.RegisterCommand(new StopCommand());
             this.RegisterCommand(new SayCommand());
+            
+            this.EventEmitter.RegisterListener(new ChatPacketListener());
+            this.EventEmitter.RegisterListener(new AuthPacketListener());
         }
 
         private void RegisterCommand(Command command) {

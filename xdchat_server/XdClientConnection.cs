@@ -12,7 +12,7 @@ namespace xdchat_server {
     public class XdClientConnection : XdConnection, ICommandSender {
         private readonly XdServer server;
         private readonly Timeout authTimeout;
-        public Authentication Auth { get; private set; }
+        public Authentication Auth { get; set; }
 
         public XdClientConnection(XdServer server, TcpClient client) {
             Initialize(client);
@@ -35,49 +35,18 @@ namespace xdchat_server {
                 return;
             }
 
+            if (this.authTimeout != null) {
+                this.authTimeout.Cancel();
+            }
+
             if (Auth != null && packet.IsType(typeof(ClientPacketAuth))) {
                 this.Disconnect("Already authenticated");
                 return;
             }
             
-            Packet.InvokeActionIfType<ClientPacketAuth>(packet, HandleAuthPacket);
-            Packet.InvokeActionIfType<ClientPacketChatMessage>(packet, HandleChatPacket);
-            
             server.EventEmitter.Emit(new PacketReceivedEvent(this, packet));
         }
-
-        private void HandleAuthPacket(ClientPacketAuth packet) {
-            this.authTimeout.Cancel();
-
-            if (server.GetClientByNickname(packet.Nickname) != null) {
-                this.Disconnect("This nickname is already used");
-                return;
-            }
-
-            if (server.GetClientByUuid(packet.Uuid) != null) {
-                this.Disconnect("You are already connected");
-                return;
-            }
-            
-            this.Auth = new Authentication(packet.Nickname, packet.Uuid);
-            this.server.SendUserListUpdate(this);
-
-            Logger.Log($"Client authenticated: {this.Auth.Nickname} ({this.Auth.Uuid})");
-        }
-
-        private void HandleChatPacket(ClientPacketChatMessage packet) {
-            Logger.Log($"<{this.Auth?.Nickname}>: {packet.Text}");
-            
-            if (packet.Text.StartsWith("/")) {
-                server.EmitCommand(this, packet.Text);
-            } else {
-                server.Broadcast(new ServerPacketChatMessage() {
-                    HashedUuid = this.Auth?.HashedUuid,
-                    Text = packet.Text
-                }, con => con != this);
-            }
-        }
-
+        
         public void SendMessage(string text) {
             Send(new ServerPacketChatMessage() { Text = text });
         }

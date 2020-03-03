@@ -16,7 +16,7 @@ namespace xdchat_server.Events {
             listeners
                 .SelectMany(registration => registration.GetEventRegistrations(ev.GetType()))
                 .Where(registration => {
-                    if (!ev.GetType().IsSubclassOf(typeof(IEventFilter)) || registration.HandlerInfo.Filter == null)
+                    if (!(ev is IEventFilter) || registration.HandlerInfo.Filter == null)
                         return true; // Don't apply filter if not filterable or no filter is set
                     
                     IEventFilter filter = (IEventFilter) ev;

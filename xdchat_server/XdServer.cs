@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using SimpleLogger;
 using xdchat_server.ClientCon;
 using xdchat_server.Commands;
@@ -53,19 +54,32 @@ namespace xdchat_server {
                 return;
             }
             
-            XdScheduler.Instance.RunAsync("Accept-Thread", () => {
-                Logger.Log("Started! :)");
-                try {
-                    while (this.serverSocket != null) {
-                        XdClientConnection client = new XdClientConnection(this, serverSocket.AcceptTcpClient());
-                        this.Clients.Add(client);
-                    }
-                } catch (SocketException) {
-                    Logger.Log("Server stopped");
-                }
-            });
+            XdScheduler.Instance.RunAsync("Accept-Thread", RunAcceptThread);
+            XdScheduler.Instance.RunAsync("Ping-Thread", RunPingThread);
         }
         
+        private void RunAcceptThread() {
+            Logger.Log("Started! :)");
+            try {
+                while (this.serverSocket != null) {
+                    XdClientConnection client = new XdClientConnection(this, serverSocket.AcceptTcpClient());
+                    this.Clients.Add(client);
+                }
+            } catch (SocketException) {
+                Logger.Log("Server stopped");
+            }
+        }
+
+        private void RunPingThread() {
+            while (this.serverSocket != null) {
+                //Logger.Log(Logger.Level.Debug, "Sending ping packets...");
+                XdScheduler.Instance.RunSync(() => {
+                    this.Broadcast(new ServerPacketPing(), con => con.Auth != null);
+                });
+                Thread.Sleep(15000);
+            }
+        }
+
         public void Stop() {
             XdScheduler.Instance.CheckIsSync();
             

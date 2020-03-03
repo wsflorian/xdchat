@@ -34,10 +34,7 @@ namespace xdchat_server {
                 this.Disconnect("Authentication required");
                 return;
             }
-
-            if (this.authTimeout != null) {
-                this.authTimeout.Cancel();
-            }
+            authTimeout?.Cancel();
 
             if (Auth != null && packet.IsType(typeof(ClientPacketAuth))) {
                 this.Disconnect("Already authenticated");

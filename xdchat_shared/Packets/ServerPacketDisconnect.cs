@@ -5,7 +5,7 @@ namespace XdChatShared.Packets {
         public string Text { get; set; }
 
         public override string Validate() {
-            return Validation.IsAlphaNumeric(Text) ? null : "Text is invalid";
+            return Text != null && Text.Length < 256 ? null : "Text is invalid";
         }
     }
 }

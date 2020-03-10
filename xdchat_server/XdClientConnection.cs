@@ -81,9 +81,7 @@ namespace xdchat_server {
             this.lastPingSent = XdScheduler.Instance.CurrentTimeMillis();
         }
 
-        public void ReceivePing() {
-            this.Ping = XdScheduler.Instance.CurrentTimeMillis() - this.lastPingSent;
-        }
+        public void ReceivePing() => this.Ping = XdScheduler.Instance.CurrentTimeMillis() - this.lastPingSent;
     }
     
 }

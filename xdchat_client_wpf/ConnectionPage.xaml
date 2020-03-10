@@ -1,0 +1,34 @@
+﻿<Page x:Class="xdchat_client_wpf.ConnectionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:xdchat_client_wpf"
+      mc:Ignorable="d" Title="ConnectionPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Column="1" Grid.Row="0">
+            <StackPanel Margin="0,0,0,8" HorizontalAlignment="Stretch">
+                <Label Content="Nickname" Padding="2" FontSize="12" />
+                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Name="Nickname" />
+            </StackPanel>
+            <StackPanel Margin="0,0,0,8" HorizontalAlignment="Stretch">
+                <Label Content="Server Address" Padding="2" FontSize="12" />
+                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Name="ServerAddress" />
+            </StackPanel>
+            <Button>Connecto</Button>
+        </StackPanel>
+
+        <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" />
+    </Grid>
+</Page>

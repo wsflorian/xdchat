@@ -13,3 +13,6 @@ nuget.config
 /xdchat_shared/obj
 /xdchat_shared/runtimes
 
+/xdchat_client_wpf/bin
+/xdchat_client_wpf/obj
+/xdchat_client_wpf/runtimes

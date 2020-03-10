@@ -1,0 +1,16 @@
+﻿<Window x:Class="xdchat_client_wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="720" Width="1080" MinHeight="480" MinWidth="720" >
+    <TabControl Padding="8">
+        <TabItem Header="Connection">
+            <Frame Source="ConnectionPage.xaml" Padding="128"></Frame>
+        </TabItem>
+        <TabItem Header="Chat" IsEnabled="True">
+            <Frame Source="ChatPage.xaml"></Frame>
+        </TabItem>
+    </TabControl>
+</Window>

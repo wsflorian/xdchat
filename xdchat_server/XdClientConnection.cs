@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using xdchat_server.Commands;
-using xdchat_server.Events;
+using xdchat_server.EventsImpl;
 using XdChatShared;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;

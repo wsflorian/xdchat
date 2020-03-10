@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace xdchat_server.Events {
+namespace XdChatShared.Events {
     [AttributeUsage(AttributeTargets.Method)]
     public class EventHandler : Attribute {
         public object Filter { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace xdchat_server.Events {
+﻿namespace XdChatShared.Events {
     public interface IEventFilter {
         bool DoesMatch(object filter);
     }

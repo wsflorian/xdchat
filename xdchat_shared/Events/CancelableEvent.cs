@@ -1,4 +1,4 @@
-﻿namespace xdchat_server.Events {
+﻿namespace XdChatShared.Events {
     public class CancelableEvent : Event {
         public bool Cancelled { get; set; } = false;
     }

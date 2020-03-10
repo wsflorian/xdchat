@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace xdchat_server.Events {
+namespace XdChatShared.Events {
     public class EventRegistration {
         public EventHandler HandlerInfo { get; }
         public MethodInfo Method { get; }

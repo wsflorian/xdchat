@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using xdchat_server.Commands;
+using XdChatShared.Events;
 
-namespace xdchat_server.Events {
+namespace xdchat_server.EventsImpl {
     public class CommandEvent : Event {
         public ICommandSender Sender { get; }
         public string CommandName { get; }

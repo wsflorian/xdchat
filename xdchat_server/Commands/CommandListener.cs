@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
-using xdchat_server.Events;
+﻿using System.Linq;
+using xdchat_server.EventsImpl;
+using XdChatShared.Events;
 
 namespace xdchat_server.Commands {
     public class CommandListener : EventListener {
@@ -10,7 +10,7 @@ namespace xdchat_server.Commands {
             this.command = command;
         }
 
-        [Events.EventHandler]
+        [EventHandler]
         public void OnCommandEvent(CommandEvent ev) {
             if (!EqualsIgnoreCase(command.CommandName, ev.CommandName) 
                 && command.Aliases.All(alias => !EqualsIgnoreCase(alias, ev.CommandName))) return;
@@ -20,7 +20,7 @@ namespace xdchat_server.Commands {
         }
 
         private static bool EqualsIgnoreCase(string a, string b) {
-            return string.Compare(a, b, StringComparison.OrdinalIgnoreCase) == 0;
+            return string.Compare(a, b, System.StringComparison.OrdinalIgnoreCase) == 0;
         }
     }
 }

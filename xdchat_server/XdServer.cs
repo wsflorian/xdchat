@@ -6,7 +6,8 @@ using System.Threading;
 using SimpleLogger;
 using xdchat_server.ClientCon;
 using xdchat_server.Commands;
-using xdchat_server.Events;
+using xdchat_server.EventsImpl;
+using XdChatShared.Events;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 

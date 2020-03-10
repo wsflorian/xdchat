@@ -2,7 +2,7 @@
 using System.Linq;
 using XdChatShared.Scheduler;
 
-namespace xdchat_server.Events {
+namespace XdChatShared.Events {
     public class EventEmitter {
         private readonly List<EventListener> listeners = new List<EventListener>();
 

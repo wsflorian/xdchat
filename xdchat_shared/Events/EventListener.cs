@@ -4,7 +4,7 @@ using System.Linq;
 using SimpleLogger;
 using XdChatShared.Scheduler;
 
-namespace xdchat_server.Events {
+namespace XdChatShared.Events {
     public class EventListener {
         private readonly IDictionary<Type, List<EventRegistration>> registrations = new Dictionary<Type, List<EventRegistration>>();
 

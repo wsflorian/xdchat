@@ -1,7 +1,7 @@
-﻿using System;
+﻿using XdChatShared.Events;
 using XdChatShared.Packets;
 
-namespace xdchat_server.Events {
+namespace xdchat_server.EventsImpl {
     public class PacketReceivedEvent : Event, IEventFilter {
         public XdClientConnection Client { get; }
         public Packet Packet { get; }

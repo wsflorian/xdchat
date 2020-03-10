@@ -7,10 +7,10 @@
         Title="MainWindow" Height="720" Width="1080" MinHeight="480" MinWidth="720"
 >
     <TabControl Padding="8">
-        <TabItem Header="Connection" Cursor="Hand">
+        <TabItem Header="Connection">
             <Frame Content="{Binding ConnectionPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="128"></Frame>
         </TabItem>
-        <TabItem Header="Chat" Cursor="Hand" IsEnabled="{Binding Path=ChatEnabled, UpdateSourceTrigger=PropertyChanged}">
+        <TabItem Header="Chat" IsEnabled="{Binding Path=ChatEnabled, UpdateSourceTrigger=PropertyChanged}">
             <Frame Content="{Binding ChatPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Frame>
         </TabItem>
 

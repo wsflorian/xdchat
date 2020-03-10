@@ -26,7 +26,7 @@
                 <Label Content="Server Address" Padding="2" FontSize="12" />
                 <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=ServerAdress, UpdateSourceTrigger=PropertyChanged}" Name="ServerAddress" />
             </StackPanel>
-            <Button Content="Connect" Cursor="Hand" Command="{Binding ConnectButtonActionCommand}" />
+            <Button Content="Connect to server" Cursor="Hand" FontSize="15" Padding="0,3,0,3" Command="{Binding ConnectButtonActionCommand}" />
         </StackPanel>
 
         <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" />

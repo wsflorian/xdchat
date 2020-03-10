@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
     <ApplicationIcon />
     <StartupObject />
   </PropertyGroup>
@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" Condition="'$(TargetFramework)' == 'net472'" />
     <Reference Include="SimpleLogger, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\simplelogger\1.0.0\lib\net40\SimpleLogger.dll</HintPath>
     </Reference>

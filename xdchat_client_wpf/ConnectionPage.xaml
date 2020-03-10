@@ -20,13 +20,13 @@
         <StackPanel Grid.Column="1" Grid.Row="0">
             <StackPanel Margin="0,0,0,8" HorizontalAlignment="Stretch">
                 <Label Content="Nickname" Padding="2" FontSize="12" />
-                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Name="Nickname" />
+                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=Nickname, UpdateSourceTrigger=PropertyChanged}" Name="Nickname" />
             </StackPanel>
             <StackPanel Margin="0,0,0,8" HorizontalAlignment="Stretch">
                 <Label Content="Server Address" Padding="2" FontSize="12" />
-                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Name="ServerAddress" />
+                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=ServerAdress, UpdateSourceTrigger=PropertyChanged}" Name="ServerAddress" />
             </StackPanel>
-            <Button>Connecto</Button>
+            <Button Content="Connect" Cursor="Hand" Command="{Binding ConnectButtonActionCommand}" />
         </StackPanel>
 
         <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" />

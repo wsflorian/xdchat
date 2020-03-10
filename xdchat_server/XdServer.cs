@@ -31,6 +31,7 @@ namespace xdchat_server {
             
             this.EventEmitter.RegisterListener(new ChatPacketListener());
             this.EventEmitter.RegisterListener(new AuthPacketListener());
+            this.EventEmitter.RegisterListener(new PongPacketListener());
         }
 
         private void RegisterCommand(Command command) {
@@ -73,9 +74,8 @@ namespace xdchat_server {
 
         private void RunPingThread() {
             while (this.serverSocket != null) {
-                //Logger.Log(Logger.Level.Debug, "Sending ping packets...");
                 XdScheduler.Instance.RunSync(() => {
-                    this.Broadcast(new ServerPacketPing(), con => con.Auth != null);
+                    this.GetAuthenticatedClients().ForEach(client => client.SendPing());
                 });
                 Thread.Sleep(15000);
             }

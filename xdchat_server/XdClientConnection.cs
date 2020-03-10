@@ -12,7 +12,10 @@ namespace xdchat_server {
     public class XdClientConnection : XdConnection, ICommandSender {
         private readonly XdServer server;
         private readonly Timeout authTimeout;
+        private long lastPingSent;
         public Authentication Auth { get; set; }
+
+        public long Ping { get; private set; }
 
         public XdClientConnection(XdServer server, TcpClient client) {
             Initialize(client);
@@ -72,7 +75,15 @@ namespace xdchat_server {
             server.Clients.Remove(this);
             server.SendUserListUpdate(this);
         }
-        
+
+        public void SendPing() {
+            this.Send(new ServerPacketPing());
+            this.lastPingSent = XdScheduler.Instance.CurrentTimeMillis();
+        }
+
+        public void ReceivePing() {
+            this.Ping = XdScheduler.Instance.CurrentTimeMillis() - this.lastPingSent;
+        }
     }
     
 }

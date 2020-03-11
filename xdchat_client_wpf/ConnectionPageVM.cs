@@ -60,7 +60,7 @@ namespace xdchat_client_wpf
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test2"});
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test3"});
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test4"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaabbbbbbbbbbb"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaabbbbbbbbbbb"});
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test6"});
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test7"});
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test8"});

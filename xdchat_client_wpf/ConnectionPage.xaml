@@ -38,10 +38,18 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" >
-                        <!-- <TextBlock Text="{Binding TimeStamp}" Width="150" Margin="0,0,5,0"/> -->
-                        <TextBlock Text="{Binding Message}" HorizontalAlignment="Stretch" TextWrapping="Wrap"/>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"  Text="{Binding TimeStamp}" Margin="1" />
+
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding Path=Message}" TextWrapping="Wrap"
+                                   HorizontalAlignment="Stretch" Margin="1" />
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

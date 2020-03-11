@@ -50,7 +50,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="XdServerConnection.cs" />
+    <Compile Include="ServerCon\XdClient.cs" />
+    <Compile Include="ServerCon\XdClientStatus.cs" />
+    <Compile Include="ServerCon\XdServerConnection.cs" />
     <Page Include="ChatPage.xaml" />
     <Page Include="ConnectionPage.xaml" />
     <Page Include="MainWindow.xaml">

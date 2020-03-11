@@ -29,13 +29,8 @@
             <Button Content="Connect to server" Cursor="Hand" FontSize="15" Padding="0,3,0,3" Command="{Binding ConnectButtonActionCommand}" />
         </StackPanel>
 
-        <ListView ClipToBounds="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding Path=ServerLog}" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <!--<ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>-->
-
+        <ListView ClipToBounds="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
+                  ItemsSource="{Binding Path=ServerLog}" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -44,11 +39,11 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0"  Text="{Binding TimeStamp}" Margin="1" />
+                        <TextBlock Grid.Column="0" FontSize="12" Text="{Binding TimeStamp}" />
 
-                        <TextBlock Grid.Column="1"
+                        <TextBlock Grid.Column="1" FontSize="12"
                                    Text="{Binding Path=Message}" TextWrapping="Wrap"
-                                   HorizontalAlignment="Stretch" Margin="1" />
+                                   HorizontalAlignment="Stretch" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

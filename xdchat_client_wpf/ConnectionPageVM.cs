@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using xdchat_client_wpf.Annotations;
+using xdchat_client_wpf.Models;
 using XdChatShared;
 
 
@@ -13,6 +15,7 @@ namespace xdchat_client_wpf
 
         private string _serverAdress;
         private string _nickname;
+        private List<ServerLogMessage> _serverLog;
         public string ServerAdress
         {
             get => _serverAdress;
@@ -34,6 +37,16 @@ namespace xdchat_client_wpf
                 ConnectButtonActionCommand.RaiseCanExecuteChanged();
             }
         }
+
+        public List<ServerLogMessage> ServerLog
+        {
+            get => _serverLog;
+            set
+            {
+                _serverLog = value;
+                PropChanged(nameof(ServerLog));
+            }
+        }
         
         public ActionCommand ConnectButtonActionCommand { get; private set; }
         private Action ClientConnectedFunc { get; set; }
@@ -42,6 +55,22 @@ namespace xdchat_client_wpf
         {
             ConnectButtonActionCommand = new ActionCommand(ClickConnectFunc, ConnectButtonClickable);
             ClientConnectedFunc = clientConnectedFunc;
+            ServerLog = new List<ServerLogMessage>();
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test1"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test2"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test3"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test4"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaabbbbbbbbbbb"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test6"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test7"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test8"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test9"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test10"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test11"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test12"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test13"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test14"});
+            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test15"});
         }
 
         private void ClickConnectFunc()

@@ -4,8 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1080" MinHeight="480" MinWidth="720"
->
+        Title="MainWindow" Height="720" Width="1080" MinHeight="480" MinWidth="720">
     <TabControl Padding="8">
         <TabItem Header="Connection">
             <Frame Content="{Binding ConnectionPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="128"></Frame>
@@ -13,6 +12,5 @@
         <TabItem Header="Chat" IsEnabled="{Binding Path=ChatEnabled, UpdateSourceTrigger=PropertyChanged}">
             <Frame Content="{Binding ChatPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Frame>
         </TabItem>
-
     </TabControl>
 </Window>

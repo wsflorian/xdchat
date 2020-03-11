@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,25 +38,12 @@ namespace xdchat_client_wpf
                 PropChanged(nameof(ChatPage));
             }
         }
-        
-        
-        
+
         public MainWindowVM()
         {
             ConnectionPage = new ConnectionPage();
             ChatPage = new ChatPage();
             ChatEnabled = false;
-
-            // ChatPage = new Page()
-            // {
-            //     Content = new Label()
-            //     {
-            //         Content = "Access Denied",
-            //         VerticalAlignment = VerticalAlignment.Center,
-            //         HorizontalAlignment = HorizontalAlignment.Center,
-            //         FontSize = 20
-            //     }
-            // };
         }
 
         public bool ChatEnabled

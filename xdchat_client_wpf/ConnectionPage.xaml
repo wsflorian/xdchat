@@ -29,6 +29,21 @@
             <Button Content="Connect to server" Cursor="Hand" FontSize="15" Padding="0,3,0,3" Command="{Binding ConnectButtonActionCommand}" />
         </StackPanel>
 
-        <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" />
+        <ListView ClipToBounds="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding Path=ServerLog}" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <!--<ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>-->
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" >
+                        <!-- <TextBlock Text="{Binding TimeStamp}" Width="150" Margin="0,0,5,0"/> -->
+                        <TextBlock Text="{Binding Message}" HorizontalAlignment="Stretch" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

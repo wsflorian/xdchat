@@ -50,6 +50,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="XdServerConnection.cs" />
     <Page Include="ChatPage.xaml" />
     <Page Include="ConnectionPage.xaml" />
     <Page Include="MainWindow.xaml">
@@ -98,6 +99,9 @@
       <Project>{e8919b9f-ec06-41fc-a424-76afa8b7bb47}</Project>
       <Name>xdchat_shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EventsImpl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -17,10 +17,10 @@ namespace xdchat_client {
             // XdServerConnection client = new XdServerConnection("192.168.28.203", 10001);
 
             if (Environment.GetEnvironmentVariable("DBG_RUN_CLIENT") == "1") {
-                XdServerConnection client = new XdServerConnection(ConsoleExtend.ReadLinePrefill("Enter server address: ", "localhost"), 10000);
+                //XdServerConnection client = new XdServerConnection(ConsoleExtend.ReadLinePrefill("Enter server address: ", "localhost"), 10000);
             
                 XdScheduler.Instance.RunAsync("Connection-Thread", () => {
-                    client.Connect();
+                   // client.Connect();
                 });
                 
                 return;
@@ -64,10 +64,10 @@ namespace xdchat_client {
             frame.SetupAsFrame();
             frame.Render();
             
-            // MouseListener.RestartListenThread();
-            // MouseListener.RegisteredElements.Add(ChatMessageBox);
-            // MouseListener.RegisteredElements.Add(ChatUsersBox);
-            // MouseListener.RegisteredElements.Add(MessageBox);
+            MouseListener.RestartListenThread();
+            MouseListener.RegisteredElements.Add(ChatMessageBox);
+            MouseListener.RegisteredElements.Add(ChatUsersBox);
+            MouseListener.RegisteredElements.Add(MessageBox);
             
             Console.ReadKey();
         }

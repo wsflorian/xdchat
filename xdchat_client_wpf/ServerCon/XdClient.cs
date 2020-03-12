@@ -67,7 +67,7 @@ namespace xdchat_client_wpf {
             }
         }
 
-        private void UpdateStatus(ConnectionStatusEvent ev) {
+        public void UpdateStatus(ConnectionStatusEvent ev) {
             this.Status = ev.Status;
             Emitter.Emit(ev);
         }

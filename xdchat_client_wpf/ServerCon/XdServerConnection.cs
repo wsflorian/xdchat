@@ -4,6 +4,9 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using xdchat_client_wpf;
+using xdchat_client_wpf.EventsImpl;
+using xdchat_client_wpf.ServerCon;
 using XdChatShared;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
@@ -38,7 +41,7 @@ namespace xdchat_client {
         }
 
         protected override void OnDisconnect(Exception ex) {
-            Console.WriteLine($"Disconnected: {ex}");
+            XdClient.Instance.UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.NOT_CONNECTED, "Connection closed", ex));
         }
     }
 }

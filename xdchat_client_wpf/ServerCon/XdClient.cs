@@ -44,7 +44,7 @@ namespace xdchat_client_wpf {
         {
             get
             {
-                if (ushort.TryParse((string) Registry.GetValue(RegistryPath, RegistryPortValueName, 0), out ushort port))
+                if (ushort.TryParse((string) Registry.GetValue(RegistryPath, RegistryPortValueName, Constants.DefaultPort), out ushort port))
                 {
                     return port;
                 }

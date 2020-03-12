@@ -30,5 +30,9 @@ namespace XdChatShared.Events {
             
             return ev;
         }
+
+        public T EmitSync<T>(T ev) where T : Event {
+            return Emit(ev);
+        }
     }
 }

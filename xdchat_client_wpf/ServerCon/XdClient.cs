@@ -50,6 +50,8 @@ namespace xdchat_client_wpf {
         public string UuidShort => Uuid.Substring(0, 8);
 
         public void Connect() {
+            XdScheduler.Instance.CheckIsSync();
+            
             if (Connection != null)
                 throw new InvalidOperationException("Already connected");
             
@@ -67,7 +69,7 @@ namespace xdchat_client_wpf {
 
         private void UpdateStatus(ConnectionStatusEvent ev) {
             this.Status = ev.Status;
-            Emitter.EmitSync(ev);
+            Emitter.Emit(ev);
         }
     }
 }

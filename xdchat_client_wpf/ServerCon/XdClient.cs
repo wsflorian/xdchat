@@ -29,9 +29,7 @@ namespace xdchat_client_wpf {
             set => Registry.SetValue(RegistryPath, RegistryUuidValueName, value);
         }
 
-        public string UuidShort {
-            get => Uuid.Substring(0, 8);
-        }
+        public string UuidShort => Uuid.Substring(0, 8);
 
         public void Connect(string host, ushort port) {
             if (Connection != null)

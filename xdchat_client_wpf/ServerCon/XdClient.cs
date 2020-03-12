@@ -5,6 +5,7 @@ using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.ServerCon;
 using XdChatShared.Events;
+using XdChatShared;
 using XdChatShared.Scheduler;
 
 namespace xdchat_client_wpf {
@@ -47,8 +48,7 @@ namespace xdchat_client_wpf {
                 {
                     return port;
                 }
-
-                return 10000;
+                return Constants.DefaultPort;
             }
             set => Registry.SetValue(RegistryPath, RegistryPortValueName, value);
         }

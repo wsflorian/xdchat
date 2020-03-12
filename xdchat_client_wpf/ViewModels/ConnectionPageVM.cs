@@ -80,7 +80,7 @@ namespace xdchat_client_wpf
         private void ClickConnectFunc()
         {
             XdClient.Instance.Nickname = Nickname;
-            if(XdConnection.TryParseEndpoint(ServerAdress, 10000, out string host, out ushort port))
+            if(XdConnection.TryParseEndpoint(ServerAdress, Constants.DefaultPort, out string host, out ushort port))
             {
                 XdClient.Instance.HostName = host;
                 XdClient.Instance.PortName = port;

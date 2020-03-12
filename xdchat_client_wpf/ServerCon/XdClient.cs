@@ -63,7 +63,7 @@ namespace xdchat_client_wpf {
                 this.Connection = new XdServerConnection(client, Nickname, Uuid);
                 UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTED, "Connection established"));
             } catch (SocketException e) {
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.NOT_CONNECTED, "Connection closed", e));
+                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.NOT_CONNECTED, "Connection failed", e));
             }
         }
 

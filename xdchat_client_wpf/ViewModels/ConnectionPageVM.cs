@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.Win32;
 using xdchat_client_wpf.Annotations;
 using xdchat_client_wpf.Models;
 using XdChatShared;
@@ -13,16 +14,16 @@ namespace xdchat_client_wpf
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string _serverAdress;
+        private string _serverAddress;
         private string _nickname;
         private List<ServerLogMessage> _serverLog;
         public string ServerAdress
         {
-            get => _serverAdress;
+            get => _serverAddress;
             set
             {
-                _serverAdress = value;
-                PropChanged(nameof(_serverAdress));
+                _serverAddress = value;
+                PropChanged(nameof(_serverAddress));
                 ConnectButtonActionCommand.RaiseCanExecuteChanged();
             }
         }
@@ -71,10 +72,20 @@ namespace xdchat_client_wpf
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test13"});
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test14"});
             ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test15"});
+
+            Nickname = XdClient.Instance.Nickname;
+            ServerAdress = XdClient.Instance.HostName != null ? $"{XdClient.Instance.HostName}:{XdClient.Instance.PortName}" : "";
         }
 
         private void ClickConnectFunc()
         {
+            XdClient.Instance.Nickname = Nickname;
+            if(XdConnection.TryParseEndpoint(ServerAdress, 10000, out string host, out ushort port))
+            {
+                XdClient.Instance.HostName = host;
+                XdClient.Instance.PortName = port;
+            }
+            
             // should be executed after client receives auth pack of server
             ClientConnectedFunc();
         }

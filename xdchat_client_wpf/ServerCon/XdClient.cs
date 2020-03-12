@@ -9,6 +9,10 @@ namespace xdchat_client_wpf {
         private const string RegistryPath = @"HKEY_CURRENT_USER\Software\XdClient";
         private const string RegistryUuidValueName = "uuid";
         private const string RegistryNicknameValueName = "nickname";
+        private const string RegistryHostValueName = "hostName";
+        private const string RegistryPortValueName = "portName";
+
+        private XdClient(){}
         
         public static XdClient Instance { get; } = new XdClient();
         
@@ -25,6 +29,26 @@ namespace xdchat_client_wpf {
             set => Registry.SetValue(RegistryPath, RegistryUuidValueName, value);
         }
 
+        public string HostName
+        {
+            get => (string)Registry.GetValue(RegistryPath, RegistryHostValueName, null);
+            set => Registry.SetValue(RegistryPath, RegistryHostValueName, value);
+        }
+
+        public ushort PortName
+        {
+            get
+            {
+                if (ushort.TryParse((string) Registry.GetValue(RegistryPath, RegistryPortValueName, 0), out ushort port))
+                {
+                    return port;
+                }
+
+                return 10000;
+            }
+            set => Registry.SetValue(RegistryPath, RegistryPortValueName, value);
+        }
+        
         public void Connect(string host, ushort port) {
             try {
                 TcpClient client = new TcpClient(host, port);

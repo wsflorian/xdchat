@@ -53,6 +53,9 @@
     <Compile Include="ServerCon\XdClient.cs" />
     <Compile Include="ServerCon\XdClientStatus.cs" />
     <Compile Include="ServerCon\XdServerConnection.cs" />
+    <Compile Include="ViewModels\ChatPageVM.cs" />
+    <Compile Include="ViewModels\ConnectionPageVM.cs" />
+    <Compile Include="ViewModels\MainWindowVM.cs" />
     <Page Include="ChatPage.xaml" />
     <Page Include="ConnectionPage.xaml" />
     <Page Include="MainWindow.xaml">
@@ -67,18 +70,15 @@
     <Compile Include="ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ChatPageVM.cs" />
     <Compile Include="ConnectionPage.xaml.cs">
       <DependentUpon>ConnectionPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ConnectionPageVM.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindowVM.cs" />
     <Compile Include="Models\ServerLogMessage.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

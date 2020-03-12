@@ -34,34 +34,28 @@ namespace xdchat_client_wpf {
             set => Registry.SetValue(RegistryPath, RegistryUuidValueName, value);
         }
         
-        public string HostName
-        {
+        public string HostName {
             get => (string)Registry.GetValue(RegistryPath, RegistryHostValueName, null);
             set => Registry.SetValue(RegistryPath, RegistryHostValueName, value);
         }
 
-        public ushort PortName
-        {
-            get
-            {
-                if (ushort.TryParse((string) Registry.GetValue(RegistryPath, RegistryPortValueName, 0), out ushort port))
-                {
-                    return port;
-                }
-                return Constants.DefaultPort;
+        public ushort PortName {
+            get {
+                int value = (int) Registry.GetValue(RegistryPath, RegistryPortValueName, (int) Constants.DefaultPort);
+                return (ushort) value;
             }
-            set => Registry.SetValue(RegistryPath, RegistryPortValueName, value);
+            set => Registry.SetValue(RegistryPath, RegistryPortValueName, (int) value);
         }
 
         public string UuidShort => Uuid.Substring(0, 8);
 
-        public void Connect(string host, ushort port) {
+        public void Connect() {
             if (Connection != null)
                 throw new InvalidOperationException("Already connected");
             
             try {
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTING, $"Connecting to {host}:{port}"));
-                TcpClient client = new TcpClient(host, port);
+                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTING, $"Connecting to {HostName}:{PortName}"));
+                TcpClient client = new TcpClient(HostName, PortName);
                 
                 UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.AUTHENTICATING, $"Authenticating as {Nickname} ({UuidShort})"));
                 this.Connection = new XdServerConnection(client, Nickname, Uuid);

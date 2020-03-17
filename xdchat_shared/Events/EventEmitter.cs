@@ -11,7 +11,7 @@ namespace XdChatShared.Events {
         }
         
         public T Emit<T>(T ev) where T : Event {
-            XdScheduler.Instance.CheckIsSync();
+            XdScheduler.CheckIsSync();
             
             listeners
                 .SelectMany(registration => registration.GetEventRegistrations(ev.GetType()))

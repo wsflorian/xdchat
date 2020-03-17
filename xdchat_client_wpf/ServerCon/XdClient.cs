@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Win32;
 using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
@@ -49,27 +51,27 @@ namespace xdchat_client_wpf {
 
         public string UuidShort => Uuid.Substring(0, 8);
 
-        public void Connect() {
-            XdScheduler.Instance.CheckIsSync();
-            
+        public async Task Connect() {
             if (Connection != null)
                 throw new InvalidOperationException("Already connected");
             
             try {
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTING, $"Connecting to {HostName}:{PortName}"));
+                await UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTING, $"Connecting to {HostName}:{PortName}"));
                 TcpClient client = new TcpClient(HostName, PortName);
                 
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.AUTHENTICATING, $"Authenticating as {Nickname} ({UuidShort})"));
+                await UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.AUTHENTICATING, $"Authenticating as {Nickname} ({UuidShort})"));
                 this.Connection = new XdServerConnection(client, Nickname, Uuid);
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTED, "Connection established"));
+                await UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTED, "Connection established"));
             } catch (SocketException e) {
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.NOT_CONNECTED, "Connection failed", e));
+                await UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.NOT_CONNECTED, "Connection failed", e));
             }
         }
 
-        public void UpdateStatus(ConnectionStatusEvent ev) {
-            this.Status = ev.Status;
-            Emitter.Emit(ev);
+        public Task UpdateStatus(ConnectionStatusEvent ev) {
+            return XdScheduler.QueueSyncTask(() => {
+                this.Status = ev.Status;
+                Emitter.Emit(ev);
+            });
         }
     }
 }

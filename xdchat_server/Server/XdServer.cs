@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
+using System.Threading.Tasks;
 using SimpleLogger;
 using xdchat_server.ClientCon;
 using xdchat_server.Commands;
@@ -11,6 +11,7 @@ using XdChatShared;
 using XdChatShared.Events;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
+using Timer = System.Timers.Timer;
 
 namespace xdchat_server {
     public class XdServer {
@@ -22,6 +23,8 @@ namespace xdchat_server {
         private ConsoleHandler consoleHandler;
 
         private TcpListener serverSocket;
+
+        private Timer pingTimer;
 
         private XdServer() {
             this.RegisterCommand(new KickCommand());
@@ -40,7 +43,7 @@ namespace xdchat_server {
         }
         
         public void Start() {
-            XdScheduler.Instance.CheckIsSync();
+            XdScheduler.CheckIsSync();
             this.consoleHandler = new ConsoleHandler(HandleConsoleInput);
 
             if (serverSocket != null)
@@ -57,15 +60,16 @@ namespace xdchat_server {
                 return;
             }
             
-            XdScheduler.Instance.RunAsync("Accept-Thread", RunAcceptThread);
-            XdScheduler.Instance.RunAsync("Ping-Thread", RunPingThread);
+            XdScheduler.QueueAsyncTask(RunAcceptTask, true);
+            pingTimer = XdScheduler.QueueSyncTaskScheduled(RunPingTask, 15000, true);
         }
-        
-        private void RunAcceptThread() {
+
+        private async Task RunAcceptTask() {
             Logger.Log("Started! :)");
             try {
                 while (this.serverSocket != null) {
-                    XdClientConnection client = new XdClientConnection(this, serverSocket.AcceptTcpClient());
+                    TcpClient tcpClient = await serverSocket.AcceptTcpClientAsync();
+                    XdClientConnection client = new XdClientConnection(this, tcpClient);
                     this.Clients.Add(client);
                 }
             } catch (SocketException) {
@@ -73,17 +77,12 @@ namespace xdchat_server {
             }
         }
 
-        private void RunPingThread() {
-            while (this.serverSocket != null) {
-                XdScheduler.Instance.RunSync(() => {
-                    this.GetAuthenticatedClients().ForEach(client => client.SendPing());
-                });
-                Thread.Sleep(15000);
-            }
+        private void RunPingTask() {
+            this.GetAuthenticatedClients().ForEach(client => client.SendPing());
         }
 
         public void Stop() {
-            XdScheduler.Instance.CheckIsSync();
+            XdScheduler.CheckIsSync();
             
             Logger.Log("Stopping handlers...");
             consoleHandler.Stop();
@@ -92,12 +91,13 @@ namespace xdchat_server {
             this.Clients.ForEach(client => client.Disconnect("Server has been stopped"));
                 
             Logger.Log("Stopping socket...");
+            pingTimer.Stop();
             serverSocket.Stop();
             serverSocket = null;
         }
         
         private void HandleConsoleInput(string input) {
-            XdScheduler.Instance.RunSync(() => EmitCommand(ConsoleCommandSender, input));
+            XdScheduler.QueueSyncTask(() => EmitCommand(ConsoleCommandSender, input));
         }
 
         public void EmitCommand(ICommandSender sender, string commandText) {
@@ -130,7 +130,7 @@ namespace xdchat_server {
         }
 
         public void Broadcast(Packet packet, Predicate<XdClientConnection> predicate) {
-            XdScheduler.Instance.CheckIsSync();
+            XdScheduler.CheckIsSync();
             
             Clients.FindAll(predicate).ForEach(con => con.Send(packet));
         }

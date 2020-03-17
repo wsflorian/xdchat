@@ -16,7 +16,7 @@ namespace xdchat_client {
         private TcpClient Client { get; }
 
         public XdServerConnection(TcpClient client, string nickname, string uuid) {
-            XdScheduler.Instance.CheckIsSync();
+            XdScheduler.CheckIsSync();
             
             this.Client = client;
 

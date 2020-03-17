@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Timers;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using XdChatShared;
@@ -11,7 +12,7 @@ using XdChatShared.Scheduler;
 namespace xdchat_server {
     public class XdClientConnection : XdConnection, ICommandSender {
         private readonly XdServer server;
-        private readonly Timeout authTimeout;
+        private readonly Timer authTimeout;
         private long lastPingSent;
         public Authentication Auth { get; set; }
 
@@ -21,14 +22,14 @@ namespace xdchat_server {
             Initialize(client);
             
             this.server = server;
-            this.authTimeout = XdScheduler.RunTimeout(HandleTimeout, 2500);
-            
+            this.authTimeout = XdScheduler.QueueSyncTaskScheduled(HandleTimeout, 2000);
+
             Logger.Log($"Client connected: {this.RemoteIp}");
         }
 
         private void HandleTimeout() {
             if (this.Connected) {
-                XdScheduler.Instance.RunSync(() => this.Disconnect("Authentication timeout"));
+                XdScheduler.QueueSyncTask(() => this.Disconnect("Authentication timeout"));
             }
         }
         
@@ -37,7 +38,7 @@ namespace xdchat_server {
                 this.Disconnect("Authentication required");
                 return;
             }
-            authTimeout?.Cancel();
+            authTimeout?.Stop();
 
             if (Auth != null && packet.IsType(typeof(ClientPacketAuth))) {
                 this.Disconnect("Already authenticated");
@@ -78,10 +79,10 @@ namespace xdchat_server {
 
         public void SendPing() {
             this.Send(new ServerPacketPing());
-            this.lastPingSent = XdScheduler.Instance.CurrentTimeMillis();
+            this.lastPingSent = XdScheduler.CurrentTimeMillis();
         }
 
-        public void ReceivePing() => this.Ping = XdScheduler.Instance.CurrentTimeMillis() - this.lastPingSent;
+        public void ReceivePing() => this.Ping = XdScheduler.CurrentTimeMillis() - this.lastPingSent;
     }
     
 }

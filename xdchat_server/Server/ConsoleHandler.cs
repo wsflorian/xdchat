@@ -13,15 +13,14 @@ namespace xdchat_server {
         public ConsoleHandler(Action<string> inputHandler) {
             this.inputHandler = inputHandler;
 
-            XdScheduler.Instance.RunAsync("Console-Read-Thread", RunReadThread);
+            XdScheduler.QueueAsyncTask(RunReadTask, true);
 
             Logger.LoggerHandlerManager.AddHandler(new LoggingHandler(this));
         }
 
-        private void RunReadThread() {
+        private void RunReadTask() {
             while (running) {
                 ConsoleKeyInfo input = Console.ReadKey();
-
                 if (char.IsControl(input.KeyChar)) continue;
                 
                 SetReadMode(true);

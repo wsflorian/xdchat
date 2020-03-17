@@ -9,7 +9,7 @@ namespace xdchat_server {
             Console.InputEncoding = Encoding.UTF8;
             Console.OutputEncoding = Encoding.UTF8;
 
-            XdScheduler.Instance.RunSync(() => XdServer.Instance.Start());
+            XdScheduler.QueueSyncTask(() => XdServer.Instance.Start());
         }
     }
 }

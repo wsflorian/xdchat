@@ -80,7 +80,7 @@ namespace XdChatShared.Scheduler {
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
         
-        public static void CheckIsSync() {
+        public static void CheckIsMainThread() {
             if (MainThreadScheduler.IsMainThread) return;
             throw new InvalidOperationException("Not running on main thread");
         }

@@ -43,7 +43,7 @@ namespace xdchat_server {
         }
         
         public void Start() {
-            XdScheduler.CheckIsSync();
+            XdScheduler.CheckIsMainThread();
             this.consoleHandler = new ConsoleHandler(HandleConsoleInput);
 
             if (serverSocket != null)
@@ -82,7 +82,7 @@ namespace xdchat_server {
         }
 
         public void Stop() {
-            XdScheduler.CheckIsSync();
+            XdScheduler.CheckIsMainThread();
             
             Logger.Log("Stopping handlers...");
             consoleHandler.Stop();
@@ -130,7 +130,7 @@ namespace xdchat_server {
         }
 
         public void Broadcast(Packet packet, Predicate<XdClientConnection> predicate) {
-            XdScheduler.CheckIsSync();
+            XdScheduler.CheckIsMainThread();
             
             Clients.FindAll(predicate).ForEach(con => con.Send(packet));
         }

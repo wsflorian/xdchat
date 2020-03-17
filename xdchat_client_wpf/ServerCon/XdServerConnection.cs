@@ -16,7 +16,7 @@ namespace xdchat_client {
         private TcpClient Client { get; }
 
         public XdServerConnection(TcpClient client, string nickname, string uuid) {
-            XdScheduler.CheckIsSync();
+            XdScheduler.CheckIsMainThread();
             
             this.Client = client;
 
@@ -41,7 +41,7 @@ namespace xdchat_client {
         }
 
         protected override void OnDisconnect(Exception ex) {
-            XdClient.Instance.UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.NOT_CONNECTED, "Connection closed", ex));
+            XdClient.Instance.UpdateStatus(XdConnectionStatus.NOT_CONNECTED, "Connection closed", ex);
         }
     }
 }

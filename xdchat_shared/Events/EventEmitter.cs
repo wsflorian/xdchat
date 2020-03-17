@@ -11,7 +11,7 @@ namespace XdChatShared.Events {
         }
         
         public T Emit<T>(T ev) where T : Event {
-            XdScheduler.CheckIsSync();
+            XdScheduler.CheckIsMainThread();
             
             listeners
                 .SelectMany(registration => registration.GetEventRegistrations(ev.GetType()))
@@ -29,10 +29,6 @@ namespace XdChatShared.Events {
                 });
             
             return ev;
-        }
-
-        public T EmitSync<T>(T ev) where T : Event {
-            return Emit(ev);
         }
     }
 }

@@ -14,41 +14,33 @@ using XdChatShared.Scheduler;
 namespace xdchat_server {
     public class XdClientConnection : XdConnection, ICommandSender, IExtendable<XdClientConnection> {
         private readonly ModuleHolder<XdClientConnection> _moduleHolder;
-        public XdServer Server { get; }
-        private readonly Timer authTimeout;
-        public Authentication Auth { get; set; }
-        
-        public XdClientConnection(XdServer server, TcpClient client) {
-            Initialize(client);
-            
-            this.Server = server;
-            this.authTimeout = XdScheduler.QueueSyncTaskScheduled(HandleTimeout, 2000);
 
-            this._moduleHolder = new ModuleHolder<XdClientConnection>(this);
+        public XdClientConnection() {
+            _moduleHolder = new ModuleHolder<XdClientConnection>(this);
+        }
+
+        public override void Initialize(TcpClient client) {
+            base.Initialize(client);
+            
             _moduleHolder.RegisterModule<PingModule>();
+            _moduleHolder.RegisterModule<ChatModule>();
+            _moduleHolder.RegisterModule<AuthModule>();
             
             Logger.Log($"Client connected: {this.RemoteIp}");
         }
 
-        private void HandleTimeout() {
-            if (this.Connected) {
-                XdScheduler.QueueSyncTask(() => this.Disconnect("Authentication timeout"));
-            }
-        }
-        
         protected override void OnPacketReceived(Packet packet) {
-            if (Auth == null && !packet.IsType(typeof(ClientPacketAuth))) {
+            if (!this.Mod<AuthModule>().Authenticated && !packet.IsType(typeof(ClientPacketAuth))) {
                 this.Disconnect("Authentication required");
                 return;
             }
-            authTimeout?.Stop();
 
-            if (Auth != null && packet.IsType(typeof(ClientPacketAuth))) {
+            if (this.Mod<AuthModule>().Authenticated && packet.IsType(typeof(ClientPacketAuth))) {
                 this.Disconnect("Already authenticated");
                 return;
             }
             
-            Server.EventEmitter.Emit(new PacketReceivedEvent(this, packet));
+            XdServer.Instance.EventEmitter.Emit(new PacketReceivedEvent(this, packet));
         }
         
         public void SendMessage(string text) {
@@ -56,7 +48,7 @@ namespace xdchat_server {
         }
 
         public string GetName() {
-            return this.Auth?.Nickname;
+            return this.Mod<AuthModule>().Nickname;
         }
 
         public void Disconnect(string message) {
@@ -77,8 +69,8 @@ namespace xdchat_server {
             }
 
             _moduleHolder.UnregisterAll();
-            Server.Clients.Remove(this);
-            Server.SendUserListUpdate(this);
+            XdServer.Instance.Clients.Remove(this);
+            XdServer.Instance.SendUserListUpdate(this);
         }
         
         public TModule Mod<TModule>() where TModule : Module<XdClientConnection> {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
@@ -16,7 +14,7 @@ namespace XdChatShared {
 
         public bool Connected => this.Client != null && this.Client.Connected;
 
-        protected void Initialize(TcpClient client) {
+        public virtual void Initialize(TcpClient client) {
             this.Client = client;
             this.RemoteIp = ((IPEndPoint) this.Client.Client.RemoteEndPoint).Address.ToString();
             this.messageStream = new StringMessageStream(client.GetStream());
@@ -59,7 +57,7 @@ namespace XdChatShared {
         public async Task Send(Packet packet) {
             XdScheduler.CheckIsMainThread();
             if (this.messageStream == null) return;
-
+            
             await this.messageStream.WriteMessage(Packet.ToJson(packet));
         }
         

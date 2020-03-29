@@ -65,7 +65,8 @@ namespace xdchat_client_wpf {
                 // Future actions are done sync again
                 await XdScheduler.QueueSyncTask(() => {
                     UpdateStatus(XdConnectionStatus.AUTHENTICATING, $"Authenticating as {Nickname} ({UuidShort})");
-                    this.Connection = new XdServerConnection(client, Nickname, Uuid);
+                    this.Connection = new XdServerConnection();
+                    this.Connection.Initialize(client);
                     UpdateStatus(XdConnectionStatus.CONNECTED, "Connection established");
                 });
             } catch (SocketException e) {

@@ -30,9 +30,6 @@ namespace xdchat_server {
             this.RegisterCommand(new WhisperCommand());
             this.RegisterCommand(new StopCommand());
             this.RegisterCommand(new SayCommand());
-            
-            this.EventEmitter.RegisterListener(new ChatPacketListener());
-            this.EventEmitter.RegisterListener(new AuthPacketListener());
         }
 
         private void RegisterCommand(Command command) {
@@ -65,8 +62,11 @@ namespace xdchat_server {
             try {
                 while (this.serverSocket != null) {
                     TcpClient tcpClient = await serverSocket.AcceptTcpClientAsync();
-                    XdClientConnection client = new XdClientConnection(this, tcpClient);
-                    this.Clients.Add(client);
+                    XdClientConnection client = new XdClientConnection();
+                    XdScheduler.QueueSyncTask(() => {
+                        client.Initialize(tcpClient);
+                        this.Clients.Add(client);
+                    });
                 }
             } catch (SocketException) {
                 Logger.Log("Server stopped");
@@ -102,23 +102,23 @@ namespace xdchat_server {
 
         public XdClientConnection GetClientByNickname(string nickname) {
             return GetAuthenticatedClients().Find(con =>
-                string.Compare(con.Auth.Nickname, nickname, StringComparison.OrdinalIgnoreCase) == 0);
+                string.Compare(con.Mod<AuthModule>().Nickname, nickname, StringComparison.OrdinalIgnoreCase) == 0);
         }
 
         public XdClientConnection GetClientByUuid(string uuid) {
-            return GetAuthenticatedClients().Find(con => con.Auth.Uuid == uuid);
+            return GetAuthenticatedClients().Find(con => con.Mod<AuthModule>().Uuid == uuid);
         }
 
         public List<XdClientConnection> GetAuthenticatedClients() {
-            return Clients.FindAll(con => con.Auth != null);
+            return Clients.FindAll(con => con.Mod<AuthModule>().Authenticated);
         }
 
         public void SendUserListUpdate(XdClientConnection sender) {
             this.Broadcast(new ServerPacketClientList() {
                 Users = GetAuthenticatedClients()
                     .FindAll(con => con != sender)
-                    .ConvertAll(con => con.Auth.ToClientListUser())
-            }, con => con.Auth != null);
+                    .ConvertAll(con => con.Mod<AuthModule>().ToClientListUser())
+            }, con => con.Mod<AuthModule>().Authenticated);
         }
 
         public void Broadcast(Packet packet, Predicate<XdClientConnection> predicate) {

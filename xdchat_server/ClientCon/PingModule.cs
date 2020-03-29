@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using SimpleLogger;
 using xdchat_server.EventsImpl;
 using XdChatShared.Events;
@@ -20,20 +21,20 @@ namespace xdchat_server.ClientCon {
 
         public override void OnModuleEnable() {
             _pingTimer = XdScheduler.QueueSyncTaskScheduled(RunPingTask, 10000, true);
-            RunPingTask();
+            XdScheduler.QueueSyncTask(RunPingTask);
         }
 
         public override void OnModuleDisable() {
             _pingTimer.Stop();
         }
         
-        private void RunPingTask() {
+        private async Task RunPingTask() {
             if (_lastPingSent > _lastPingReceived) {
                 Context.Disconnect("Timed out");
                 return;
             }
             
-            Context.Send(new ServerPacketPing());
+            await Context.Send(new ServerPacketPing());
             this._lastPingSent = DateTime.Now;
         }
         

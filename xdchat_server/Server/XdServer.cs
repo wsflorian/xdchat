@@ -9,12 +9,12 @@ using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using XdChatShared;
 using XdChatShared.Events;
+using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
-using Timer = System.Timers.Timer;
 
 namespace xdchat_server {
-    public class XdServer {
+    public class XdServer  {
         public static XdServer Instance { get; } = new XdServer();
         public List<XdClientConnection> Clients { get; } = new List<XdClientConnection>();
         public EventEmitter EventEmitter { get; } = new EventEmitter();
@@ -23,9 +23,7 @@ namespace xdchat_server {
         private ConsoleHandler consoleHandler;
 
         private TcpListener serverSocket;
-
-        private Timer pingTimer;
-
+        
         private XdServer() {
             this.RegisterCommand(new KickCommand());
             this.RegisterCommand(new ListCommand());
@@ -35,7 +33,6 @@ namespace xdchat_server {
             
             this.EventEmitter.RegisterListener(new ChatPacketListener());
             this.EventEmitter.RegisterListener(new AuthPacketListener());
-            this.EventEmitter.RegisterListener(new PongPacketListener());
         }
 
         private void RegisterCommand(Command command) {
@@ -61,7 +58,6 @@ namespace xdchat_server {
             }
             
             XdScheduler.QueueAsyncTask(RunAcceptTask, true);
-            pingTimer = XdScheduler.QueueSyncTaskScheduled(RunPingTask, 15000, true);
         }
 
         private async Task RunAcceptTask() {
@@ -76,11 +72,7 @@ namespace xdchat_server {
                 Logger.Log("Server stopped");
             }
         }
-
-        private void RunPingTask() {
-            this.GetAuthenticatedClients().ForEach(client => client.SendPing());
-        }
-
+        
         public void Stop() {
             XdScheduler.CheckIsMainThread();
             
@@ -91,7 +83,7 @@ namespace xdchat_server {
             this.Clients.ForEach(client => client.Disconnect("Server has been stopped"));
                 
             Logger.Log("Stopping socket...");
-            pingTimer.Stop();
+
             serverSocket.Stop();
             serverSocket = null;
         }

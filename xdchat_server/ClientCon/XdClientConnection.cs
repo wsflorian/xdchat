@@ -3,27 +3,30 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Timers;
+using xdchat_server.ClientCon;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using XdChatShared;
+using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server {
-    public class XdClientConnection : XdConnection, ICommandSender {
-        private readonly XdServer server;
+    public class XdClientConnection : XdConnection, ICommandSender, IExtendable<XdClientConnection> {
+        private readonly ModuleHolder<XdClientConnection> _moduleHolder;
+        public XdServer Server { get; }
         private readonly Timer authTimeout;
-        private long lastPingSent;
         public Authentication Auth { get; set; }
-
-        public long Ping { get; private set; }
-
+        
         public XdClientConnection(XdServer server, TcpClient client) {
             Initialize(client);
             
-            this.server = server;
+            this.Server = server;
             this.authTimeout = XdScheduler.QueueSyncTaskScheduled(HandleTimeout, 2000);
 
+            this._moduleHolder = new ModuleHolder<XdClientConnection>(this);
+            _moduleHolder.RegisterModule<PingModule>();
+            
             Logger.Log($"Client connected: {this.RemoteIp}");
         }
 
@@ -45,7 +48,7 @@ namespace xdchat_server {
                 return;
             }
             
-            server.EventEmitter.Emit(new PacketReceivedEvent(this, packet));
+            Server.EventEmitter.Emit(new PacketReceivedEvent(this, packet));
         }
         
         public void SendMessage(string text) {
@@ -73,16 +76,14 @@ namespace xdchat_server {
                 Logger.Log($"Unknown exception in RunThread: {ex}");
             }
 
-            server.Clients.Remove(this);
-            server.SendUserListUpdate(this);
+            _moduleHolder.UnregisterAll();
+            Server.Clients.Remove(this);
+            Server.SendUserListUpdate(this);
         }
-
-        public void SendPing() {
-            this.Send(new ServerPacketPing());
-            this.lastPingSent = XdScheduler.CurrentTimeMillis();
+        
+        public TModule Mod<TModule>() where TModule : Module<XdClientConnection> {
+            return _moduleHolder.Mod<TModule>();
         }
-
-        public void ReceivePing() => this.Ping = XdScheduler.CurrentTimeMillis() - this.lastPingSent;
     }
     
 }

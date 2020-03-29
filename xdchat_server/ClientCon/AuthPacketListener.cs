@@ -4,7 +4,7 @@ using XdChatShared.Events;
 using XdChatShared.Packets;
 
 namespace xdchat_server.ClientCon {
-    public class AuthPacketListener : EventListener {
+    public class AuthPacketListener : IEventListener {
         [EventHandler(Filter = typeof(ClientPacketAuth))]
         public void HandleAuthPacket(PacketReceivedEvent ev) {
             ClientPacketAuth packet = (ClientPacketAuth) ev.Packet;

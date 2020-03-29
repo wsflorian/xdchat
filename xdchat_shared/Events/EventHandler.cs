@@ -6,5 +6,15 @@ namespace XdChatShared.Events {
         public object Filter { get; set; }
 
         public EventPriority Priority { get; } = EventPriority.Default;
+
+        public bool ContextScoped { get; set; }
+
+        public EventHandler() {
+        }
+
+        public EventHandler(object filter, bool contextScoped) {
+            Filter = filter;
+            ContextScoped = contextScoped;
+        }
     }
 }

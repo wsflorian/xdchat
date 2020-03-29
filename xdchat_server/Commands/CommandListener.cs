@@ -3,7 +3,7 @@ using xdchat_server.EventsImpl;
 using XdChatShared.Events;
 
 namespace xdchat_server.Commands {
-    public class CommandListener : EventListener {
+    public class CommandListener : IEventListener {
         private readonly Command command;
 
         public CommandListener(Command command) {

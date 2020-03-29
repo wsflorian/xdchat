@@ -75,11 +75,7 @@ namespace XdChatShared.Scheduler {
             thread.Start();
             return thread;
         }
-        
-        public static long CurrentTimeMillis() {
-            return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        }
-        
+
         public static void CheckIsMainThread() {
             if (MainThreadScheduler.IsMainThread) return;
             throw new InvalidOperationException("Not running on main thread");

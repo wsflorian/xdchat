@@ -111,11 +111,11 @@ namespace XdChatShared.Scheduler {
     }
 
     class WatchdogInfo {
-        private readonly long lastExecutionStart;
+        private readonly DateTime lastExecutionStart;
         private bool notified;
         
         public WatchdogInfo() {
-            this.lastExecutionStart = XdScheduler.CurrentTimeMillis();
+            this.lastExecutionStart = DateTime.Now;
         }
 
         public void CheckStuck() {
@@ -126,7 +126,7 @@ namespace XdChatShared.Scheduler {
         }
 
         private bool IsStuck() {
-            return lastExecutionStart + 1000 < XdScheduler.CurrentTimeMillis();
+            return lastExecutionStart.AddSeconds(1) < DateTime.Now;
         }
     }
 }

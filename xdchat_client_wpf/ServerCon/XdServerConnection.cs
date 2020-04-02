@@ -23,6 +23,8 @@ namespace xdchat_client {
 
         public override void Initialize(TcpClient client) {
             base.Initialize(client);
+            
+            _moduleHolder.RegisterModule<PingModule>();
             SendAuth(XdClient.Instance.Nickname, XdClient.Instance.Uuid);
         }
 
@@ -38,14 +40,9 @@ namespace xdchat_client {
             });
         }
 
-        protected override void OnPacketReceived(Packet packet) {
-            // -> PacketReceivedEvent 
-            
-            Trace.WriteLine($"Data received... {Packet.ToJson(packet)}");
-
-            if (packet is ServerPacketPing) { // test code
-                base.Send(new ClientPacketPong());
-            }
+        protected override void OnPacketReceived(Packet packet)
+        {
+            XdClient.Instance.Emitter.Emit(new PacketReceivedEvent(packet));
         }
 
         protected override void OnDisconnect(Exception ex) {

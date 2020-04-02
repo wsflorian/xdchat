@@ -42,6 +42,7 @@ namespace xdchat_server.ClientCon {
         public void HandlePongPacket(PacketReceivedEvent _) {
             this.Ping = (long) (DateTime.Now - this._lastPingSent).TotalMilliseconds;
             this._lastPingReceived = DateTime.Now;
+            Console.WriteLine("ping is " + this.Ping);
         }
     }
 }

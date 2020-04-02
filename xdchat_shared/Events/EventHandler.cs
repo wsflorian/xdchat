@@ -12,6 +12,10 @@ namespace XdChatShared.Events {
         public EventHandler() {
         }
 
+        public EventHandler(object filter) {
+            Filter = filter;
+        }
+        
         public EventHandler(object filter, bool contextScoped) {
             Filter = filter;
             ContextScoped = contextScoped;

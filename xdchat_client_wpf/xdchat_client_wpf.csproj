@@ -51,6 +51,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="EventsImpl\ConnectionStatusEvent.cs" />
+    <Compile Include="EventsImpl\PacketReceivedEvent.cs" />
+    <Compile Include="ServerCon\PingModule.cs" />
     <Compile Include="ServerCon\XdClient.cs" />
     <Compile Include="ServerCon\XdConnectionStatus.cs" />
     <Compile Include="ServerCon\XdServerConnection.cs" />

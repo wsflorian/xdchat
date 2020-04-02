@@ -59,7 +59,6 @@ namespace xdchat_client_wpf
         private void ClientConnectedFunc()
         {
             var data = (ConnectionPageVM) ConnectionPage.DataContext;
-            MessageBox.Show($"Connected\nUser:{data.Nickname}\nServer:{data.ServerAdress}", "Client connected");
             ChatEnabled = true;
         }
         

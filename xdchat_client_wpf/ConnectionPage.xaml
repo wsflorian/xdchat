@@ -30,7 +30,7 @@
         </StackPanel>
 
         <ListView ClipToBounds="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
-                  ItemsSource="{Binding Path=ServerLog}" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                  ItemsSource="{Binding Path=ServerLog, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>

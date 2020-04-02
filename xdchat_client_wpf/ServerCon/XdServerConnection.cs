@@ -9,14 +9,16 @@ using xdchat_client_wpf;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.ServerCon;
 using XdChatShared;
+using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace xdchat_client {
-    public class XdServerConnection : XdConnection {
+    public class XdServerConnection : XdConnection, IExtendable<XdServerConnection> {
+        private ModuleHolder<XdServerConnection> _moduleHolder;
 
         public XdServerConnection() {
-            XdScheduler.CheckIsMainThread();
+            _moduleHolder = new ModuleHolder<XdServerConnection>(this);
         }
 
         public override void Initialize(TcpClient client) {
@@ -37,6 +39,8 @@ namespace xdchat_client {
         }
 
         protected override void OnPacketReceived(Packet packet) {
+            // -> PacketReceivedEvent 
+            
             Trace.WriteLine($"Data received... {Packet.ToJson(packet)}");
 
             if (packet is ServerPacketPing) { // test code
@@ -46,6 +50,10 @@ namespace xdchat_client {
 
         protected override void OnDisconnect(Exception ex) {
             XdClient.Instance.UpdateStatus(XdConnectionStatus.NOT_CONNECTED, "Connection closed", ex);
+        }
+
+        public TModule Mod<TModule>() where TModule : Module<XdServerConnection> {
+            return _moduleHolder.Mod<TModule>();
         }
     }
 }

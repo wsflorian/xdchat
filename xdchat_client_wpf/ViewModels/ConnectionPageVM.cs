@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Microsoft.Win32;
-using xdchat_client_wpf.Annotations;
 using xdchat_client_wpf.Models;
 using XdChatShared;
+using XdChatShared.Scheduler;
 
 
 namespace xdchat_client_wpf
@@ -85,7 +83,10 @@ namespace xdchat_client_wpf
                 XdClient.Instance.HostName = host;
                 XdClient.Instance.PortName = port;
             }
-            
+
+
+            XdScheduler.QueueAsyncTask(XdClient.Instance.Connect);
+
             // should be executed after client receives auth pack of server
             ClientConnectedFunc();
         }

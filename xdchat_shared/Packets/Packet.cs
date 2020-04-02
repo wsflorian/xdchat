@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SimpleLogger;
 
 namespace XdChatShared.Packets {
     public abstract class Packet : IValidatable {
@@ -40,7 +42,7 @@ namespace XdChatShared.Packets {
 
                 return packet;
             } catch (JsonReaderException e) {
-                throw new ProtocolException($"Json is invalid: {e.Message}");
+                throw new ProtocolException($"Json is invalid: {e.Message}: '{message}'");
             }
         }
 

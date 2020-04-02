@@ -21,7 +21,7 @@ namespace xdchat_server.ClientCon {
 
         public override void OnModuleEnable() {
             _pingTimer = XdScheduler.QueueSyncTaskScheduled(RunPingTask, 10000, true);
-            XdScheduler.QueueSyncTask(RunPingTask);
+            //XdScheduler.QueueSyncTask(RunPingTask);
         }
 
         public override void OnModuleDisable() {

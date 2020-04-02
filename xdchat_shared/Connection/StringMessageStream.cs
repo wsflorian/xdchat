@@ -1,10 +1,65 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XdChatShared.Scheduler;
 
 namespace XdChatShared {
+    public class DebugStream : Stream
+    {
+        public Stream parent;
+        public override void Flush()
+        {
+            parent.Flush();
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            return parent.Read(buffer, offset, count);
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            return parent.Seek(offset, origin);
+        }
+
+        public override void SetLength(long value)
+        {
+            parent.SetLength(value);
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            try
+            {
+                throw new Exception();
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine("Writing from " + offset + " to " + count + " data: " + ToHex(buffer) + " err:  " + e);
+            }
+            
+            parent.Write(buffer, offset, count);
+        }
+        
+        public static string ToHex(byte[] ba)
+        {
+            return BitConverter.ToString(ba).Replace("-","");
+        }
+
+        public override bool CanRead => parent.CanRead;
+        public override bool CanSeek => parent.CanSeek;
+        public override bool CanWrite => parent.CanWrite;
+        public override long Length => parent.Length;
+
+        public override long Position
+        {
+            get => parent.Position;
+            set { parent.Position = value; }
+        }
+    }
     public class StringMessageStream : IDisposable {
         private readonly Stream stream;
 

@@ -55,21 +55,6 @@ namespace xdchat_client_wpf
             ConnectButtonActionCommand = new ActionCommand(ClickConnectFunc, ConnectButtonClickable);
             ClientConnectedFunc = clientConnectedFunc;
             ServerLog = new List<ServerLogMessage>();
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test1"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test2"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test3"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test4"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaabbbbbbbbbbb"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test6"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test7"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test8"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test9"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test10"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test11"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test12"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test13"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test14"});
-            ServerLog.Add(new ServerLogMessage(){TimeStamp = new DateTime(), Message = "Test15"});
 
             Nickname = XdClient.Instance.Nickname;
             ServerAdress = XdClient.Instance.HostName != null ? $"{XdClient.Instance.HostName}:{XdClient.Instance.PortName}" : "";
@@ -78,13 +63,17 @@ namespace xdchat_client_wpf
         private void ClickConnectFunc()
         {
             XdClient.Instance.Nickname = Nickname;
+            if (XdClient.Instance.Uuid == null) 
+            {
+                XdClient.Instance.Uuid = Guid.NewGuid().ToString();
+            }
+
             if(XdConnection.TryParseEndpoint(ServerAdress, Constants.DefaultPort, out string host, out ushort port))
             {
                 XdClient.Instance.HostName = host;
                 XdClient.Instance.PortName = port;
             }
-
-
+            
             XdScheduler.QueueAsyncTask(XdClient.Instance.Connect);
 
             // should be executed after client receives auth pack of server

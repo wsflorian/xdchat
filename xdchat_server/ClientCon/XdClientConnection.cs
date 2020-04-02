@@ -2,49 +2,45 @@
 using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Timers;
+using xdchat_server.ClientCon;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using XdChatShared;
+using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server {
-    public class XdClientConnection : XdConnection, ICommandSender {
-        private readonly XdServer server;
-        private readonly Timeout authTimeout;
-        private long lastPingSent;
-        public Authentication Auth { get; set; }
+    public class XdClientConnection : XdConnection, ICommandSender, IExtendable<XdClientConnection> {
+        private readonly ModuleHolder<XdClientConnection> _moduleHolder;
 
-        public long Ping { get; private set; }
+        public XdClientConnection() {
+            _moduleHolder = new ModuleHolder<XdClientConnection>(this);
+        }
 
-        public XdClientConnection(XdServer server, TcpClient client) {
-            Initialize(client);
+        public override void Initialize(TcpClient client) {
+            base.Initialize(client);
             
-            this.server = server;
-            this.authTimeout = XdScheduler.RunTimeout(HandleTimeout, 2500);
+            _moduleHolder.RegisterModule<PingModule>();
+            _moduleHolder.RegisterModule<ChatModule>();
+            _moduleHolder.RegisterModule<AuthModule>();
             
             Logger.Log($"Client connected: {this.RemoteIp}");
         }
 
-        private void HandleTimeout() {
-            if (this.Connected) {
-                XdScheduler.Instance.RunSync(() => this.Disconnect("Authentication timeout"));
-            }
-        }
-        
         protected override void OnPacketReceived(Packet packet) {
-            if (Auth == null && !packet.IsType(typeof(ClientPacketAuth))) {
+            if (!this.Mod<AuthModule>().Authenticated && !packet.IsType(typeof(ClientPacketAuth))) {
                 this.Disconnect("Authentication required");
                 return;
             }
-            authTimeout?.Cancel();
 
-            if (Auth != null && packet.IsType(typeof(ClientPacketAuth))) {
+            if (this.Mod<AuthModule>().Authenticated && packet.IsType(typeof(ClientPacketAuth))) {
                 this.Disconnect("Already authenticated");
                 return;
             }
             
-            server.EventEmitter.Emit(new PacketReceivedEvent(this, packet));
+            XdServer.Instance.EventEmitter.Emit(new PacketReceivedEvent(this, packet));
         }
         
         public void SendMessage(string text) {
@@ -52,7 +48,7 @@ namespace xdchat_server {
         }
 
         public string GetName() {
-            return this.Auth?.Nickname;
+            return this.Mod<AuthModule>().Nickname;
         }
 
         public void Disconnect(string message) {
@@ -72,16 +68,14 @@ namespace xdchat_server {
                 Logger.Log($"Unknown exception in RunThread: {ex}");
             }
 
-            server.Clients.Remove(this);
-            server.SendUserListUpdate(this);
+            _moduleHolder.UnregisterAll();
+            XdServer.Instance.Clients.Remove(this);
+            XdServer.Instance.SendUserListUpdate(this);
         }
-
-        public void SendPing() {
-            this.Send(new ServerPacketPing());
-            this.lastPingSent = XdScheduler.Instance.CurrentTimeMillis();
+        
+        public TModule Mod<TModule>() where TModule : Module<XdClientConnection> {
+            return _moduleHolder.Mod<TModule>();
         }
-
-        public void ReceivePing() => this.Ping = XdScheduler.Instance.CurrentTimeMillis() - this.lastPingSent;
     }
     
 }

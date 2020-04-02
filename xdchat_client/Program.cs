@@ -16,16 +16,6 @@ namespace xdchat_client {
             Console.CursorVisible = false;
             // XdServerConnection client = new XdServerConnection("192.168.28.203", 10001);
 
-            if (Environment.GetEnvironmentVariable("DBG_RUN_CLIENT") == "1") {
-                //XdServerConnection client = new XdServerConnection(ConsoleExtend.ReadLinePrefill("Enter server address: ", "localhost"), 10000);
-            
-                XdScheduler.Instance.RunAsync("Connection-Thread", () => {
-                   // client.Connect();
-                });
-                
-                return;
-            }
-
             // git test
             var frame = new Box()
             {

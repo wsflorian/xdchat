@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Microsoft.Win32;
 using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
@@ -49,25 +50,34 @@ namespace xdchat_client_wpf {
 
         public string UuidShort => Uuid.Substring(0, 8);
 
-        public void Connect() {
+        public async Task Connect() {
             if (Connection != null)
                 throw new InvalidOperationException("Already connected");
             
             try {
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTING, $"Connecting to {HostName}:{PortName}"));
+                // Event must be sent sync
+                await XdScheduler.QueueSyncTask(() =>
+                    UpdateStatus(XdConnectionStatus.CONNECTING, $"Connecting to {HostName}:{PortName}"));
+                
+                // Connection is done async because it can block up to 30 seconds (timeout)
                 TcpClient client = new TcpClient(HostName, PortName);
                 
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.AUTHENTICATING, $"Authenticating as {Nickname} ({UuidShort})"));
-                this.Connection = new XdServerConnection(client, Nickname, Uuid);
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.CONNECTED, "Connection established"));
+                // Future actions are done sync again
+                await XdScheduler.QueueSyncTask(() => {
+                    UpdateStatus(XdConnectionStatus.AUTHENTICATING, $"Authenticating as {Nickname} ({UuidShort})");
+                    this.Connection = new XdServerConnection();
+                    this.Connection.Initialize(client);
+                    UpdateStatus(XdConnectionStatus.CONNECTED, "Connection established");
+                });
             } catch (SocketException e) {
-                UpdateStatus(new ConnectionStatusEvent(XdConnectionStatus.NOT_CONNECTED, "Connection closed", e));
+                await XdScheduler.QueueSyncTask(() =>
+                    UpdateStatus(XdConnectionStatus.NOT_CONNECTED, "Connection failed", e));
             }
         }
 
-        private void UpdateStatus(ConnectionStatusEvent ev) {
-            this.Status = ev.Status;
-            Emitter.EmitSync(ev);
+        public void UpdateStatus(XdConnectionStatus status, string message, Exception e = null) {
+            this.Status = status;
+            Emitter.Emit(new ConnectionStatusEvent(status, message, e));
         }
     }
 }

@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
+using System.Threading.Tasks;
 using SimpleLogger;
 using xdchat_server.ClientCon;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using XdChatShared;
 using XdChatShared.Events;
+using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server {
-    public class XdServer {
+    public class XdServer  {
         public static XdServer Instance { get; } = new XdServer();
         public List<XdClientConnection> Clients { get; } = new List<XdClientConnection>();
         public EventEmitter EventEmitter { get; } = new EventEmitter();
@@ -22,17 +23,13 @@ namespace xdchat_server {
         private ConsoleHandler consoleHandler;
 
         private TcpListener serverSocket;
-
+        
         private XdServer() {
             this.RegisterCommand(new KickCommand());
             this.RegisterCommand(new ListCommand());
             this.RegisterCommand(new WhisperCommand());
             this.RegisterCommand(new StopCommand());
             this.RegisterCommand(new SayCommand());
-            
-            this.EventEmitter.RegisterListener(new ChatPacketListener());
-            this.EventEmitter.RegisterListener(new AuthPacketListener());
-            this.EventEmitter.RegisterListener(new PongPacketListener());
         }
 
         private void RegisterCommand(Command command) {
@@ -40,7 +37,7 @@ namespace xdchat_server {
         }
         
         public void Start() {
-            XdScheduler.Instance.CheckIsSync();
+            XdScheduler.CheckIsMainThread();
             this.consoleHandler = new ConsoleHandler(HandleConsoleInput);
 
             if (serverSocket != null)
@@ -57,33 +54,27 @@ namespace xdchat_server {
                 return;
             }
             
-            XdScheduler.Instance.RunAsync("Accept-Thread", RunAcceptThread);
-            XdScheduler.Instance.RunAsync("Ping-Thread", RunPingThread);
+            XdScheduler.QueueAsyncTask(RunAcceptTask, true);
         }
-        
-        private void RunAcceptThread() {
+
+        private async Task RunAcceptTask() {
             Logger.Log("Started! :)");
             try {
                 while (this.serverSocket != null) {
-                    XdClientConnection client = new XdClientConnection(this, serverSocket.AcceptTcpClient());
-                    this.Clients.Add(client);
+                    TcpClient tcpClient = await serverSocket.AcceptTcpClientAsync();
+                    XdClientConnection client = new XdClientConnection();
+                    XdScheduler.QueueSyncTask(() => {
+                        client.Initialize(tcpClient);
+                        this.Clients.Add(client);
+                    });
                 }
             } catch (SocketException) {
                 Logger.Log("Server stopped");
             }
         }
-
-        private void RunPingThread() {
-            while (this.serverSocket != null) {
-                XdScheduler.Instance.RunSync(() => {
-                    this.GetAuthenticatedClients().ForEach(client => client.SendPing());
-                });
-                Thread.Sleep(15000);
-            }
-        }
-
+        
         public void Stop() {
-            XdScheduler.Instance.CheckIsSync();
+            XdScheduler.CheckIsMainThread();
             
             Logger.Log("Stopping handlers...");
             consoleHandler.Stop();
@@ -92,12 +83,13 @@ namespace xdchat_server {
             this.Clients.ForEach(client => client.Disconnect("Server has been stopped"));
                 
             Logger.Log("Stopping socket...");
+
             serverSocket.Stop();
             serverSocket = null;
         }
         
         private void HandleConsoleInput(string input) {
-            XdScheduler.Instance.RunSync(() => EmitCommand(ConsoleCommandSender, input));
+            XdScheduler.QueueSyncTask(() => EmitCommand(ConsoleCommandSender, input));
         }
 
         public void EmitCommand(ICommandSender sender, string commandText) {
@@ -110,27 +102,27 @@ namespace xdchat_server {
 
         public XdClientConnection GetClientByNickname(string nickname) {
             return GetAuthenticatedClients().Find(con =>
-                string.Compare(con.Auth.Nickname, nickname, StringComparison.OrdinalIgnoreCase) == 0);
+                string.Compare(con.Mod<AuthModule>().Nickname, nickname, StringComparison.OrdinalIgnoreCase) == 0);
         }
 
         public XdClientConnection GetClientByUuid(string uuid) {
-            return GetAuthenticatedClients().Find(con => con.Auth.Uuid == uuid);
+            return GetAuthenticatedClients().Find(con => con.Mod<AuthModule>().Uuid == uuid);
         }
 
         public List<XdClientConnection> GetAuthenticatedClients() {
-            return Clients.FindAll(con => con.Auth != null);
+            return Clients.FindAll(con => con.Mod<AuthModule>().Authenticated);
         }
 
         public void SendUserListUpdate(XdClientConnection sender) {
             this.Broadcast(new ServerPacketClientList() {
                 Users = GetAuthenticatedClients()
                     .FindAll(con => con != sender)
-                    .ConvertAll(con => con.Auth.ToClientListUser())
-            }, con => con.Auth != null);
+                    .ConvertAll(con => con.Mod<AuthModule>().ToClientListUser())
+            }, con => con.Mod<AuthModule>().Authenticated);
         }
 
         public void Broadcast(Packet packet, Predicate<XdClientConnection> predicate) {
-            XdScheduler.Instance.CheckIsSync();
+            XdScheduler.CheckIsMainThread();
             
             Clients.FindAll(predicate).ForEach(con => con.Send(packet));
         }

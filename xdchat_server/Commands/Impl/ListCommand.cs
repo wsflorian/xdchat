@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using xdchat_server.ClientCon;
 
 namespace xdchat_server.Commands {
     public class ListCommand : Command {
@@ -16,7 +17,7 @@ namespace xdchat_server.Commands {
                     builder.Append("\n");
                 
                 XdClientConnection client = clients[i];
-                builder.Append(client.Auth.Nickname.PadRight(21, ' '));
+                builder.Append(client.Mod<AuthModule>().Nickname.PadRight(21, ' '));
             }
 
             sender.SendMessage(builder.ToString());

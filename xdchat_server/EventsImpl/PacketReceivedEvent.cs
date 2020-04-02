@@ -1,8 +1,9 @@
 ﻿using XdChatShared.Events;
+using XdChatShared.Modules;
 using XdChatShared.Packets;
 
 namespace xdchat_server.EventsImpl {
-    public class PacketReceivedEvent : Event, IEventFilter {
+    public class PacketReceivedEvent : Event, IEventFilter, IAnonymousContextProvider {
         public XdClientConnection Client { get; }
         public Packet Packet { get; }
 
@@ -14,5 +15,7 @@ namespace xdchat_server.EventsImpl {
         public bool DoesMatch(object filter) {
             return Packet.GetType().Equals(filter);
         }
+
+        public dynamic AnonymousModuleContext => Client;
     }
 }

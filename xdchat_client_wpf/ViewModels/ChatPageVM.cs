@@ -6,9 +6,11 @@ namespace xdchat_client_wpf
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ChatPageVM()
+        public MainWindowVM MainWindow { get; set; }
+        
+        public ChatPageVM(MainWindowVM mainWindow)
         {
-            
+            this.MainWindow = mainWindow;
         }
         
         

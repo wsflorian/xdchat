@@ -23,7 +23,7 @@ namespace xdchat_client_wpf
             get => _connectionPage;
             set
             {
-                value.DataContext = new ConnectionPageVM(ClientConnectedFunc);
+                value.DataContext = new ConnectionPageVM(this);
                 _connectionPage = value;
                 PropChanged(nameof(ConnectionPage));
             }
@@ -34,6 +34,7 @@ namespace xdchat_client_wpf
             get => _chatPage;
             set
             {
+                value.DataContext = new ChatPageVM(this);
                 _chatPage = value;
                 PropChanged(nameof(ChatPage));
             }
@@ -43,7 +44,10 @@ namespace xdchat_client_wpf
         {
             ConnectionPage = new ConnectionPage();
             ChatPage = new ChatPage();
+
             ChatEnabled = false;
+
+            var x = XdClient.Instance;
         }
 
         public bool ChatEnabled
@@ -56,9 +60,8 @@ namespace xdchat_client_wpf
             }
         }
 
-        private void ClientConnectedFunc()
+        public void ClientConnectedFunc()
         {
-            var data = (ConnectionPageVM) ConnectionPage.DataContext;
             ChatEnabled = true;
         }
         

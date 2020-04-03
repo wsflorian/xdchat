@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
+using xdchat_client_wpf.Models;
 using xdchat_client_wpf.ServerCon;
 using XdChatShared.Events;
 using XdChatShared;
@@ -23,8 +26,10 @@ namespace xdchat_client_wpf {
         
         public EventEmitter Emitter { get; } = new EventEmitter();
         public XdServerConnection Connection { get; private set; }
-        public XdConnectionStatus Status { get; private set; } 
+        public XdConnectionStatus Status { get; private set; }
         
+        public ObservableCollection<ServerLogMessage> LogMessages { get; } = new ObservableCollection<ServerLogMessage>();
+
         public string Nickname {
             get => (string)Registry.GetValue(RegistryPath, RegistryNicknameValueName, null);
             set => Registry.SetValue(RegistryPath, RegistryNicknameValueName, value);

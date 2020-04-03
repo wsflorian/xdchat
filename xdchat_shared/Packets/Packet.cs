@@ -15,7 +15,7 @@ namespace XdChatShared.Packets {
                 {"type", data.GetType().Name}, 
                 {"data", JToken.FromObject(data)}
             };
-            
+
             return packetObj.ToString();
         }
 

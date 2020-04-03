@@ -11,7 +11,7 @@ using Timer = System.Timers.Timer;
 
 namespace xdchat_server.ClientCon {
     public class PingModule : Module<XdClientConnection>, IEventListener {
-        public long Ping { get; private set; }
+        public long Ping { get; private set; } = -1;
         
         private Timer _pingTimer;
 
@@ -21,7 +21,7 @@ namespace xdchat_server.ClientCon {
 
         public override void OnModuleEnable() {
             _pingTimer = XdScheduler.QueueSyncTaskScheduled(RunPingTask, 10000, true);
-            //XdScheduler.QueueSyncTask(RunPingTask);
+            RunPingTask();
         }
 
         public override void OnModuleDisable() {
@@ -42,7 +42,6 @@ namespace xdchat_server.ClientCon {
         public void HandlePongPacket(PacketReceivedEvent _) {
             this.Ping = (long) (DateTime.Now - this._lastPingSent).TotalMilliseconds;
             this._lastPingReceived = DateTime.Now;
-            Console.WriteLine("ping is " + this.Ping);
         }
     }
 }

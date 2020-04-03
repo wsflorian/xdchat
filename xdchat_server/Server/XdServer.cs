@@ -19,9 +19,9 @@ namespace xdchat_server {
         public EventEmitter EventEmitter { get; } = new EventEmitter();
         public ConsoleCommandSender ConsoleCommandSender { get; } = new ConsoleCommandSender();
 
-        private ConsoleHandler consoleHandler;
+        private ConsoleHandler _consoleHandler;
 
-        private TcpListener serverSocket;
+        private TcpListener _serverSocket;
         
         private XdServer() {
             this.RegisterCommand(new KickCommand());
@@ -38,16 +38,16 @@ namespace xdchat_server {
         
         public void Start() {
             XdScheduler.CheckIsMainThread();
-            this.consoleHandler = new ConsoleHandler(HandleConsoleInput);
+            this._consoleHandler = new ConsoleHandler(HandleConsoleInput);
 
-            if (serverSocket != null)
+            if (_serverSocket != null)
                 throw new InvalidOperationException("Server is already running");
 
-            this.serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), Constants.DefaultPort);
+            this._serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), Constants.DefaultPort);
 
             Logger.Log("Starting...");
             try {
-                this.serverSocket.Start();
+                this._serverSocket.Start();
             }
             catch (Exception e) {
                 Logger.Log(Logger.Level.Error, $"Cannot start server :( {e}");
@@ -60,8 +60,8 @@ namespace xdchat_server {
         private async Task RunAcceptTask() {
             Logger.Log("Started! :)");
             try {
-                while (this.serverSocket != null) {
-                    TcpClient tcpClient = await serverSocket.AcceptTcpClientAsync();
+                while (this._serverSocket != null) {
+                    TcpClient tcpClient = await _serverSocket.AcceptTcpClientAsync();
                     XdScheduler.QueueSyncTask(() => {
                         XdClientConnection client = new XdClientConnection();
                         client.Initialize(tcpClient);
@@ -77,15 +77,15 @@ namespace xdchat_server {
             XdScheduler.CheckIsMainThread();
             
             Logger.Log("Stopping handlers...");
-            consoleHandler.Stop();
+            _consoleHandler.Stop();
 
             Logger.Log("Disconnecting clients...");
             this.Clients.ForEach(client => client.Disconnect("Server has been stopped"));
                 
             Logger.Log("Stopping socket...");
 
-            serverSocket.Stop();
-            serverSocket = null;
+            _serverSocket.Stop();
+            _serverSocket = null;
         }
         
         private void HandleConsoleInput(string input) {

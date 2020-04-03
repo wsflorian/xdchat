@@ -4,18 +4,18 @@ using XdChatShared.Events;
 
 namespace xdchat_server.Commands {
     public class CommandListener : IEventListener {
-        private readonly Command command;
+        private readonly Command _command;
 
         public CommandListener(Command command) {
-            this.command = command;
+            this._command = command;
         }
 
         [EventHandler]
         public void OnCommandEvent(CommandEvent ev) {
-            if (!EqualsIgnoreCase(command.CommandName, ev.CommandName) 
-                && command.Aliases.All(alias => !EqualsIgnoreCase(alias, ev.CommandName))) return;
+            if (!EqualsIgnoreCase(_command.CommandName, ev.CommandName) 
+                && _command.Aliases.All(alias => !EqualsIgnoreCase(alias, ev.CommandName))) return;
             
-            command.OnCommand(ev.Sender, ev.Args);
+            _command.OnCommand(ev.Sender, ev.Args);
             ev.SetHandled();
         }
 

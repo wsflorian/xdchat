@@ -6,12 +6,12 @@ using XdChatShared.Scheduler;
 
 namespace xdchat_server {
     public class ConsoleHandler {
-        private readonly List<string> lineBuffer = new List<string>();
-        private readonly Action<string> inputHandler;
-        private bool readMode, running = true;
+        private readonly List<string> _lineBuffer = new List<string>();
+        private readonly Action<string> _inputHandler;
+        private bool _readMode, _running = true;
 
         public ConsoleHandler(Action<string> inputHandler) {
-            this.inputHandler = inputHandler;
+            this._inputHandler = inputHandler;
 
             XdScheduler.QueueAsyncTask(RunReadTask, true);
 
@@ -19,7 +19,7 @@ namespace xdchat_server {
         }
 
         private void RunReadTask() {
-            while (running) {
+            while (_running) {
                 ConsoleKeyInfo input = Console.ReadKey();
                 if (char.IsControl(input.KeyChar)) continue;
                 
@@ -27,8 +27,8 @@ namespace xdchat_server {
                 string line = Console.ReadLine();
                 SetReadMode(false);
                 
-                if (line != null && running) {
-                    inputHandler.Invoke(input.KeyChar + line);
+                if (line != null && _running) {
+                    _inputHandler.Invoke(input.KeyChar + line);
                 }
             }
         }
@@ -36,21 +36,21 @@ namespace xdchat_server {
         private void SetReadMode(bool val) {
             lock (this) {
                 if (val) {
-                    readMode = true;
+                    _readMode = true;
                     return;
                 }
                 
-                lineBuffer.ForEach(Console.WriteLine);
-                lineBuffer.Clear();
-                readMode = false;
+                _lineBuffer.ForEach(Console.WriteLine);
+                _lineBuffer.Clear();
+                _readMode = false;
             }
         }
 
         public void WriteLine(string line) {
             lock (this) {
-                if (readMode) {
-                    if (lineBuffer.Count < 5000) { // Prevent out of memory
-                        lineBuffer.Add(line);
+                if (_readMode) {
+                    if (_lineBuffer.Count < 5000) { // Prevent out of memory
+                        _lineBuffer.Add(line);
                     }
                 } else {
                     Console.WriteLine(line);
@@ -59,21 +59,21 @@ namespace xdchat_server {
         }
 
         public void Stop() {
-            running = false;
+            _running = false;
             
             SetReadMode(false);
         }
     }
 
     class LoggingHandler : ILoggerHandler {
-        private readonly ConsoleHandler handler;
+        private readonly ConsoleHandler _handler;
 
         public LoggingHandler(ConsoleHandler handler) {
-            this.handler = handler;
+            this._handler = handler;
         }
 
         public void Publish(LogMessage logMessage) {
-            handler.WriteLine($"{(object) logMessage.DateTime:dd.MM.yyyy HH:mm}: {(object) logMessage.Level} " +
+            _handler.WriteLine($"{(object) logMessage.DateTime:dd.MM.yyyy HH:mm}: {(object) logMessage.Level} " +
                               $"[line: {(object) logMessage.LineNumber} {(object) logMessage.CallingClass} ->" +
                               $" {(object) logMessage.CallingMethod}()]: {(object) logMessage.Text}");
         }

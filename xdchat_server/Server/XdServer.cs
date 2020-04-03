@@ -29,6 +29,7 @@ namespace xdchat_server {
             this.RegisterCommand(new WhisperCommand());
             this.RegisterCommand(new StopCommand());
             this.RegisterCommand(new SayCommand());
+            this.RegisterCommand(new PingCommand());
         }
 
         private void RegisterCommand(Command command) {
@@ -125,6 +126,5 @@ namespace xdchat_server {
             
             Clients.FindAll(predicate).ForEach(con => con.Send(packet));
         }
-
     }
 }

@@ -8,55 +8,55 @@ using System.Threading.Tasks;
 namespace XdChatShared.Scheduler {
     public class SyncTaskScheduler : TaskScheduler, IDisposable {
         private readonly ConcurrentQueue<Task> tasks = new ConcurrentQueue<Task>();
-        private readonly Thread workingThread;
+        private readonly Thread _workingThread;
         
-        private readonly AutoResetEvent queueSignal = new AutoResetEvent(false);
+        private readonly AutoResetEvent _queueSignal = new AutoResetEvent(false);
 
-        private bool stopThread, disposed;
+        private bool _stopThread, _disposed;
         
-        private volatile WatchdogInfo watchdogInfo;
+        private volatile WatchdogInfo _watchdogInfo;
 
         public SyncTaskScheduler(string name) {
-            workingThread = new Thread(RunWorkingThread) {Name = name};
-            workingThread.Start();
+            _workingThread = new Thread(RunWorkingThread) {Name = name};
+            _workingThread.Start();
 
             Thread watchdogThread = new Thread(RunWatchdogThread) {Name = $"{name}-watchdog"};
             watchdogThread.Start();
         }
         
         protected sealed override void QueueTask(Task task) {
-            if (stopThread) {
+            if (_stopThread) {
                 throw new InvalidOperationException("Scheduler can't handle new tasks, because it has been stopped.");
             }
 
             tasks.Enqueue(task);
-            queueSignal.Set();
+            _queueSignal.Set();
         }
 
         private void RunWorkingThread() {
             while (true) {
-                if (stopThread && tasks.IsEmpty)
+                if (_stopThread && tasks.IsEmpty)
                     return;
                 
-                queueSignal.WaitOne();
+                _queueSignal.WaitOne();
 
                 while (tasks.TryDequeue(out Task result)) {
-                    watchdogInfo = new WatchdogInfo();
+                    _watchdogInfo = new WatchdogInfo();
                     
                     this.TryExecuteTask(result);
                     
-                    watchdogInfo = null;
+                    _watchdogInfo = null;
                 }
             }
         }
 
         private void RunWatchdogThread() {
             while (true) {
-                if (stopThread && tasks.IsEmpty)
+                if (_stopThread && tasks.IsEmpty)
                     return;
                 
-                while (this.watchdogInfo != null) {
-                    this.watchdogInfo?.CheckStuck();
+                while (this._watchdogInfo != null) {
+                    this._watchdogInfo?.CheckStuck();
                     Thread.Sleep(5);
                 }
                 
@@ -86,7 +86,7 @@ namespace XdChatShared.Scheduler {
 
         public int ScheduledTaskCount => tasks.Count;
 
-        public bool IsMainThread => Thread.CurrentThread.ManagedThreadId == workingThread.ManagedThreadId;
+        public bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _workingThread.ManagedThreadId;
 
         #region IDisposable implementation
 
@@ -96,15 +96,15 @@ namespace XdChatShared.Scheduler {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (disposed)
+            if (_disposed)
                 return;
 
             if (disposing) {
-                stopThread = true;
-                queueSignal.Set();
+                _stopThread = true;
+                _queueSignal.Set();
             }
 
-            disposed = true;
+            _disposed = true;
         }
 
         #endregion

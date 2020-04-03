@@ -1,31 +1,34 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace XdChatShared {
     public abstract class XdConnection {
-        private StringMessageStream messageStream;
+        private StringMessageStream _messageStream;
         
+        [CanBeNull]
         public TcpClient Client { get; private set; }
+        
+        [CanBeNull]
         public string RemoteIp { get; private set; }
 
         public bool Connected => this.Client != null && this.Client.Connected;
 
         public virtual void Initialize(TcpClient client) {
             this.Client = client;
-            this.RemoteIp = ((IPEndPoint) this.Client.Client.RemoteEndPoint).Address.ToString();
-            this.messageStream = new StringMessageStream(client.GetStream());
+            this.RemoteIp = ((IPEndPoint) client.Client.RemoteEndPoint).Address.ToString();
+            this._messageStream = new StringMessageStream(client.GetStream());
 
             XdScheduler.QueueAsyncTask(RunReadTask, true);
         }
 
         private void RunReadTask() {
             try {
-                while (this.Client.Connected) {
-                    Packet packet = Packet.FromJson(messageStream.ReadMessage());
+                while (this.Client != null && this.Client.Connected) {
+                    Packet packet = Packet.FromJson(_messageStream.ReadMessage());
                     XdScheduler.QueueSyncTask(() => { OnPacketReceived(packet); });
                 }
 
@@ -34,7 +37,7 @@ namespace XdChatShared {
                 XdScheduler.QueueSyncTask(() => OnDisconnect(e));
             } finally {
                 this.Client = DisposeAndNull(this.Client);
-                this.messageStream = DisposeAndNull(this.messageStream);
+                this._messageStream = DisposeAndNull(this._messageStream);
             }
         }
 
@@ -50,18 +53,18 @@ namespace XdChatShared {
             return null;
         }
 
-        protected abstract void OnPacketReceived(Packet packet);
+        protected abstract void OnPacketReceived([NotNull] Packet packet);
 
-        protected abstract void OnDisconnect(Exception ex);
+        protected abstract void OnDisconnect([CanBeNull] Exception ex);
 
-        public void Send(Packet packet) {
+        public void Send([NotNull] Packet packet) {
             XdScheduler.CheckIsMainThread();
 
-            messageStream?.WriteMessage(Packet.ToJson(packet));
+            _messageStream?.WriteMessage(Packet.ToJson(packet));
         }
         
         // Format: hostname[:port] (e.g. 2.3.4.5, 1.2.3.4:1234)
-        public static bool TryParseEndpoint(string input, ushort defaultPort, out string host, out ushort port) {
+        public static bool TryParseEndpoint([NotNull] string input, ushort defaultPort, out string host, out ushort port) {
             int portIndex = input.IndexOf(':');
             
             if (portIndex == -1) {

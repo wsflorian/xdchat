@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace XdChatShared.Events {
     public class EventRegistration {
-        public EventHandler HandlerInfo { get; }
-        public MethodInfo Method { get; }
-        public IEventListener Listener { get;  }
+        [NotNull] public EventHandler HandlerInfo { get; }
+        [NotNull] public MethodInfo Method { get; }
+        [NotNull] public IEventListener Listener { get; }
 
-        public Type EventType => Method.GetParameters()[0].ParameterType;
+        [NotNull] public Type EventType => Method.GetParameters()[0].ParameterType;
 
-        public EventRegistration(EventHandler handlerInfo, MethodInfo method, IEventListener listener) {
+        public EventRegistration([NotNull] EventHandler handlerInfo, [NotNull] MethodInfo method, [NotNull] IEventListener listener) {
             HandlerInfo = handlerInfo;
             Method = method;
             Listener = listener;

@@ -12,6 +12,6 @@ namespace XdChatShared.Modules {
     }
     
     public enum ModuleMethodType {
-        REGISTER, UNREGISTER
+        Register, Unregister
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Threading;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server {

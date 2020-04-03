@@ -1,5 +1,7 @@
-﻿namespace XdChatShared.Events {
+﻿using JetBrains.Annotations;
+
+namespace XdChatShared.Events {
     public interface IEventFilter {
-        bool DoesMatch(object filter);
+        bool DoesMatch([CanBeNull] object filter);
     }
 }

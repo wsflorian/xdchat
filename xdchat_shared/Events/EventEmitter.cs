@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using SimpleLogger;
 using XdChatShared.Modules;
 using XdChatShared.Scheduler;
@@ -9,7 +10,7 @@ namespace XdChatShared.Events {
     public class EventEmitter {
         private readonly Dictionary<IEventListener, List<EventRegistration>> _listeners = new Dictionary<IEventListener, List<EventRegistration>>();
 
-        public void RegisterListener(IEventListener listener) {
+        public void RegisterListener([NotNull] IEventListener listener) {
             if (_listeners.ContainsKey(listener)) {
                 throw new InvalidOperationException("Event listener already registered");
             }
@@ -35,7 +36,7 @@ namespace XdChatShared.Events {
             });
         }
         
-        public T Emit<T>(T ev) where T : Event {
+        public T Emit<T>([NotNull] T ev) where T : Event {
             XdScheduler.CheckIsMainThread();
             
             _listeners
@@ -43,9 +44,8 @@ namespace XdChatShared.Events {
                 .Where(registration => registration.EventType == ev.GetType())
                 .Where(registration => { /* Event filters */
                     if (registration.HandlerInfo.Filter == null) return true; // Not filter set
-                    
-                    IEventFilter filter = ev as IEventFilter;
-                    if (filter == null) {
+
+                    if (!(ev is IEventFilter filter)) {
                         Logger.Log(Logger.Level.Warning, $"Event method '{registration.Method.Name}' has event filter, but event cannot be filtered");
                         return true; // Event is not filterable
                     }
@@ -61,8 +61,7 @@ namespace XdChatShared.Events {
                         return true;
                     }
 
-                    IAnonymousContextProvider eventContextProvider = ev as IAnonymousContextProvider;
-                    if (eventContextProvider == null) {
+                    if (!(ev is IAnonymousContextProvider eventContextProvider)) {
                         Logger.Log(Logger.Level.Warning, $"Event method is scoped to context, but event doesn't provide context");
                         return true;
                     }

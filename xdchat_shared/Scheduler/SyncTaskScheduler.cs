@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace XdChatShared.Scheduler {
     public class SyncTaskScheduler : TaskScheduler, IDisposable {
-        private readonly ConcurrentQueue<Task> tasks = new ConcurrentQueue<Task>();
+        private readonly ConcurrentQueue<Task> _tasks = new ConcurrentQueue<Task>();
         private readonly Thread _workingThread;
         
         private readonly AutoResetEvent _queueSignal = new AutoResetEvent(false);
@@ -16,7 +16,7 @@ namespace XdChatShared.Scheduler {
         
         private volatile WatchdogInfo _watchdogInfo;
 
-        public SyncTaskScheduler(string name) {
+        public SyncTaskScheduler([NotNull] string name) {
             _workingThread = new Thread(RunWorkingThread) {Name = name};
             _workingThread.Start();
 
@@ -24,23 +24,23 @@ namespace XdChatShared.Scheduler {
             watchdogThread.Start();
         }
         
-        protected sealed override void QueueTask(Task task) {
+        protected sealed override void QueueTask([NotNull] Task task) {
             if (_stopThread) {
                 throw new InvalidOperationException("Scheduler can't handle new tasks, because it has been stopped.");
             }
 
-            tasks.Enqueue(task);
+            _tasks.Enqueue(task);
             _queueSignal.Set();
         }
 
         private void RunWorkingThread() {
             while (true) {
-                if (_stopThread && tasks.IsEmpty)
+                if (_stopThread && _tasks.IsEmpty)
                     return;
                 
                 _queueSignal.WaitOne();
 
-                while (tasks.TryDequeue(out Task result)) {
+                while (_tasks.TryDequeue(out Task result)) {
                     _watchdogInfo = new WatchdogInfo();
                     
                     this.TryExecuteTask(result);
@@ -52,7 +52,7 @@ namespace XdChatShared.Scheduler {
 
         private void RunWatchdogThread() {
             while (true) {
-                if (_stopThread && tasks.IsEmpty)
+                if (_stopThread && _tasks.IsEmpty)
                     return;
                 
                 while (this._watchdogInfo != null) {
@@ -73,18 +73,18 @@ namespace XdChatShared.Scheduler {
         protected sealed override IEnumerable<Task> GetScheduledTasks() {
             bool lockTaken = false;
             try {
-                Monitor.TryEnter(tasks, ref lockTaken);
+                Monitor.TryEnter(_tasks, ref lockTaken);
                 if (lockTaken)
-                    return tasks.ToArray();
+                    return _tasks.ToArray();
                 else
                     throw new NotSupportedException("Tasks queue can't be locked");
             }
             finally {
-                if (lockTaken) Monitor.Exit(tasks);
+                if (lockTaken) Monitor.Exit(_tasks);
             }
         }
 
-        public int ScheduledTaskCount => tasks.Count;
+        public int ScheduledTaskCount => _tasks.Count;
 
         public bool IsMainThread => Thread.CurrentThread.ManagedThreadId == _workingThread.ManagedThreadId;
 
@@ -111,22 +111,22 @@ namespace XdChatShared.Scheduler {
     }
 
     class WatchdogInfo {
-        private readonly DateTime lastExecutionStart;
-        private bool notified;
+        private readonly DateTime _lastExecutionStart;
+        private bool _notified;
         
         public WatchdogInfo() {
-            this.lastExecutionStart = DateTime.Now;
+            this._lastExecutionStart = DateTime.Now;
         }
 
         public void CheckStuck() {
-            if (notified || !IsStuck()) return;
+            if (_notified || !IsStuck()) return;
             
-            notified = true;
+            _notified = true;
             Console.Error.WriteLine("WorkingThread task takes >1s to execute");
         }
 
         private bool IsStuck() {
-            return lastExecutionStart.AddSeconds(1) < DateTime.Now;
+            return _lastExecutionStart.AddSeconds(1) < DateTime.Now;
         }
     }
 }

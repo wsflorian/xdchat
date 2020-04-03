@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace ConsoleGui
+﻿namespace ConsoleGui
 {
     public class ElemPos
     {

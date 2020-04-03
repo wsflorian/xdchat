@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
-namespace ConsoleGui
+﻿namespace ConsoleGui
 {
     public class ElemSize
     {

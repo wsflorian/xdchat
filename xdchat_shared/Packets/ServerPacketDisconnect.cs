@@ -1,6 +1,4 @@
-﻿using XdChatShared;
-
-namespace XdChatShared.Packets {
+﻿namespace XdChatShared.Packets {
     public class ServerPacketDisconnect : Packet {
         public string Text { get; set; }
 

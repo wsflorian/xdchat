@@ -2,14 +2,12 @@
 using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Timers;
 using xdchat_server.ClientCon;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using XdChatShared;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
-using XdChatShared.Scheduler;
 
 namespace xdchat_server {
     public class XdClientConnection : XdConnection, ICommandSender, IExtendable<XdClientConnection> {

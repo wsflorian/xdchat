@@ -54,7 +54,7 @@ namespace XdChatShared.Scheduler {
         }
         
 #pragma warning disable 1998
-        public static Func<Task> VoidToFunc(Action action) {
+        private static Func<Task> VoidToFunc(Action action) {
             if (IsActionAsync(action))
                 throw new InvalidOperationException("Action must be synchronous");
             

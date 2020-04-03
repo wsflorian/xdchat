@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using XdChatShared;
 
 namespace XdChatShared.Packets {
     public class ClientPacketAuth : Packet {

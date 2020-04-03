@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleLogger;
 
 namespace XdChatShared.Packets {
     public abstract class Packet : IValidatable {
@@ -10,16 +9,16 @@ namespace XdChatShared.Packets {
             return this.GetType() == type;
         }
 
-        public static string ToJson(Packet data) {
-            JObject packetObj = new JObject {
+        [NotNull]
+        public static string ToJson([NotNull]Packet data) {
+            return new JObject {
                 {"type", data.GetType().Name}, 
                 {"data", JToken.FromObject(data)}
-            };
-
-            return packetObj.ToString();
+            }.ToString();
         }
 
-        public static Packet FromJson(string message) {
+        [NotNull] 
+        public static Packet FromJson([NotNull] string message) {
             try {
                 JObject packetObj = JObject.Parse(message);
                 JToken packetTypeToken = packetObj.GetValue("type");
@@ -45,17 +44,8 @@ namespace XdChatShared.Packets {
                 throw new ProtocolException($"Json is invalid: {e.Message}: '{message}'");
             }
         }
-
-        public static void InvokeActionIfType<T>(Packet packet, Action<T> action) where T: Packet {
-            if (packet.IsType(typeof(T))) {
-                action.Invoke((T) packet); 
-            }
-        }
-
+        
+        [CanBeNull]
         public abstract string Validate();
-    }
-    
-    public class ProtocolException : Exception {
-        public ProtocolException(string message) : base(message) { }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using System.Threading.Tasks;
-using SimpleLogger;
 using xdchat_server.EventsImpl;
 using XdChatShared.Events;
 using XdChatShared.Modules;

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace XdChatShared.Modules {
     public class ModuleHolder<TContext> where TContext: IExtendable<TContext> {
         private readonly TContext _context;
         private readonly List<Module<TContext>> _modules = new List<Module<TContext>>();
 
-        public ModuleHolder(TContext context) {
+        public ModuleHolder([NotNull] TContext context) {
             _context = context;
         }
 

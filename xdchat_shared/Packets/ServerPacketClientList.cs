@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace XdChatShared.Packets {
     public class ServerPacketClientList : Packet {

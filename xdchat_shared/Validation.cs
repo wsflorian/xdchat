@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 namespace XdChatShared {
     public static class Validation {
@@ -40,21 +40,15 @@ namespace XdChatShared {
                    && IsAlphaNumeric(nickname);
         }
 
-        public static string GetFirstError<T>(List<T> validatables) where T : IValidatable {
-            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-            foreach (T validatable in validatables) {
-                string error = validatable.Validate();
-
-                if (error != null) {
-                    return error;
-                }
-            }
-
-            return null;
+        [CanBeNull] 
+        public static string GetFirstError<T>([NotNull] IEnumerable<T> validatables) where T : IValidatable {
+            return validatables
+                .Select(validatable => validatable.Validate())
+                .FirstOrDefault(error => error != null);
         }
     }
 
     public interface IValidatable {
-        string Validate();
+        [CanBeNull] string Validate();
     }
 }

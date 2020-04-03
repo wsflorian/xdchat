@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace XdChatShared {
     public class StringMessageStream : IDisposable {
         private readonly Stream _stream;
-
-        public StringMessageStream(Stream stream) {
+        
+        public StringMessageStream([NotNull] Stream stream) {
             this._stream = stream;
         }
 
-        public void WriteMessage(string message) {
+        public void WriteMessage([NotNull] string message) {
             byte[] stringData = Encoding.UTF8.GetBytes(message);
             byte[] lengthData = BitConverter.GetBytes(stringData.Length);
             

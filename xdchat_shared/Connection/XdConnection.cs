@@ -22,10 +22,10 @@ namespace XdChatShared {
             XdScheduler.QueueAsyncTask(RunReadTask, true);
         }
 
-        private async void RunReadTask() {
+        private void RunReadTask() {
             try {
                 while (this.Client.Connected) {
-                    Packet packet = Packet.FromJson(await messageStream.ReadMessage());
+                    Packet packet = Packet.FromJson(messageStream.ReadMessage());
                     XdScheduler.QueueSyncTask(() => { OnPacketReceived(packet); });
                 }
 
@@ -54,11 +54,10 @@ namespace XdChatShared {
 
         protected abstract void OnDisconnect(Exception ex);
 
-        public async Task Send(Packet packet) {
+        public void Send(Packet packet) {
             XdScheduler.CheckIsMainThread();
-            if (this.messageStream == null) return;
-            
-            await this.messageStream.WriteMessage(Packet.ToJson(packet));
+
+            messageStream?.WriteMessage(Packet.ToJson(packet));
         }
         
         // Format: hostname[:port] (e.g. 2.3.4.5, 1.2.3.4:1234)

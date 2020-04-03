@@ -9,7 +9,6 @@ using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using XdChatShared;
 using XdChatShared.Events;
-using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
@@ -62,8 +61,8 @@ namespace xdchat_server {
             try {
                 while (this.serverSocket != null) {
                     TcpClient tcpClient = await serverSocket.AcceptTcpClientAsync();
-                    XdClientConnection client = new XdClientConnection();
                     XdScheduler.QueueSyncTask(() => {
+                        XdClientConnection client = new XdClientConnection();
                         client.Initialize(tcpClient);
                         this.Clients.Add(client);
                     });

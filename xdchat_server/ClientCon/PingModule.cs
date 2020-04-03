@@ -28,13 +28,13 @@ namespace xdchat_server.ClientCon {
             _pingTimer.Stop();
         }
         
-        private async Task RunPingTask() {
+        private void RunPingTask() {
             if (_lastPingSent > _lastPingReceived) {
                 Context.Disconnect("Timed out");
                 return;
             }
             
-            await Context.Send(new ServerPacketPing());
+            Context.Send(new ServerPacketPing());
             this._lastPingSent = DateTime.Now;
         }
         

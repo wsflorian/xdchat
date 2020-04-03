@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using SimpleLogger;
@@ -7,17 +7,12 @@ using Timer = System.Timers.Timer;
 
 namespace XdChatShared.Scheduler {
     public static class XdScheduler {
-        //public static XdScheduler Instance { get; } = new XdScheduler();
-        
         private static readonly SyncTaskScheduler MainThreadScheduler = new SyncTaskScheduler("MainThread");
         private static readonly TaskScheduler AsyncTaskScheduler = TaskScheduler.Default;
-        private static readonly ConcurrentDictionary<int, Thread> AsyncThreads = new ConcurrentDictionary<int, Thread>();
 
-        public static int QueuedSyncTasks => MainThreadScheduler.ScheduledTaskCount;
-        public static int RunningAsyncTasks => AsyncThreads.Count;
-        
         /* External functions with Action */
-        public static Task QueueSyncTask(Action action) => QueueSyncTask(VoidToFunc(action));
+        public static Task QueueSyncTask(Action action) => QueueTask(VoidToFunc(action), MainThreadScheduler);
+        
         public static Task QueueAsyncTask(Action action, bool longRunning = false) 
             => QueueAsyncTask(VoidToFunc(action), longRunning);
 
@@ -27,7 +22,6 @@ namespace XdChatShared.Scheduler {
             => QueueAsyncTaskScheduled(VoidToFunc(func), millis, repeating);
 
         /* External functions with Func<Task> */
-        public static Task QueueSyncTask(Func<Task> func) => QueueTask(func, MainThreadScheduler);
         public static Task QueueAsyncTask(Func<Task> func, bool longRunning = false) => 
             QueueTask(func, AsyncTaskScheduler, longRunning);
         
@@ -60,25 +54,26 @@ namespace XdChatShared.Scheduler {
         }
         
 #pragma warning disable 1998
-        public static Func<Task> VoidToFunc(Action action) => async () => { action.Invoke(); };
+        public static Func<Task> VoidToFunc(Action action) {
+            if (IsActionAsync(action))
+                throw new InvalidOperationException("Action must be synchronous");
+            
+            return async () => { action.Invoke(); };
+        }
 #pragma warning restore 1998
         
-        public static Thread RunAsyncThread(string name, Action action) {
-            Thread thread = new Thread(() => {
-                action.Invoke();
-                AsyncThreads.TryRemove(Thread.CurrentThread.ManagedThreadId, out _);
-            });
-
-            AsyncThreads[thread.ManagedThreadId] = thread;
-            thread.Name = $"AsyncThread-{name}-{thread.ManagedThreadId}-";
-            
-            thread.Start();
-            return thread;
+        private static bool IsActionAsync(Action action) {
+            return action.Method.IsDefined(typeof(AsyncStateMachineAttribute), false);
         }
-
+        
         public static void CheckIsMainThread() {
             if (MainThreadScheduler.IsMainThread) return;
             throw new InvalidOperationException("Not running on main thread");
+        }
+
+        public static void CheckIsNotMainThread() {
+            if (!MainThreadScheduler.IsMainThread) return;
+            throw new InvalidOperationException("Running on main thread");
         }
     }
 }

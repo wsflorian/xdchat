@@ -51,6 +51,8 @@ namespace xdchat_client_wpf {
         public string UuidShort => Uuid.Substring(0, 8);
 
         public async Task Connect() {
+            XdScheduler.CheckIsNotMainThread();
+            
             if (Connection != null)
                 throw new InvalidOperationException("Already connected");
             

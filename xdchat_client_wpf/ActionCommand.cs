@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace xdchat_client_wpf
@@ -28,9 +29,9 @@ namespace xdchat_client_wpf
             _execute();
         }
 
-        public void RaiseCanExecuteChanged()
-        {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        public void RaiseCanExecuteChanged() {
+            if (CanExecuteChanged != null)
+                Application.Current.Dispatcher?.BeginInvoke((Action<ActionCommand, EventArgs>) CanExecuteChanged.Invoke, this, EventArgs.Empty);
         }
     }
 }

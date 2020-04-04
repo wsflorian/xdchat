@@ -11,9 +11,9 @@ namespace XdChatShared.Modules {
         }
 
         [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
-        protected Module([NotNull] TContext context, [NotNull] EventEmitter emitter) : this(context) {
+        protected Module([NotNull] TContext context, [NotNull] XdService service) : this(context) {
             if (!(this is IEventListener)) return;
-            emitter.RegisterListener((IEventListener) this);
+            service.EventEmitter.RegisterListener((IEventListener) this);
         }
 
         public virtual void OnModuleEnable() {

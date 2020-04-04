@@ -6,7 +6,7 @@ using XdChatShared.Packets;
 
 namespace xdchat_server.ClientCon {
     public class ChatModule : Module<XdClientConnection>, IEventListener {
-        public ChatModule(XdClientConnection context) : base(context, XdServer.Instance.EventEmitter) {
+        public ChatModule(XdClientConnection context) : base(context, XdServer.Instance) {
         }
         
         [EventHandler(typeof(ClientPacketChatMessage), true)]

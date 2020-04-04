@@ -17,8 +17,6 @@ namespace xdchat_client_wpf {
     public class ConnectionPageVM : INotifyPropertyChanged, IEventListener {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static int Count = 0;
-        
         private string _serverAddress;
         private string _nickname;
         private string _buttonText;
@@ -72,7 +70,6 @@ namespace xdchat_client_wpf {
         private MainWindowVM MainWindow { get; }
 
         public ConnectionPageVM(MainWindowVM mainWindow) {
-            Count++;
             // this.TextFieldsEnabled = true;
             this.MainWindow = mainWindow;
             
@@ -84,9 +81,7 @@ namespace xdchat_client_wpf {
                 ? $"{XdClient.Instance.HostName}:{XdClient.Instance.PortName}"
                 : "";
             
-            XdClient.Instance.Emitter.RegisterListener(this);
-            
-            AddLogMessage($"Instance {Count} created");
+            XdClient.Instance.EventEmitter.RegisterListener(this);
         }
 
         private void ClickConnectFunc() {

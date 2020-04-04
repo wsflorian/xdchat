@@ -12,7 +12,7 @@ namespace xdchat_server.ClientCon {
 
         public List<Command> Commands { get; } = new List<Command>();
 
-        public CommandModule(XdServer context) : base(context, XdServer.Instance.EventEmitter) {
+        public CommandModule(XdServer context) : base(context, XdServer.Instance) {
             Commands.Add(new KickCommand());
             Commands.Add(new ListCommand());
             Commands.Add(new WhisperCommand());
@@ -43,7 +43,6 @@ namespace xdchat_server.ClientCon {
             command.OnCommand(sender, args);
         }
         
-
         [EventHandler]
         public void OnConsoleInput(ConsoleInputEvent ev) {
             EmitCommand(ConsoleCommandSender, ev.Input);

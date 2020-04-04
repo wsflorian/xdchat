@@ -1,15 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Controls;
-using xdchat_client_wpf.Annotations;
-using xdchat_client_wpf.EventsImpl;
-using XdChatShared;
-using XdChatShared.Events;
-using XdChatShared.Packets;
 
 
 namespace xdchat_client_wpf {

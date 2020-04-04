@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
+
 using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
 using xdchat_client_wpf.ServerCon;
-using XdChatShared.Connection;
-using XdChatShared.Misc;
 using XdChatShared;
+using XdChatShared.Connection;
 using XdChatShared.Events;
+using XdChatShared.Misc;
 using XdChatShared.Scheduler;
-using Validation = XdChatShared.Misc.Validation;
 
 
 namespace xdchat_client_wpf {
@@ -37,6 +36,7 @@ namespace xdchat_client_wpf {
         public string Nickname {
             get => _nickname;
             set {
+                if (value.Length > Helper.MaxNickLength) return;
                 _nickname = value;
                 PropChanged(nameof(Nickname));
                 ConnectButtonActionCommand.RaiseCanExecuteChanged();
@@ -73,7 +73,6 @@ namespace xdchat_client_wpf {
         private MainWindowVM MainWindow { get; }
 
         public ConnectionPageVM(MainWindowVM mainWindow) {
-            // this.TextFieldsEnabled = true;
             this.MainWindow = mainWindow;
             
             ConnectButtonActionCommand = new ActionCommand(ClickConnectFunc, ConnectButtonClickable);
@@ -101,11 +100,10 @@ namespace xdchat_client_wpf {
             XdScheduler.QueueAsyncTask(XdClient.Instance.Connect);
 
             AddLogMessage("Connecting...");
-            MainWindow.ChatEnabled = true;
         }
 
         private void ClickDisconnectFunc() {
-            MainWindow.ChatEnabled = false;
+            XdScheduler.QueueSyncTask(XdClient.Instance.Disconnect);
         }
 
         public void AddLogMessage(string message) {
@@ -123,22 +121,31 @@ namespace xdchat_client_wpf {
         
         [XdChatShared.Events.EventHandler]
         public void HandleStatusUpdate(ConnectionStatusEvent evt) {
-            AddLogMessage(evt.Info);
+            string message = evt.Info;
+            if (evt.Error != null) {
+                message += "\nException: " + evt.Error.Message;
+            }
+
+            AddLogMessage(message);
             PropChanged(nameof(TextFieldsEnabled));
             ConnectButtonActionCommand.RaiseCanExecuteChanged();
 
             switch (evt.Status) {
                 case XdConnectionStatus.NOT_CONNECTED:
                     ButtonText = "Connect to Server";
+                    ConnectButtonActionCommand = new ActionCommand(ClickConnectFunc, ConnectButtonClickable);
+                    MainWindow.ChatEnabled = false;
+                    MainWindow.SelectedIndex = 0;
                     break;
                 case XdConnectionStatus.CONNECTING:
-                    ButtonText = "Waiting to connect...";
-                    break;
                 case XdConnectionStatus.AUTHENTICATING:
                     ButtonText = "Waiting to connect...";
                     break;
                 case XdConnectionStatus.CONNECTED:
                     ButtonText = "Disconnect";
+                    ConnectButtonActionCommand = new ActionCommand(ClickDisconnectFunc, ConnectButtonClickable);
+                    MainWindow.ChatEnabled = true;
+                    MainWindow.SelectedIndex = 1;
                     break;
             }
         }

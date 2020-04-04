@@ -10,6 +10,7 @@ namespace xdchat_client_wpf {
         private Page _connectionPage;
         private Page _chatPage;
         private bool _chatEnabled;
+        private int _selectedIndex;
 
         public Page ConnectionPage {
             get => _connectionPage;
@@ -26,6 +27,22 @@ namespace xdchat_client_wpf {
                 PropChanged(nameof(ChatPage));
             }
         }
+        
+        public bool ChatEnabled {
+            get => _chatEnabled;
+            set {
+                _chatEnabled = value;
+                PropChanged(nameof(ChatEnabled));
+            }
+        }
+
+        public int SelectedIndex {
+            get => _selectedIndex;
+            set {
+                _selectedIndex = value;
+                PropChanged(nameof(SelectedIndex));
+            }
+        }
 
         public MainWindowVM() {
             ConnectionPage = new ConnectionPage();
@@ -35,14 +52,6 @@ namespace xdchat_client_wpf {
             ChatPage.DataContext = new ChatPageVM(this);
             
             ChatEnabled = false;
-        }
-
-        public bool ChatEnabled {
-            get => _chatEnabled;
-            set {
-                _chatEnabled = value;
-                PropChanged(nameof(ChatEnabled));
-            }
         }
 
         protected virtual void PropChanged(string propertyName = null) {

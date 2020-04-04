@@ -29,9 +29,9 @@
             <Button Content="{Binding Path=ButtonText, UpdateSourceTrigger=PropertyChanged}" Cursor="Hand" FontSize="15" Padding="0,3,0,3" Command="{Binding ConnectButtonActionCommand, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
-        <ListView ClipToBounds="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
+        <ListBox ClipToBounds="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                   ItemsSource="{Binding Path=ServerLog, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListView.ItemTemplate>
+            <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -46,7 +46,7 @@
                                    HorizontalAlignment="Stretch" />
                     </Grid>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Page>

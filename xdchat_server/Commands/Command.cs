@@ -19,7 +19,7 @@ namespace xdchat_server.Commands {
 
         public bool Matches(string name) {
             return EqualsIgnoreCase(Name, name) 
-                   || AlternateNames.Any(alternateName => EqualsIgnoreCase(Name, alternateName));
+                   || AlternateNames.Any(alternateName => EqualsIgnoreCase(alternateName, name));
         }
         
         public abstract void OnCommand([NotNull] ICommandSender sender, [NotNull] List<string> args);

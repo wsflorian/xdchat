@@ -23,7 +23,6 @@ namespace xdchat_client_wpf {
         private string _serverAddress;
         private string _nickname;
         private string _buttonText;
-        private bool _textFieldsEnabled;
         private ActionCommand _connectButtonActionCommand;
 
         public string ServerAdress {
@@ -60,7 +59,7 @@ namespace xdchat_client_wpf {
             get => XdClient.Instance.LogMessages;
         }
         
-        private bool Connecting => XdClient.Instance.Status == XdConnectionStatus.CONNECTING || XdClient.Instance.Status == XdConnectionStatus.AUTHENTICATING;
+        private bool Connecting { get => XdClient.Instance.Status == XdConnectionStatus.CONNECTING || XdClient.Instance.Status == XdConnectionStatus.AUTHENTICATING; }
 
 
         public ActionCommand ConnectButtonActionCommand {
@@ -101,19 +100,20 @@ namespace xdchat_client_wpf {
 
             XdScheduler.QueueAsyncTask(XdClient.Instance.Connect);
 
-            ServerLog.Add(new ServerLogMessage() {Message = "Connecting...", TimeStamp = DateTime.Now});
+            AddLogMessage("Connecting...");
             MainWindow.ChatEnabled = true;
         }
 
         private void ClickDisconnectFunc() {
-            ServerLog.Add(new ServerLogMessage() {Message = "Disconnected...", TimeStamp = DateTime.Now});
             MainWindow.ChatEnabled = false;
         }
 
-        public static void AddLogMessage(ICollection<ServerLogMessage> collection, ServerLogMessage item) {
-            Action<ServerLogMessage> addMethod = XdClient.Instance.LogMessages.Add;
-            Application.Current?.Dispatcher?.BeginInvoke(addMethod, item);
+        public void AddLogMessage(string message) {
+            Action<ServerLogMessage> addMethod = ServerLog.Add;
+            Application.Current?.Dispatcher?.BeginInvoke(addMethod, new ServerLogMessage(){Message = message, TimeStamp = DateTime.Now});
         }
+        
+        
 
         private bool ConnectButtonClickable() {
             return Validation.IsValidNickname(Nickname) &&
@@ -123,9 +123,10 @@ namespace xdchat_client_wpf {
         
         [XdChatShared.Events.EventHandler]
         public void HandleStatusUpdate(ConnectionStatusEvent evt) {
+            AddLogMessage(evt.Info);
             PropChanged(nameof(TextFieldsEnabled));
-            PropChanged(nameof(Connecting));
-            
+            ConnectButtonActionCommand.RaiseCanExecuteChanged();
+
             switch (evt.Status) {
                 case XdConnectionStatus.NOT_CONNECTED:
                     ButtonText = "Connect to Server";

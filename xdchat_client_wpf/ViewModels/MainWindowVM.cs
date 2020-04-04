@@ -14,7 +14,6 @@ namespace xdchat_client_wpf {
         public Page ConnectionPage {
             get => _connectionPage;
             set {
-                value.DataContext = new ConnectionPageVM(this);
                 _connectionPage = value;
                 PropChanged(nameof(ConnectionPage));
             }
@@ -23,7 +22,6 @@ namespace xdchat_client_wpf {
         public Page ChatPage {
             get => _chatPage;
             set {
-                value.DataContext = new ChatPageVM(this);
                 _chatPage = value;
                 PropChanged(nameof(ChatPage));
             }
@@ -32,7 +30,10 @@ namespace xdchat_client_wpf {
         public MainWindowVM() {
             ConnectionPage = new ConnectionPage();
             ChatPage = new ChatPage();
-
+            
+            ConnectionPage.DataContext = new ConnectionPageVM(this);
+            ChatPage.DataContext = new ChatPageVM(this);
+            
             ChatEnabled = false;
         }
 

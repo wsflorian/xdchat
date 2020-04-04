@@ -26,7 +26,7 @@ namespace xdchat_server {
             _moduleHolder = new ModuleHolder<XdServer>(this);
         }
 
-        public void Start() {
+        public override void Start() {
             XdScheduler.CheckIsMainThread();
             this._consoleHandler = new ConsoleHandler();
             this._moduleHolder.RegisterModule<CommandModule>();
@@ -64,7 +64,7 @@ namespace xdchat_server {
             }
         }
         
-        public void Stop() {
+        public override void Stop() {
             XdScheduler.CheckIsMainThread();
 
             Logger.Log("Stopping handlers...");

@@ -31,7 +31,7 @@ namespace xdchat_client_wpf {
         public ObservableCollection<ServerLogMessage> LogMessages { get; } = new ObservableCollection<ServerLogMessage>();
 
         public string Nickname {
-            get => (string)Registry.GetValue(RegistryPath, RegistryNicknameValueName, null);
+            get => (string)Registry.GetValue(RegistryPath, RegistryNicknameValueName, "");
             set => Registry.SetValue(RegistryPath, RegistryNicknameValueName, value);
         }
 

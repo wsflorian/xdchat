@@ -20,13 +20,13 @@
         <StackPanel Grid.Column="1" Grid.Row="0">
             <StackPanel Margin="0,0,0,8" HorizontalAlignment="Stretch">
                 <Label Content="Nickname" Padding="2" FontSize="12" />
-                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=Nickname, UpdateSourceTrigger=PropertyChanged}" Name="Nickname" />
+                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=Nickname, UpdateSourceTrigger=PropertyChanged}" Name="Nickname" IsEnabled="{Binding Path=TextFieldsEnabled, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <StackPanel Margin="0,0,0,8" HorizontalAlignment="Stretch">
                 <Label Content="Server Address" Padding="2" FontSize="12" />
-                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=ServerAdress, UpdateSourceTrigger=PropertyChanged}" Name="ServerAddress" />
+                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=ServerAdress, UpdateSourceTrigger=PropertyChanged}" Name="ServerAddress" IsEnabled="{Binding Path=TextFieldsEnabled, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
-            <Button Content="Connect to server" Cursor="Hand" FontSize="15" Padding="0,3,0,3" Command="{Binding ConnectButtonActionCommand}" />
+            <Button Content="{Binding Path=ButtonText, UpdateSourceTrigger=PropertyChanged}" Cursor="Hand" FontSize="15" Padding="0,3,0,3" Command="{Binding ConnectButtonActionCommand, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <ListView ClipToBounds="False" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 

@@ -28,6 +28,8 @@ namespace xdchat_server.ClientCon {
             string commandName = args[0];
             if (commandName.StartsWith("/"))
                 commandName = commandName.Substring(1);
+            
+            args.RemoveAt(0);
 
             Command command = Commands
                 .FindAll(cmd => cmd.Matches(commandName))

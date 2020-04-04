@@ -2,11 +2,11 @@
 
 namespace xdchat_server.Commands {
     public class SayCommand: Command {
-        public SayCommand() : base("broadcast", "bc", "say") {
+        public SayCommand() : base("broadcast", "Broadcast a message", "bc", "say") {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (sender != XdServer.Instance.ConsoleCommandSender) {
+            if (sender != ConsoleCommandSender) {
                 sender.SendMessage("No permission");
                 return;
             }

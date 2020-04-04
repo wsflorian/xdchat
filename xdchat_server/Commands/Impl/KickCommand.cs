@@ -2,10 +2,10 @@
 
 namespace xdchat_server.Commands {
     public class KickCommand : Command {
-        public KickCommand() : base("kick") {}
+        public KickCommand() : base("kick", "Kick a connected user") {}
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (sender != XdServer.Instance.ConsoleCommandSender) {
+            if (sender != ConsoleCommandSender) {
                 sender.SendMessage("No permission");
                 return;
             }

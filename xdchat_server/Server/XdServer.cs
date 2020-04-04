@@ -9,36 +9,31 @@ using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using XdChatShared;
 using XdChatShared.Events;
+using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server {
-    public class XdServer  {
+    public class XdServer : IExtendable<XdServer> {
         public static XdServer Instance { get; } = new XdServer();
+
+        private readonly ModuleHolder<XdServer> _moduleHolder;
+        
         public List<XdClientConnection> Clients { get; } = new List<XdClientConnection>();
         public EventEmitter EventEmitter { get; } = new EventEmitter();
-        public ConsoleCommandSender ConsoleCommandSender { get; } = new ConsoleCommandSender();
 
         private ConsoleHandler _consoleHandler;
 
         private TcpListener _serverSocket;
         
         private XdServer() {
-            this.RegisterCommand(new KickCommand());
-            this.RegisterCommand(new ListCommand());
-            this.RegisterCommand(new WhisperCommand());
-            this.RegisterCommand(new StopCommand());
-            this.RegisterCommand(new SayCommand());
-            this.RegisterCommand(new PingCommand());
+            _moduleHolder = new ModuleHolder<XdServer>(this);
         }
 
-        private void RegisterCommand(Command command) {
-            this.EventEmitter.RegisterListener(new CommandListener(command));
-        }
-        
         public void Start() {
             XdScheduler.CheckIsMainThread();
-            this._consoleHandler = new ConsoleHandler(HandleConsoleInput);
+            this._consoleHandler = new ConsoleHandler();
+            this._moduleHolder.RegisterModule<CommandModule>();
 
             if (_serverSocket != null)
                 throw new InvalidOperationException("Server is already running");
@@ -75,7 +70,7 @@ namespace xdchat_server {
         
         public void Stop() {
             XdScheduler.CheckIsMainThread();
-            
+
             Logger.Log("Stopping handlers...");
             _consoleHandler.Stop();
 
@@ -83,21 +78,11 @@ namespace xdchat_server {
             this.Clients.ForEach(client => client.Disconnect("Server has been stopped"));
                 
             Logger.Log("Stopping socket...");
-
+            
             _serverSocket.Stop();
             _serverSocket = null;
-        }
-        
-        private void HandleConsoleInput(string input) {
-            XdScheduler.QueueSyncTask(() => EmitCommand(ConsoleCommandSender, input));
-        }
-
-        public void EmitCommand(ICommandSender sender, string commandText) {
-            CommandEvent commandEvent = EventEmitter.Emit(new CommandEvent(sender, commandText));
             
-            if (!commandEvent.Handled) {
-                sender.SendMessage("Command not found");
-            }
+            this._moduleHolder.UnregisterAll();
         }
 
         public XdClientConnection GetClientByNickname(string nickname) {
@@ -125,6 +110,10 @@ namespace xdchat_server {
             XdScheduler.CheckIsMainThread();
             
             Clients.FindAll(predicate).ForEach(con => con.Send(packet));
+        }
+
+        public TModule Mod<TModule>() where TModule : Module<XdServer> {
+            return _moduleHolder.Mod<TModule>();
         }
     }
 }

@@ -4,7 +4,7 @@ using xdchat_server.ClientCon;
 
 namespace xdchat_server.Commands {
     public class ListCommand : Command {
-        public ListCommand() : base("list") { }
+        public ListCommand() : base("list", "Show a list of all connected users") { }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
             List<XdClientConnection> clients = XdServer.Instance.GetAuthenticatedClients();

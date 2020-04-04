@@ -2,7 +2,7 @@
 
 namespace xdchat_server.Commands {
     public class WhisperCommand : Command {
-        public WhisperCommand() : base("whisper", "msg", "w") {
+        public WhisperCommand() : base("whisper", "Send a private message to another user","msg", "w") {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {

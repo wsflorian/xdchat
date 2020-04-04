@@ -15,7 +15,7 @@ namespace xdchat_server.ClientCon {
             Logger.Log($"<{ev.Client.Mod<AuthModule>().Nickname}>: {packet.Text}");
             
             if (packet.Text.StartsWith("/")) {
-                XdServer.Instance.EmitCommand(ev.Client, packet.Text);
+                XdServer.Instance.Mod<CommandModule>().EmitCommand(ev.Client, packet.Text);
                 return;
             }
 

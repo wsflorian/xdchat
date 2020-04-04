@@ -3,11 +3,11 @@ using xdchat_server.ClientCon;
 
 namespace xdchat_server.Commands {
     public class PingCommand : Command {
-        public PingCommand() : base("ping") {
+        public PingCommand() : base("ping", "Show your ping") {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (sender == XdServer.Instance.ConsoleCommandSender) {
+            if (sender == ConsoleCommandSender) {
                 sender.SendMessage("Console's ping is 0. Always.");
                 return;
             }

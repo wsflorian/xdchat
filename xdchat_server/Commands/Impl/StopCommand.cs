@@ -2,11 +2,11 @@
 
 namespace xdchat_server.Commands {
     public class StopCommand : Command {
-        public StopCommand() : base("stop", "end", "gtfo") {
+        public StopCommand() : base("stop", "Stop the server", "end", "gtfo") {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (sender != XdServer.Instance.ConsoleCommandSender) {
+            if (sender != ConsoleCommandSender) {
                 sender.SendMessage("No permission");
                 return;
             }

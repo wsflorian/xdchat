@@ -14,7 +14,7 @@ namespace xdchat_client_wpf.ServerCon
     {
         public List<string> Messages;
         
-        public PingModule(XdServerConnection context) : base(context, XdClient.Instance.Emitter)
+        public PingModule(XdServerConnection context) : base(context, XdClient.Instance)
         {
         }
 

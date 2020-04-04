@@ -5,23 +5,19 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using SimpleLogger;
 using xdchat_server.ClientCon;
-using xdchat_server.Commands;
-using xdchat_server.EventsImpl;
 using XdChatShared;
-using XdChatShared.Events;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server {
-    public class XdServer : IExtendable<XdServer> {
+    public class XdServer : XdService, IExtendable<XdServer> {
         public static XdServer Instance { get; } = new XdServer();
 
         private readonly ModuleHolder<XdServer> _moduleHolder;
         
         public List<XdClientConnection> Clients { get; } = new List<XdClientConnection>();
-        public EventEmitter EventEmitter { get; } = new EventEmitter();
-
+        
         private ConsoleHandler _consoleHandler;
 
         private TcpListener _serverSocket;

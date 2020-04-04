@@ -18,7 +18,7 @@ namespace xdchat_server.ClientCon {
         
         private Timer _authTimeout;
 
-        public AuthModule(XdClientConnection context) : base(context, XdServer.Instance.EventEmitter) {
+        public AuthModule(XdClientConnection context) : base(context, XdServer.Instance) {
         }
 
         public override void OnModuleEnable() {

@@ -14,7 +14,7 @@ namespace xdchat_server.ClientCon {
 
         private DateTime _lastPingSent, _lastPingReceived;
 
-        public PingModule(XdClientConnection context) : base(context, XdServer.Instance.EventEmitter) {}
+        public PingModule(XdClientConnection context) : base(context, XdServer.Instance) {}
 
         public override void OnModuleEnable() {
             _pingTimer = XdScheduler.QueueSyncTaskScheduled(RunPingTask, 10000, true);

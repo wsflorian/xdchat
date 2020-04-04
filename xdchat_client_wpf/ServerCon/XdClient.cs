@@ -13,7 +13,7 @@ using XdChatShared;
 using XdChatShared.Scheduler;
 
 namespace xdchat_client_wpf {
-    public class XdClient {
+    public class XdClient : XdService {
         private const string RegistryPath = @"HKEY_CURRENT_USER\Software\XdClient";
         private const string RegistryUuidValueName = "uuid";
         private const string RegistryNicknameValueName = "nickname";
@@ -24,7 +24,6 @@ namespace xdchat_client_wpf {
         
         public static XdClient Instance { get; } = new XdClient();
         
-        public EventEmitter Emitter { get; } = new EventEmitter();
         public XdServerConnection Connection { get; private set; }
         public XdConnectionStatus Status { get; private set; }
         
@@ -84,7 +83,7 @@ namespace xdchat_client_wpf {
 
         public void UpdateStatus(XdConnectionStatus status, string message, Exception e = null) {
             this.Status = status;
-            Emitter.Emit(new ConnectionStatusEvent(status, message, e));
+            EventEmitter.Emit(new ConnectionStatusEvent(status, message, e));
         }
     }
 }

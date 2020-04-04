@@ -42,7 +42,7 @@ namespace xdchat_client {
 
         protected override void OnPacketReceived(Packet packet)
         {
-            XdClient.Instance.Emitter.Emit(new PacketReceivedEvent(packet));
+            XdClient.Instance.EventEmitter.Emit(new PacketReceivedEvent(packet));
         }
 
         protected override void OnDisconnect(Exception ex) {

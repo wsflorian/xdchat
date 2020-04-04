@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using SimpleLogger;
 using xdchat_server.ClientCon;
+using XdChatShared.Misc;
 using XdChatShared;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
@@ -34,7 +35,7 @@ namespace xdchat_server {
             if (_serverSocket != null)
                 throw new InvalidOperationException("Server is already running");
 
-            this._serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), Constants.DefaultPort);
+            this._serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), Helper.DefaultPort);
 
             Logger.Log("Starting...");
             try {

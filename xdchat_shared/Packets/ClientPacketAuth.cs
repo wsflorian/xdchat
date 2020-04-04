@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using XdChatShared.Misc;
 
 namespace XdChatShared.Packets {
     public class ClientPacketAuth : Packet {
@@ -11,7 +12,7 @@ namespace XdChatShared.Packets {
                 return "UUID is invalid";
             }
 
-            if (Nickname == null || Nickname.Length > Constants.MaxNickLength || Nickname.Any(e => !char.IsLetterOrDigit(e))) {
+            if (!Validation.IsValidNickname(Nickname)) {
                 return "Nickname is invalid";
             }
 

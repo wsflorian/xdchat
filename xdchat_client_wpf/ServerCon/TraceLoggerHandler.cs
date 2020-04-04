@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using SimpleLogger.Logging;
 using SimpleLogger.Logging.Formatters;
+using XdChatShared.Misc;
+using XdChatShared;
 
 namespace xdchat_client_wpf.ServerCon {
     public class TraceLoggerHandler : ILoggerHandler {

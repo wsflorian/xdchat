@@ -2,6 +2,8 @@
 using System.Linq;
 using JetBrains.Annotations;
 using xdchat_server.ClientCon;
+using XdChatShared.Misc;
+using XdChatShared;
 
 namespace xdchat_server.Commands {
     public abstract class Command {
@@ -18,8 +20,8 @@ namespace xdchat_server.Commands {
         }
 
         public bool Matches(string name) {
-            return EqualsIgnoreCase(Name, name) 
-                   || AlternateNames.Any(alternateName => EqualsIgnoreCase(alternateName, name));
+            return Helper.EqualsIgnoreCase(Name, name) 
+                   || AlternateNames.Any(alternateName => Helper.EqualsIgnoreCase(alternateName, name));
         }
         
         public abstract void OnCommand([NotNull] ICommandSender sender, [NotNull] List<string> args);
@@ -28,9 +30,5 @@ namespace xdchat_server.Commands {
         protected static string JoinArguments([NotNull] IEnumerable<string> args, int from, int to) {
             return string.Join(' ', args.Take(to).Skip(from));
         }
-        
-        private static bool EqualsIgnoreCase(string a, string b) {
-            return string.Compare(a, b, System.StringComparison.OrdinalIgnoreCase) == 0;
-        } 
     }
 }

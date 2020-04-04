@@ -8,9 +8,12 @@ using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
 using xdchat_client_wpf.ServerCon;
+using XdChatShared.Connection;
+using XdChatShared.Misc;
 using XdChatShared;
 using XdChatShared.Events;
 using XdChatShared.Scheduler;
+using Validation = XdChatShared.Misc.Validation;
 
 
 namespace xdchat_client_wpf {
@@ -91,7 +94,7 @@ namespace xdchat_client_wpf {
                 XdClient.Instance.Uuid = Guid.NewGuid().ToString();
             }
 
-            if (XdConnection.TryParseEndpoint(ServerAdress, Constants.DefaultPort, out string host, out ushort port)) {
+            if (XdConnection.TryParseEndpoint(ServerAdress, Helper.DefaultPort, out string host, out ushort port)) {
                 XdClient.Instance.HostName = host;
                 XdClient.Instance.PortName = port;
             }
@@ -113,8 +116,8 @@ namespace xdchat_client_wpf {
         }
 
         private bool ConnectButtonClickable() {
-            return XdChatShared.Validation.IsValidNickname(Nickname) &&
-                   XdChatShared.Validation.IsValidHostPort(ServerAdress) &&
+            return Validation.IsValidNickname(Nickname) &&
+                   Validation.IsValidHostPort(ServerAdress) &&
                    !Connecting;
         }
         

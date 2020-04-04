@@ -1,4 +1,6 @@
-﻿namespace XdChatShared.Packets {
+﻿using XdChatShared.Misc;
+
+namespace XdChatShared.Packets {
     public class ServerPacketChatMessage : Packet {
         public string HashedUuid { get; set; }
         public string Text { get; set; }

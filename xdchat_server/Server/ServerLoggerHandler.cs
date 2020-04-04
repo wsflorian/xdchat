@@ -1,6 +1,7 @@
 ﻿using SimpleLogger.Logging;
 using SimpleLogger.Logging.Formatters;
-using xdchat_client_wpf.ServerCon;
+using XdChatShared.Misc;
+using XdChatShared;
 
 namespace xdchat_server {
     class ServerLoggerHandler : ILoggerHandler {

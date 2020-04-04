@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using xdchat_client_wpf;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.ServerCon;
-using XdChatShared;
+using XdChatShared.Connection;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 

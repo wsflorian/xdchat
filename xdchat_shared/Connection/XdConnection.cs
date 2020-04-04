@@ -2,10 +2,11 @@
 using System.Net;
 using System.Net.Sockets;
 using JetBrains.Annotations;
+using XdChatShared.Misc;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
-namespace XdChatShared {
+namespace XdChatShared.Connection {
     public abstract class XdConnection {
         private StringMessageStream _messageStream;
         
@@ -36,8 +37,8 @@ namespace XdChatShared {
             } catch (Exception e) {
                 XdScheduler.QueueSyncTask(() => OnDisconnect(e));
             } finally {
-                this.Client = DisposeAndNull(this.Client);
-                this._messageStream = DisposeAndNull(this._messageStream);
+                this.Client = Helper.DisposeAndNull(this.Client);
+                this._messageStream = Helper.DisposeAndNull(this._messageStream);
             }
         }
 
@@ -45,13 +46,9 @@ namespace XdChatShared {
             XdScheduler.CheckIsMainThread();
             if (!this.Connected) return;
 
-            this.Client = DisposeAndNull(this.Client);
+            this.Client = Helper.DisposeAndNull(this.Client);
         }
 
-        private static dynamic DisposeAndNull(IDisposable disposable) {
-            disposable?.Dispose();
-            return null;
-        }
 
         protected abstract void OnPacketReceived([NotNull] Packet packet);
 

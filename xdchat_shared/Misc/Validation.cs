@@ -3,8 +3,10 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using XdChatShared;
+using XdChatShared.Connection;
 
-namespace XdChatShared {
+namespace XdChatShared.Misc {
     public static class Validation {
         private static readonly Regex HostnameRegex = new Regex(@"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$");
         
@@ -36,7 +38,7 @@ namespace XdChatShared {
 
         public static bool IsValidNickname(string nickname) {
             return !string.IsNullOrEmpty(nickname) 
-                   && nickname.Length <= Constants.MaxNickLength 
+                   && nickname.Length <= Helper.MaxNickLength 
                    && IsAlphaNumeric(nickname);
         }
 

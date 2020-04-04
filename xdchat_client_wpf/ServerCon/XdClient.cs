@@ -9,6 +9,7 @@ using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
 using xdchat_client_wpf.ServerCon;
+using XdChatShared.Misc;
 using XdChatShared;
 using XdChatShared.Scheduler;
 
@@ -48,7 +49,7 @@ namespace xdchat_client_wpf {
 
         public ushort PortName {
             get {
-                int value = (int) Registry.GetValue(RegistryPath, RegistryPortValueName, (int) Constants.DefaultPort);
+                int value = (int) Registry.GetValue(RegistryPath, RegistryPortValueName, (int) Helper.DefaultPort);
                 return (ushort) value;
             }
             set => Registry.SetValue(RegistryPath, RegistryPortValueName, (int) value);

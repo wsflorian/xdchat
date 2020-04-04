@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using SimpleLogger;
+﻿using SimpleLogger;
 using xdchat_server.EventsImpl;
+using XdChatShared.Misc;
+using XdChatShared;
 using XdChatShared.Events;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
@@ -45,7 +44,7 @@ namespace xdchat_server.ClientCon {
 
             this.Nickname = packet.Nickname;
             this.Uuid = packet.Uuid;
-            this.HashedUuid = Sha256Hash(packet.Uuid);
+            this.HashedUuid = Helper.Sha256Hash(packet.Uuid);
             _authTimeout?.Stop();
 
             Logger.Log($"Client authenticated: {this.Nickname} ({this.Uuid})");
@@ -61,13 +60,5 @@ namespace xdchat_server.ClientCon {
         public ServerPacketClientList.User ToClientListUser() {
             return new ServerPacketClientList.User(Nickname, HashedUuid);
         }
-
-        private static string Sha256Hash(string value) {
-            using (SHA256 hash = SHA256.Create()) {
-                return string.Concat(hash
-                    .ComputeHash(Encoding.UTF8.GetBytes(value))
-                    .Select(item => item.ToString("x2")));
-            }
-        } 
     }
 }

@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using xdchat_server.ClientCon;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
+using XdChatShared.Connection;
 using XdChatShared;
 using XdChatShared.Modules;
 using XdChatShared.Packets;

@@ -1,4 +1,6 @@
-﻿namespace XdChatShared.Packets {
+﻿using XdChatShared.Misc;
+
+namespace XdChatShared.Packets {
     public class ClientPacketChatMessage : Packet {
         public string Text { get; set; }
 

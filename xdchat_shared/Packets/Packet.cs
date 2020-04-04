@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using XdChatShared.Misc;
 
 namespace XdChatShared.Packets {
     public abstract class Packet : IValidatable {

@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using JetBrains.Annotations;
 
-namespace XdChatShared {
+namespace XdChatShared.Connection {
     public class StringMessageStream : IDisposable {
         private readonly Stream _stream;
         

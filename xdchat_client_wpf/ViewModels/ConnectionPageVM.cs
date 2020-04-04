@@ -82,7 +82,7 @@ namespace xdchat_client_wpf {
                 ? $"{XdClient.Instance.HostName}:{XdClient.Instance.PortName}"
                 : "";
             
-            XdClient.Instance.Emitter.RegisterListener(this);
+            XdClient.Instance.EventEmitter.RegisterListener(this);
         }
 
         private void ClickConnectFunc() {

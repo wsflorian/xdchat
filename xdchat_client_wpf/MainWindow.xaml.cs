@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace xdchat_client_wpf {
+﻿namespace xdchat_client_wpf {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

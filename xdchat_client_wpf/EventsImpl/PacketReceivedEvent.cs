@@ -1,6 +1,4 @@
-﻿using xdchat_client;
-using XdChatShared;
-using XdChatShared.Events;
+﻿using XdChatShared.Events;
 using XdChatShared.Packets;
 
 namespace xdchat_client_wpf.EventsImpl

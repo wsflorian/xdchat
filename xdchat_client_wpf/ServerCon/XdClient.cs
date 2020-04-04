@@ -84,6 +84,13 @@ namespace xdchat_client_wpf {
             }
         }
 
+        public void Disconnect() {
+            XdScheduler.CheckIsMainThread();
+
+            this.Connection.End();
+            this.Connection = null;
+        }
+
         public void UpdateStatus(XdConnectionStatus status, string message, Exception e = null) {
             this.Status = status;
             EventEmitter.Emit(new ConnectionStatusEvent(status, message, e));

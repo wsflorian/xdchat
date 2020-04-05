@@ -7,7 +7,7 @@ namespace xdchat_server.Commands {
         }
 
         public string GetName() {
-            return "#CONSOLE";
+            return "[Console]";
         }
     }
 }

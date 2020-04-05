@@ -93,8 +93,8 @@ namespace xdchat_client_wpf.ViewModels {
         }
 
         private string GetUserNameByUuid(string uuid) {
-            if (uuid == null) return "Server";
-            return UserList.FirstOrDefault(e => e.HashedUuid == uuid)?.Nickname ?? "Unknown";
+            if (uuid == null) return "[Server]";
+            return UserList.FirstOrDefault(e => e.HashedUuid == uuid)?.Nickname ?? "[Unknown]";
         }
 
         [XdEventHandler(typeof(ServerPacketClientList))]

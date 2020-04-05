@@ -13,7 +13,7 @@ using Timer = System.Timers.Timer;
  *
  * Async Thread Pool
  * => Executes many tasks in parallel
- * => Used for blocking / calculation-intensive opoerations
+ * => Used for blocking / calculation-intensive operations
  *
  * WPF UI Thread (provided by WPF framework)
  * => Executes only one task at a time

@@ -1,4 +1,5 @@
 /.idea
+/packages
 nuget.config
 
 /xdchat_client/bin

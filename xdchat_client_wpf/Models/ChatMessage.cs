@@ -3,7 +3,8 @@ using xdchat_client_wpf.Annotations;
 
 namespace xdchat_client_wpf.Models {
     public class ChatMessage {
-        [UsedImplicitly] public DateTime TimeStamp { get; }
+        public DateTime TimeStamp { get; }
+        [UsedImplicitly] public string TimeStampFormatted => TimeStamp.ToString("dd.MM.YYYY HH:mm:ss");
         [UsedImplicitly] public string Message { get; }
         [UsedImplicitly] public string User { get; }
 

@@ -10,7 +10,7 @@ namespace XdChatShared.Packets {
                 return "HashedUuid is invalid";
             }
 
-            return !Validation.IsValidMessageText(Text) ? "Text is invalid" : null;
+            return !Validation.IsValidMessageText(Text, ' ', '\n') ? "Text is invalid" : null;
         }
     }
     

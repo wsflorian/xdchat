@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using xdchat_server.ClientCon;
 using xdchat_server.Server;
 
@@ -8,9 +9,11 @@ namespace xdchat_server.Commands.Impl {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
+            StringBuilder builder = new StringBuilder();
             XdServer.Instance.Mod<CommandModule>().Commands.ForEach(command => {
-                sender.SendMessage(" /" + command.Name + " - " + command.Description);
+                builder.Append(" /" + command.Name + " - " + command.Description + "\n");
             });
+            sender.SendMessage(builder.ToString());
         }
     }
 }

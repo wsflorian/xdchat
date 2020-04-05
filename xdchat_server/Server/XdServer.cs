@@ -53,7 +53,12 @@ namespace xdchat_server.Server {
             Logger.Log("Started! :)");
             try {
                 while (this._serverSocket != null) {
-                    TcpClient tcpClient = await _serverSocket.AcceptTcpClientAsync();
+                    TcpClient tcpClient;
+                    try {
+                        tcpClient = await _serverSocket.AcceptTcpClientAsync();
+                    } catch (ObjectDisposedException) {
+                        break; // Server stopped
+                    }
                     XdScheduler.QueueSyncTask(() => {
                         XdClientConnection client = new XdClientConnection();
                         client.Initialize(tcpClient);
@@ -80,6 +85,9 @@ namespace xdchat_server.Server {
             _serverSocket = null;
             
             this._moduleHolder.UnregisterAll();
+            
+            Logger.Log("Exiting...");
+            Environment.Exit(0);
         }
 
         public XdClientConnection GetClientByNickname(string nickname) {

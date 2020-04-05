@@ -16,12 +16,36 @@
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         
-        <ListBox Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
-            
+        <ListBox ClipToBounds="False" Grid.Row="0" Grid.Column="0" Margin="0,0,10,10"
+                 ItemsSource="{Binding Path=ChatLog, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="130" />
+                            <ColumnDefinition Width="240" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Column="0" FontSize="12" Text="{Binding TimeStamp}"/>
+                        <TextBlock Grid.Column="1" FontSize="12" Text="{Binding User}" />
+                        <TextBlock Grid.Column="2" FontSize="12"
+                                   Text="{Binding Path=Message}" TextWrapping="Wrap"
+                                   HorizontalAlignment="Stretch" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         
-        <ListBox Grid.Row="0" Grid.Column="1" Margin="0,0,0,10" >
-            
+        <ListBox ClipToBounds="False" Grid.Row="0" Grid.Column="1" Margin="0,0,0,10"
+                 ItemsSource="{Binding Path=UserList, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Grid.Column="0" FontSize="12" Text="{Binding Nickname}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         
         <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="15" TextAlignment="Left" Padding="4" />

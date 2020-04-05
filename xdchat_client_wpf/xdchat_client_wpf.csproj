@@ -60,6 +60,7 @@
     </ApplicationDefinition>
     <Compile Include="EventsImpl\ConnectionStatusEvent.cs" />
     <Compile Include="EventsImpl\PacketReceivedEvent.cs" />
+    <Compile Include="Models\ChatMessage.cs" />
     <Compile Include="ServerCon\PingModule.cs" />
     <Compile Include="ServerCon\TraceLoggerHandler.cs" />
     <Compile Include="ServerCon\XdClient.cs" />

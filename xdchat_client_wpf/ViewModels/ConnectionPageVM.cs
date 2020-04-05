@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Net.Sockets;
 using System.Windows;
 
 using xdchat_client;
@@ -12,6 +14,7 @@ using XdChatShared;
 using XdChatShared.Connection;
 using XdChatShared.Events;
 using XdChatShared.Misc;
+using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
 
@@ -118,11 +121,17 @@ namespace xdchat_client_wpf {
                    Validation.IsValidHostPort(ServerAdress) &&
                    !Connecting;
         }
+
+        [XdChatShared.Events.EventHandler(typeof(ServerPacketDisconnect))]
+        public void OnDisconnectInfo(PacketReceivedEvent evt) {
+            ServerPacketDisconnect packet = (ServerPacketDisconnect) evt.Packet;
+            AddLogMessage("Disconnected: " + packet.Text);
+        }
         
         [XdChatShared.Events.EventHandler]
         public void HandleStatusUpdate(ConnectionStatusEvent evt) {
             string message = evt.Info;
-            if (evt.Error != null) {
+            if (evt.Error != null && !IsSocketReadInterrupt(evt.Error) && !(evt.Error is EndOfStreamException)) {
                 message += "\nException: " + evt.Error.Message;
             }
 
@@ -136,6 +145,7 @@ namespace xdchat_client_wpf {
                     ConnectButtonActionCommand = new ActionCommand(ClickConnectFunc, ConnectButtonClickable);
                     MainWindow.ChatEnabled = false;
                     MainWindow.SelectedIndex = 0;
+                    XdClient.Instance.Disconnect();
                     break;
                 case XdConnectionStatus.CONNECTING:
                 case XdConnectionStatus.AUTHENTICATING:
@@ -149,6 +159,12 @@ namespace xdchat_client_wpf {
                     break;
             }
         }
+        
+        private static bool IsSocketReadInterrupt(Exception ex) {
+            return ex.InnerException != null 
+                   && ex.InnerException is SocketException socketEx
+                   && socketEx.SocketErrorCode == SocketError.Interrupted;
+        } 
 
         protected virtual void PropChanged(string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

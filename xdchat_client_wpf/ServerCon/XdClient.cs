@@ -33,13 +33,29 @@ namespace xdchat_client_wpf {
             new ObservableCollection<ServerLogMessage>();
 
         public string Nickname {
-            get => (string)Registry.GetValue(RegistryPath, RegistryNicknameValueName, "");
-            set => Registry.SetValue(RegistryPath, RegistryNicknameValueName, value);
+            get {
+                string debugNick = Environment.GetEnvironmentVariable("NICKNAME");
+                if (debugNick != null) return debugNick;
+                
+                return (string) Registry.GetValue(RegistryPath, RegistryNicknameValueName, "");
+            }
+            set {
+                if (Environment.GetEnvironmentVariable("NICKNAME") != null) return;
+                Registry.SetValue(RegistryPath, RegistryNicknameValueName, value);
+            }
         }
 
         public string Uuid {
-            get => (string) Registry.GetValue(RegistryPath, RegistryUuidValueName, null);
-            set => Registry.SetValue(RegistryPath, RegistryUuidValueName, value);
+            get {
+                string debugUuid = Environment.GetEnvironmentVariable("UUID");
+                if (debugUuid != null) return debugUuid;
+                
+                return (string) Registry.GetValue(RegistryPath, RegistryUuidValueName, null);
+            }
+            set {
+                if (Environment.GetEnvironmentVariable("UUID") != null) return;
+                Registry.SetValue(RegistryPath, RegistryUuidValueName, value);
+            }
         }
 
         public string HostName {
@@ -107,6 +123,7 @@ namespace xdchat_client_wpf {
         }
 
         public override void Stop() {
+            this.Disconnect();
         }
     }
 }

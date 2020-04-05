@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,10 +14,8 @@ using XdChatShared.Misc;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
-namespace xdchat_client_wpf
-{
-    public class ChatPageVM : INotifyPropertyChanged, IEventListener
-    {
+namespace xdchat_client_wpf {
+    public class ChatPageVM : INotifyPropertyChanged, IEventListener {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private ObservableCollection<ChatMessage> _chatLog;
@@ -55,22 +54,22 @@ namespace xdchat_client_wpf
                 PropChanged(nameof(InputEnabled));
             }
         }
-        
-        public ActionCommand SendMessageCommand { get; set; }
-        
-        public MainWindowVM MainWindow { get; set; }
-        
-        public ChatPageVM(MainWindowVM mainWindow)
-        {
-            this.MainWindow = mainWindow;
+
+        public ActionCommand SendMessageCommand { get; }
+
+        private MainWindowVM _mainWindow;
+
+        public ChatPageVM(MainWindowVM mainWindow) {
+            this._mainWindow = mainWindow;
             ChatLog = new ObservableCollection<ChatMessage>();
             Message = "";
+            _mainWindow.WindowTitle = null;
             InputEnabled = true;
             SendMessageCommand = new ActionCommand(SendMessage, CanSendMessage);
-            
+
             XdClient.Instance.EventEmitter.RegisterListener(this);
         }
-        
+
         private void SendMessage() {
             InputEnabled = false;
             XdScheduler.QueueSyncTask(() => {
@@ -85,15 +84,9 @@ namespace xdchat_client_wpf
             return Message.Trim().Length > 0 && InputEnabled;
         }
 
-        public void AddChatMessage(string user, string message) {
+        private void AddChatMessage(string user, string message) {
             Action<ChatMessage> addMethod = ChatLog.Add;
-            Application.Current?.Dispatcher?.BeginInvoke(addMethod, 
-                new ChatMessage(){ User = user, Message = message, TimeStamp = DateTime.Now });
-        }
-        
-        protected virtual void PropChanged( string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Application.Current?.Dispatcher?.BeginInvoke(addMethod, new ChatMessage(DateTime.Now, message, user));
         }
 
         private string GetUserNameByUuid(string uuid) {
@@ -103,19 +96,24 @@ namespace xdchat_client_wpf
 
         [XdChatShared.Events.EventHandler(Filter = typeof(ServerPacketClientList))]
         public void HandleUserListUpdate(PacketReceivedEvent evt) {
-            var packet = (ServerPacketClientList) evt.Packet;
-            packet.Users.Add(new ServerPacketClientList.User(
-                XdClient.Instance.Nickname, 
-                Helper.Sha256Hash(XdClient.Instance.Uuid)));
-            
-            UserList = new ObservableCollection<ServerPacketClientList.User>(packet.Users.OrderBy(e => e.Nickname));
+            ServerPacketClientList packet = (ServerPacketClientList) evt.Packet;
+            List<ServerPacketClientList.User> users = new List<ServerPacketClientList.User>(packet.Users) {
+                new ServerPacketClientList.User(XdClient.Instance.Nickname,
+                    Helper.Sha256Hash(XdClient.Instance.Uuid))
+            };
+
+            UserList = new ObservableCollection<ServerPacketClientList.User>(users.OrderBy(user => user.Nickname));
         }
-        
+
         [XdChatShared.Events.EventHandler(Filter = typeof(ServerPacketChatMessage))]
         public void HandleIncomingChatMessage(PacketReceivedEvent evt) {
-            var packet = (ServerPacketChatMessage) evt.Packet;
-            
+            ServerPacketChatMessage packet = (ServerPacketChatMessage) evt.Packet;
+
             AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text);
+        }
+        
+        protected virtual void PropChanged(string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

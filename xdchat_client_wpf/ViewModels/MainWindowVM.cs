@@ -7,11 +7,19 @@ namespace xdchat_client_wpf {
     public class MainWindowVM : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private Page _connectionPage;
-        private Page _chatPage;
+        private Page _connectionPage, _chatPage;
         private bool _chatEnabled;
         private int _selectedIndex;
-
+        private string _windowTitle;
+        
+        public string WindowTitle {
+            get => (string.IsNullOrEmpty(_windowTitle) ? "" : _windowTitle + " - ") + "XdChat"  ;
+            set {
+                _windowTitle = value;
+                PropChanged(nameof(WindowTitle));
+            }
+        }
+        
         public Page ConnectionPage {
             get => _connectionPage;
             set {

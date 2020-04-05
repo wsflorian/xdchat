@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1080" MinHeight="480" MinWidth="720">
+        Title="{Binding WindowTitle}" Height="720" Width="1080" MinHeight="480" MinWidth="720">
     <TabControl Padding="8" SelectedIndex="{Binding Path=SelectedIndex, UpdateSourceTrigger=PropertyChanged}">
         <TabItem Header="Connection">
             <Frame Content="{Binding ConnectionPage, UpdateSourceTrigger=PropertyChanged}" Padding="128" FocusVisualStyle="{x:Null}"></Frame>

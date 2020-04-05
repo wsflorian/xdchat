@@ -142,9 +142,12 @@ namespace xdchat_client_wpf {
             switch (evt.Status) {
                 case XdConnectionStatus.NOT_CONNECTED:
                     ButtonText = "Connect to Server";
+                    MainWindow.WindowTitle = null;
+                    
                     ConnectButtonActionCommand = new ActionCommand(ClickConnectFunc, ConnectButtonClickable);
                     MainWindow.ChatEnabled = false;
                     MainWindow.SelectedIndex = 0;
+                    
                     XdClient.Instance.Disconnect();
                     break;
                 case XdConnectionStatus.CONNECTING:
@@ -153,9 +156,12 @@ namespace xdchat_client_wpf {
                     break;
                 case XdConnectionStatus.CONNECTED:
                     ButtonText = "Disconnect";
+                    MainWindow.WindowTitle = XdClient.Instance.HostName + ":" + XdClient.Instance.PortName;
+                    
                     ConnectButtonActionCommand = new ActionCommand(ClickDisconnectFunc, ConnectButtonClickable);
                     MainWindow.ChatEnabled = true;
                     MainWindow.SelectedIndex = 1;
+                    
                     break;
             }
         }

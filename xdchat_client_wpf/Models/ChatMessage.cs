@@ -2,8 +2,14 @@
 
 namespace xdchat_client_wpf.Models {
     public class ChatMessage {
-        public DateTime TimeStamp { get; set; }
-        public string Message { get; set; }
-        public string User { get; set; }
+        public DateTime TimeStamp { get; }
+        public string Message { get; }
+        public string User { get; }
+
+        public ChatMessage(DateTime timeStamp, string message, string user) {
+            TimeStamp = timeStamp;
+            Message = message;
+            User = user;
+        }
     }
 }

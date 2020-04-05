@@ -23,16 +23,22 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="240" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
                         
-                        <TextBlock Grid.Column="0" FontSize="12" Text="{Binding TimeStamp}"/>
-                        <TextBlock Grid.Column="1" FontSize="12" Text="{Binding User}" />
-                        <TextBlock Grid.Column="2" FontSize="12"
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
+                            <TextBlock FontSize="12" Text="{Binding User}" FontWeight="Bold" />
+                            <TextBlock FontSize="12" Text=" at " Foreground="Gray" />
+                            <TextBlock FontSize="12" Text="{Binding TimeStamp}" Foreground="Gray" />
+                        </StackPanel>
+                        
+                        <TextBlock Grid.Column="0" Grid.Row="1" FontSize="12"
                                    Text="{Binding Path=Message}" TextWrapping="Wrap"
-                                   HorizontalAlignment="Stretch" />
+                                   HorizontalAlignment="Stretch"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -43,11 +49,17 @@
                  HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Grid.Column="0" FontSize="12" Text="{Binding Nickname}"/>
+                    <TextBlock FontSize="12" Text="{Binding Nickname}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         
-        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="15" TextAlignment="Left" Padding="4" />
+        <TextBox Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"
+                 Grid.Column="0" Grid.ColumnSpan="2" FontSize="15" TextAlignment="Left" Padding="4"
+                 IsEnabled="{Binding Path=InputEnabled, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding SendMessageCommand, UpdateSourceTrigger=PropertyChanged}"/>
+            </TextBox.InputBindings>
+        </TextBox>
     </Grid>
 </Page>

@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Net.Sockets;
+using System.Windows;
 using xdchat_client_wpf;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.ServerCon;

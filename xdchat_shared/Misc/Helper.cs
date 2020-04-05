@@ -5,7 +5,7 @@ using System.Text;
 
 namespace XdChatShared.Misc {
     public class Helper {
-        public static readonly int MaxNickLength = 20;
+        public static readonly int MaxNickLength = 15;
         public static readonly ushort DefaultPort = 10000;
         
         public static string Sha256Hash(string value) {

@@ -15,8 +15,8 @@ namespace XdChatShared.Packets {
         }
         
         public class User : IValidatable {
-            public string Nickname { get; set; }
-            public string HashedUuid { get; set; }
+            public string Nickname { get; }
+            public string HashedUuid { get; }
 
             public User(string nickname, string hashedUuid) {
                 Nickname = nickname;

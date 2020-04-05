@@ -69,7 +69,7 @@ namespace xdchat_server {
 
             _moduleHolder.UnregisterAll();
             XdServer.Instance.Clients.Remove(this);
-            XdServer.Instance.SendUserListUpdate(this);
+            XdServer.Instance.SendUserListUpdate();
         }
         
         public TModule Mod<TModule>() where TModule : Module<XdClientConnection> {

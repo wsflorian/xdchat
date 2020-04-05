@@ -95,12 +95,14 @@ namespace xdchat_server {
             return Clients.FindAll(con => con.Mod<AuthModule>().Authenticated);
         }
 
-        public void SendUserListUpdate(XdClientConnection sender) {
-            this.Broadcast(new ServerPacketClientList() {
-                Users = GetAuthenticatedClients()
-                    .FindAll(con => con != sender)
-                    .ConvertAll(con => con.Mod<AuthModule>().ToClientListUser())
-            }, con => con.Mod<AuthModule>().Authenticated);
+        public void SendUserListUpdate() {
+            GetAuthenticatedClients().ForEach(client => {
+                client.Send(new ServerPacketClientList() {
+                    Users = GetAuthenticatedClients()
+                        .FindAll(client2 => client != client2)
+                        .ConvertAll(client2 => client2.Mod<AuthModule>().ToClientListUser())
+                });
+            });
         }
 
         public void Broadcast(Packet packet, Predicate<XdClientConnection> predicate) {

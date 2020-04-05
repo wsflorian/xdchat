@@ -48,7 +48,7 @@ namespace xdchat_server.ClientCon {
             _authTimeout?.Stop();
 
             Logger.Log($"Client authenticated: {this.Nickname} ({this.Uuid})");
-            XdServer.Instance.SendUserListUpdate(ev.Client);
+            XdServer.Instance.SendUserListUpdate();
         }
 
         private void HandleTimeout() {

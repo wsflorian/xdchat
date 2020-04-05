@@ -4,7 +4,7 @@ using SimpleLogger;
 using xdchat_server.EventsImpl;
 using XdChatShared.Scheduler;
 
-namespace xdchat_server {
+namespace xdchat_server.Server {
     public class ConsoleHandler {
         private readonly List<string> _lineBuffer = new List<string>();
         private bool _readMode, _running = true;

@@ -2,6 +2,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 using xdchat_server.ClientCon;
+using xdchat_server.Server;
 using XdChatShared.Misc;
 
 namespace xdchat_server.Commands {

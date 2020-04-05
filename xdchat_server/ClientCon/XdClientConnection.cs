@@ -1,15 +1,15 @@
-﻿using SimpleLogger;
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Sockets;
-using xdchat_server.ClientCon;
+using SimpleLogger;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
+using xdchat_server.Server;
 using XdChatShared.Connection;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 
-namespace xdchat_server {
+namespace xdchat_server.ClientCon {
     public class XdClientConnection : XdConnection, ICommandSender, IExtendable<XdClientConnection> {
         private readonly ModuleHolder<XdClientConnection> _moduleHolder;
 

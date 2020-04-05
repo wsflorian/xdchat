@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Input;
+using xdchat_client_wpf.Annotations;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
+using xdchat_client_wpf.ServerCon;
 using XdChatShared.Events;
 using XdChatShared.Misc;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
-namespace xdchat_client_wpf {
+namespace xdchat_client_wpf.ViewModels {
     public class ChatPageVM : INotifyPropertyChanged, IEventListener {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -23,7 +22,7 @@ namespace xdchat_client_wpf {
         private string _message;
         private bool _inputEnabled;
 
-        public ObservableCollection<ChatMessage> ChatLog {
+        [UsedImplicitly] public ObservableCollection<ChatMessage> ChatLog {
             get => _chatLog;
             set {
                 _chatLog = value;
@@ -31,7 +30,7 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public ObservableCollection<ServerPacketClientList.User> UserList {
+        [UsedImplicitly] public ObservableCollection<ServerPacketClientList.User> UserList {
             get => _userList;
             set {
                 _userList = value;
@@ -39,7 +38,7 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public string Message {
+        [UsedImplicitly] public string Message {
             get => _message;
             set {
                 _message = value;
@@ -47,7 +46,7 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public bool InputEnabled {
+        [UsedImplicitly] public bool InputEnabled {
             get => _inputEnabled;
             set {
                 _inputEnabled = value;
@@ -55,15 +54,12 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public ActionCommand SendMessageCommand { get; }
+        [UsedImplicitly] public ActionCommand SendMessageCommand { get; }
+        
 
-        private MainWindowVM _mainWindow;
-
-        public ChatPageVM(MainWindowVM mainWindow) {
-            this._mainWindow = mainWindow;
+        public ChatPageVM() {
             ChatLog = new ObservableCollection<ChatMessage>();
             Message = "";
-            _mainWindow.WindowTitle = null;
             InputEnabled = true;
             SendMessageCommand = new ActionCommand(SendMessage, CanSendMessage);
 

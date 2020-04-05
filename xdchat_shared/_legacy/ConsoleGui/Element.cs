@@ -5,8 +5,7 @@ namespace ConsoleGui
     public abstract class Element
     {
         public Element Parent { get; set; }
-            = null;
-        public ElemSize Size { get; set; }
+        public ElemSize Size { get; }
             = new ElemSize(2, 2);
 
         public ElemPos Position { get; set; }

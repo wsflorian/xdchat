@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using xdchat_server.Server;
 
-namespace xdchat_server.Commands {
+namespace xdchat_server.Commands.Impl {
     public class SayCommand: Command {
         public SayCommand() : base("broadcast", "Broadcast a message", "bc", "say") {
         }

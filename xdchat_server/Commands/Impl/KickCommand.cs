@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using xdchat_server.ClientCon;
+using xdchat_server.Server;
 
-namespace xdchat_server.Commands {
+namespace xdchat_server.Commands.Impl {
     public class KickCommand : Command {
         public KickCommand() : base("kick", "Kick a connected user") {}
 

@@ -2,7 +2,7 @@
 using SimpleLogger.Logging.Formatters;
 using XdChatShared.Misc;
 
-namespace xdchat_server {
+namespace xdchat_server.Server {
     class ServerLoggerHandler : ILoggerHandler {
         private readonly ILoggerFormatter _formatter = new XdLoggerFormatter();
         private readonly ConsoleHandler _handler;

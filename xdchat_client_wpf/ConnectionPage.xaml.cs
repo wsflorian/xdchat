@@ -1,7 +1,5 @@
-﻿using System.Windows.Controls;
-
-namespace xdchat_client_wpf {
-    public partial class ConnectionPage : Page {
+﻿namespace xdchat_client_wpf {
+    public partial class ConnectionPage {
         public ConnectionPage() {
             InitializeComponent();
         }

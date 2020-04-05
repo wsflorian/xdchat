@@ -1,15 +1,11 @@
 using System;
-using System.Linq;
 using System.Net.Sockets;
-using System.Windows;
-using xdchat_client_wpf;
 using xdchat_client_wpf.EventsImpl;
-using xdchat_client_wpf.ServerCon;
 using XdChatShared.Connection;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 
-namespace xdchat_client {
+namespace xdchat_client_wpf.ServerCon {
     public class XdServerConnection : XdConnection, IExtendable<XdServerConnection> {
         private ModuleHolder<XdServerConnection> _moduleHolder;
 
@@ -41,7 +37,7 @@ namespace xdchat_client {
         }
 
         protected override void OnDisconnect(Exception ex) {
-            XdClient.Instance.UpdateStatus(XdConnectionStatus.NOT_CONNECTED, "Connection closed", ex);
+            XdClient.Instance.UpdateStatus(XdConnectionStatus.NotConnected, "Connection closed", ex);
         }
 
         public TModule Mod<TModule>() where TModule : Module<XdServerConnection> {

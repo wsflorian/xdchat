@@ -17,7 +17,7 @@ namespace XdChatShared.Misc {
         } 
         
         public static bool EqualsIgnoreCase(string a, string b) {
-            return string.Compare(a, b, System.StringComparison.OrdinalIgnoreCase) == 0;
+            return string.Compare(a, b, StringComparison.OrdinalIgnoreCase) == 0;
         } 
         
         public static dynamic DisposeAndNull(IDisposable disposable) {

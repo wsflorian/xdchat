@@ -55,22 +55,22 @@ namespace ConsoleGui
 
         public override void OnBlur()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override void OnHover(int x, int y)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override void OnScroll()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void OnSubmit()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

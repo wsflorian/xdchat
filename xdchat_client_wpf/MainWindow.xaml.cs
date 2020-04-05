@@ -1,4 +1,6 @@
-﻿namespace xdchat_client_wpf {
+﻿using xdchat_client_wpf.ViewModels;
+
+namespace xdchat_client_wpf {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using xdchat_server.ClientCon;
 
-namespace xdchat_server.Commands {
+namespace xdchat_server.Commands.Impl {
     public class PingCommand : Command {
         public PingCommand() : base("ping", "Show your ping") {
         }

@@ -5,15 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 using SimpleLogger;
 using SimpleLogger.Logging.Handlers;
-using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
-using xdchat_client_wpf.ServerCon;
-using XdChatShared.Misc;
 using XdChatShared;
+using XdChatShared.Misc;
 using XdChatShared.Scheduler;
 
-namespace xdchat_client_wpf {
+namespace xdchat_client_wpf.ServerCon {
     public class XdClient : XdService {
         private const string RegistryPath = @"HKEY_CURRENT_USER\Software\XdClient";
         private const string RegistryUuidValueName = "uuid";
@@ -82,22 +80,22 @@ namespace xdchat_client_wpf {
             try {
                 // Event must be sent sync
                 await XdScheduler.QueueSyncTask(() =>
-                    UpdateStatus(XdConnectionStatus.CONNECTING, $"Connecting to {HostName}:{PortName}"));
+                    UpdateStatus(XdConnectionStatus.Connecting, $"Connecting to {HostName}:{PortName}"));
 
                 // Connection is done async because it can block up to 30 seconds (timeout)
                 TcpClient client = new TcpClient(HostName, PortName);
 
                 // Future actions are done sync again
                 await XdScheduler.QueueSyncTask(() => {
-                    UpdateStatus(XdConnectionStatus.AUTHENTICATING, $"Authenticating as {Nickname} ({UuidShort})");
+                    UpdateStatus(XdConnectionStatus.Authenticating, $"Authenticating as {Nickname} ({UuidShort})");
                     this.Connection = new XdServerConnection();
                     this.Connection.Initialize(client);
-                    UpdateStatus(XdConnectionStatus.CONNECTED, "Connection established");
+                    UpdateStatus(XdConnectionStatus.Connected, "Connection established");
                 });
             }
             catch (SocketException e) {
                 await XdScheduler.QueueSyncTask(() =>
-                    UpdateStatus(XdConnectionStatus.NOT_CONNECTED, "Connection failed", e));
+                    UpdateStatus(XdConnectionStatus.NotConnected, "Connection failed", e));
             }
         }
 

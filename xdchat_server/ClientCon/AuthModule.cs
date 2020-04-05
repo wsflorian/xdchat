@@ -1,5 +1,6 @@
 ﻿using SimpleLogger;
 using xdchat_server.EventsImpl;
+using xdchat_server.Server;
 using XdChatShared.Misc;
 using XdChatShared.Events;
 using XdChatShared.Modules;

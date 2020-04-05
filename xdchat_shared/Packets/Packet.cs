@@ -46,7 +46,6 @@ namespace XdChatShared.Packets {
             }
         }
         
-        [CanBeNull]
         public abstract string Validate();
     }
 }

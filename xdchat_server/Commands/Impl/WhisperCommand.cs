@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using xdchat_server.ClientCon;
+using xdchat_server.Server;
 
-namespace xdchat_server.Commands {
+namespace xdchat_server.Commands.Impl {
     public class WhisperCommand : Command {
         public WhisperCommand() : base("whisper", "Send a private message to another user","msg", "w") {
         }

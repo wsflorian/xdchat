@@ -1,5 +1,6 @@
 ﻿using System;
 using xdchat_server.EventsImpl;
+using xdchat_server.Server;
 using XdChatShared.Events;
 using XdChatShared.Modules;
 using XdChatShared.Packets;

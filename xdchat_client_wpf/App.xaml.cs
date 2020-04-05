@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using xdchat_client_wpf.ServerCon;
 using XdChatShared.Scheduler;
 
 namespace xdchat_client_wpf {

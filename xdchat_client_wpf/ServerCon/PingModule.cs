@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using xdchat_client;
 using xdchat_client_wpf.EventsImpl;
 using XdChatShared.Events;
 using XdChatShared.Modules;
@@ -16,7 +15,7 @@ namespace xdchat_client_wpf.ServerCon
         {
         }
 
-        [XdChatShared.Events.EventHandler(typeof(ServerPacketPing))]
+        [EventHandler(typeof(ServerPacketPing))]
         public void HandlePacketEvent(PacketReceivedEvent evt) {
            //  XdClient.Instance.Connection
            Trace.WriteLine("responding with pong");

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using xdchat_server.ClientCon;
+using xdchat_server.Server;
 
-namespace xdchat_server.Commands {
+namespace xdchat_server.Commands.Impl {
     public class ListCommand : Command {
         public ListCommand() : base("list", "Show a list of all connected users") { }
 

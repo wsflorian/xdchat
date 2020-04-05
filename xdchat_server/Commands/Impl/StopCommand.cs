@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using xdchat_server.Server;
 
-namespace xdchat_server.Commands {
+namespace xdchat_server.Commands.Impl {
     public class StopCommand : Command {
         public StopCommand() : base("stop", "Stop the server", "end", "gtfo") {
         }

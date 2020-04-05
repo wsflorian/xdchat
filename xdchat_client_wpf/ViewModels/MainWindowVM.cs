@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
+using JetBrains.Annotations;
 
-
-namespace xdchat_client_wpf {
+namespace xdchat_client_wpf.ViewModels {
     public class MainWindowVM : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -12,7 +11,7 @@ namespace xdchat_client_wpf {
         private int _selectedIndex;
         private string _windowTitle;
         
-        public string WindowTitle {
+        [UsedImplicitly] public string WindowTitle { 
             get => (string.IsNullOrEmpty(_windowTitle) ? "" : _windowTitle + " - ") + "xdchat"  ;
             set {
                 _windowTitle = value;
@@ -20,7 +19,7 @@ namespace xdchat_client_wpf {
             }
         }
         
-        public Page ConnectionPage {
+        [UsedImplicitly] public Page ConnectionPage {
             get => _connectionPage;
             set {
                 _connectionPage = value;
@@ -28,7 +27,7 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public Page ChatPage {
+        [UsedImplicitly] public Page ChatPage {
             get => _chatPage;
             set {
                 _chatPage = value;
@@ -36,7 +35,7 @@ namespace xdchat_client_wpf {
             }
         }
         
-        public bool ChatEnabled {
+        [UsedImplicitly] public bool ChatEnabled {
             get => _chatEnabled;
             set {
                 _chatEnabled = value;
@@ -44,7 +43,7 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public int SelectedIndex {
+        [UsedImplicitly] public int SelectedIndex {
             get => _selectedIndex;
             set {
                 _selectedIndex = value;
@@ -57,8 +56,9 @@ namespace xdchat_client_wpf {
             ChatPage = new ChatPage();
             
             ConnectionPage.DataContext = new ConnectionPageVM(this);
-            ChatPage.DataContext = new ChatPageVM(this);
+            ChatPage.DataContext = new ChatPageVM();
             
+            WindowTitle = null;
             ChatEnabled = false;
         }
 

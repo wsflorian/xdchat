@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Sockets;
 using System.Windows;
-
-using xdchat_client;
+using JetBrains.Annotations;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
 using xdchat_client_wpf.ServerCon;
-using XdChatShared;
 using XdChatShared.Connection;
 using XdChatShared.Events;
 using XdChatShared.Misc;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
-
-namespace xdchat_client_wpf {
+namespace xdchat_client_wpf.ViewModels {
     public class ConnectionPageVM : INotifyPropertyChanged, IEventListener {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -27,7 +23,7 @@ namespace xdchat_client_wpf {
         private string _buttonText;
         private ActionCommand _connectButtonActionCommand;
 
-        public string ServerAdress {
+        [UsedImplicitly] public string ServerAdress {
             get => _serverAddress;
             set {
                 _serverAddress = value;
@@ -36,7 +32,7 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public string Nickname {
+        [UsedImplicitly] public string Nickname {
             get => _nickname;
             set {
                 if (value.Length > Helper.MaxNickLength) return;
@@ -46,7 +42,7 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public string ButtonText {
+        [UsedImplicitly] public string ButtonText {
             get => _buttonText;
             set {
                 _buttonText = value;
@@ -54,18 +50,17 @@ namespace xdchat_client_wpf {
             }
         }
 
-        public bool TextFieldsEnabled {
-            get => !Connecting && XdClient.Instance.Status != XdConnectionStatus.CONNECTED;
+        [UsedImplicitly] public bool TextFieldsEnabled {
+            get => !Connecting && XdClient.Instance.Status != XdConnectionStatus.Connected;
         }
 
-        public ObservableCollection<ServerLogMessage> ServerLog {
+        [UsedImplicitly] public ObservableCollection<ServerLogMessage> ServerLog {
             get => XdClient.Instance.LogMessages;
         }
         
-        private bool Connecting { get => XdClient.Instance.Status == XdConnectionStatus.CONNECTING || XdClient.Instance.Status == XdConnectionStatus.AUTHENTICATING; }
+        private bool Connecting => XdClient.Instance.Status == XdConnectionStatus.Connecting || XdClient.Instance.Status == XdConnectionStatus.Authenticating;
 
-
-        public ActionCommand ConnectButtonActionCommand {
+        [UsedImplicitly] public ActionCommand ConnectButtonActionCommand {
             get => _connectButtonActionCommand;
             set {
                 _connectButtonActionCommand = value;
@@ -140,7 +135,7 @@ namespace xdchat_client_wpf {
             ConnectButtonActionCommand.RaiseCanExecuteChanged();
 
             switch (evt.Status) {
-                case XdConnectionStatus.NOT_CONNECTED:
+                case XdConnectionStatus.NotConnected:
                     ButtonText = "Connect to Server";
                     MainWindow.WindowTitle = null;
                     
@@ -150,11 +145,11 @@ namespace xdchat_client_wpf {
                     
                     XdClient.Instance.Disconnect();
                     break;
-                case XdConnectionStatus.CONNECTING:
-                case XdConnectionStatus.AUTHENTICATING:
+                case XdConnectionStatus.Connecting:
+                case XdConnectionStatus.Authenticating:
                     ButtonText = "Waiting to connect...";
                     break;
-                case XdConnectionStatus.CONNECTED:
+                case XdConnectionStatus.Connected:
                     ButtonText = "Disconnect";
                     MainWindow.WindowTitle = XdClient.Instance.HostName + ":" + XdClient.Instance.PortName;
                     

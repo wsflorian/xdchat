@@ -5,13 +5,13 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using SimpleLogger;
 using xdchat_server.ClientCon;
-using XdChatShared.Misc;
 using XdChatShared;
+using XdChatShared.Misc;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
 
-namespace xdchat_server {
+namespace xdchat_server.Server {
     public class XdServer : XdService, IExtendable<XdServer> {
         public static XdServer Instance { get; } = new XdServer();
 

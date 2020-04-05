@@ -102,7 +102,7 @@ namespace xdchat_client_wpf.ServerCon {
         public void Disconnect() {
             XdScheduler.CheckIsMainThread();
 
-            this.Connection.End();
+            this.Connection?.End();
             this.Connection = null;
         }
 

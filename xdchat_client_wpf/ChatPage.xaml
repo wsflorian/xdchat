@@ -54,8 +54,9 @@
             </ListBox.ItemTemplate>
         </ListBox>
         
-        <TextBox Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"
-                 Grid.Column="0" Grid.ColumnSpan="2" FontSize="15" TextAlignment="Left" Padding="4"
+        <TextBox Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}"
+                 Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                 FontSize="15" TextAlignment="Left" Padding="4" Name="MessageBox"
                  IsEnabled="{Binding Path=InputEnabled, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding SendMessageCommand, UpdateSourceTrigger=PropertyChanged}"/>

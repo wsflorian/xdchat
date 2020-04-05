@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using xdchat_client_wpf.Annotations;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
@@ -21,6 +22,7 @@ namespace xdchat_client_wpf.ViewModels {
         private ObservableCollection<ServerPacketClientList.User> _userList;
         private string _message;
         private bool _inputEnabled;
+        private readonly TextBox _messageBox;
 
         [UsedImplicitly] public ObservableCollection<ChatMessage> ChatLog {
             get => _chatLog;
@@ -56,8 +58,9 @@ namespace xdchat_client_wpf.ViewModels {
 
         [UsedImplicitly] public ActionCommand SendMessageCommand { get; }
         
-
-        public ChatPageVM() {
+        public ChatPageVM(Page chatPage) {
+            this._messageBox = (TextBox) chatPage.FindName("MessageBox");
+            
             ChatLog = new ObservableCollection<ChatMessage>();
             Message = "";
             InputEnabled = true;
@@ -73,6 +76,10 @@ namespace xdchat_client_wpf.ViewModels {
                 AddChatMessage(XdClient.Instance.Nickname, Message);
                 Message = "";
                 InputEnabled = true;
+
+                XdScheduler.QueueAsyncTaskScheduled(() => {
+                    Application.Current?.Dispatcher?.BeginInvoke(new Func<bool>(_messageBox.Focus));
+                }, 50);
             });
         }
 

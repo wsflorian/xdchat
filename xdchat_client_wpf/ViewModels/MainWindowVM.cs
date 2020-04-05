@@ -54,9 +54,9 @@ namespace xdchat_client_wpf.ViewModels {
         public MainWindowVM() {
             ConnectionPage = new ConnectionPage();
             ChatPage = new ChatPage();
-            
+
             ConnectionPage.DataContext = new ConnectionPageVM(this);
-            ChatPage.DataContext = new ChatPageVM();
+            ChatPage.DataContext = new ChatPageVM(ChatPage);
             
             WindowTitle = null;
             ChatEnabled = false;

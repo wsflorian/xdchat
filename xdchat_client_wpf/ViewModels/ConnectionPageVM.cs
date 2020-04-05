@@ -72,7 +72,7 @@ namespace xdchat_client_wpf.ViewModels {
 
         public ConnectionPageVM(MainWindowVM mainWindow) {
             this.MainWindow = mainWindow;
-            
+
             ConnectButtonActionCommand = new ActionCommand(ClickConnectFunc, ConnectButtonClickable);
             ButtonText = "Connect to Server";
 
@@ -109,8 +109,6 @@ namespace xdchat_client_wpf.ViewModels {
             Application.Current?.Dispatcher?.BeginInvoke(addMethod, new ServerLogMessage(){Message = message, TimeStamp = DateTime.Now});
         }
         
-        
-
         private bool ConnectButtonClickable() {
             return Validation.IsValidNickname(Nickname) &&
                    Validation.IsValidHostPort(ServerAdress) &&

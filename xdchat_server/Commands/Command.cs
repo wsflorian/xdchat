@@ -6,6 +6,15 @@ using xdchat_server.Server;
 using XdChatShared.Misc;
 
 namespace xdchat_server.Commands {
+    /* => Command system <=
+     *
+     * General
+     * => Use the help command to get a list of all commands
+     * => Every user message starting with a / is a command
+     * => Every message from the console is a command
+     * => Both commands and aliases can be used to execute a command
+     * => ConsoleCommandSender represents the console when inputting commands
+     */
     public abstract class Command {
         protected static ConsoleCommandSender ConsoleCommandSender => XdServer.Instance.Mod<CommandModule>().ConsoleCommandSender;
         

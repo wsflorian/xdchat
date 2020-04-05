@@ -4,6 +4,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using XdChatShared.Misc;
 
+/* => Packet format <=
+ *
+ * => Packets are formatted in json
+ * => Every packet has a 'type' field. It contains the class name of the packet
+ * => Every packet has a 'data' field. It contains the fields of a packet
+ *
+ * => All packets extend Packet
+ * => Packets starting with "ServerPacket" are sent by the server
+ * => Packets starting with "ClientPacket" are sent by the client
+ */
 namespace XdChatShared.Packets {
     public abstract class Packet : IValidatable {
         public bool IsType(Type type) {

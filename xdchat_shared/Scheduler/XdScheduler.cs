@@ -5,6 +5,20 @@ using System.Threading.Tasks;
 using SimpleLogger;
 using Timer = System.Timers.Timer;
 
+/* => Threading System <=
+ * 
+ * Main Thread
+ * => Executes only one task at a time
+ * => Used for everything everything regarding Client, Server or Connections to avoid any race conditions
+ *
+ * Async Thread Pool
+ * => Executes many tasks in parallel
+ * => Used for blocking / calculation-intensive opoerations
+ *
+ * WPF UI Thread (provided by WPF framework)
+ * => Executes only one task at a time
+ * => Used for (some) UI operations
+ */
 namespace XdChatShared.Scheduler {
     public static class XdScheduler {
         private static readonly SyncTaskScheduler MainThreadScheduler = new SyncTaskScheduler("MainThread");

@@ -8,6 +8,13 @@ using XdChatShared.Scheduler;
 using Timer = System.Timers.Timer;
 
 namespace xdchat_server.ClientCon {
+    /* => Pinging <=
+     *
+     * => The server sends a ping packet every 10 seconds
+     * => The client shall immediately respond with a pong packet upon receiving a ping packet
+     * => The ping is the time between sending the packet and receiving the answer
+     * => When trying to send a ping packet and there's no answer to the previous packet, the user will time out
+     */
     public class PingModule : Module<XdClientConnection>, IEventListener {
         public long Ping { get; private set; } = -1;
         
@@ -36,7 +43,7 @@ namespace xdchat_server.ClientCon {
             this._lastPingSent = DateTime.Now;
         }
         
-        [XdChatShared.Events.XdEventHandler(typeof(ClientPacketPong), true)]
+        [XdEventHandler(typeof(ClientPacketPong), true)]
         public void HandlePongPacket(PacketReceivedEvent _) {
             this.Ping = (long) (DateTime.Now - this._lastPingSent).TotalMilliseconds;
             this._lastPingReceived = DateTime.Now;

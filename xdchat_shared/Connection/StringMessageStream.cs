@@ -4,6 +4,12 @@ using System.Text;
 using JetBrains.Annotations;
 
 namespace XdChatShared.Connection {
+    /* => String message protocol <=
+     * 
+     * Message format
+     * => length (4 byte - uint): Contains the length (n) of 'data'
+     * => data (n byte): Contains the string encoded as utf8 
+     */
     public class StringMessageStream : IDisposable {
         private readonly Stream _stream;
         

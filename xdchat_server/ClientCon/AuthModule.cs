@@ -9,6 +9,28 @@ using XdChatShared.Scheduler;
 using Timer = System.Timers.Timer;
 
 namespace xdchat_server.ClientCon {
+    /* => Authentication <=
+     *
+     * General
+     * => Every nickname can be connected once at a time
+     * => Every uuid can be connected once at a time
+     * => The first packet every client sends is an auth packet containing Nickname and Uuid
+     * => If there's no auth packet within 2 seconds after the connection is established, the user will time out
+     *
+     * Nickname
+     * => Can be freely changed
+     *
+     * Uuid
+     * => Randomly generated for each client
+     * => Always stays the same (saved on the client's computer)
+     * => Used by the server to uniquely identify a user
+     * => Shall not be shared to any other user
+     *
+     * HashedUuid
+     * => A SHA256 hash of a users Uuid
+     * => Is used by others to uniquely identify a user
+     * => Can be shared to other users
+     */
     public class AuthModule : Module<XdClientConnection>, IEventListener {
         public bool Authenticated => Nickname != null;
         public string Nickname { get; private set; }

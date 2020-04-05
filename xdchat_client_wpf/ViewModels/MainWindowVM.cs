@@ -13,7 +13,7 @@ namespace xdchat_client_wpf {
         private string _windowTitle;
         
         public string WindowTitle {
-            get => (string.IsNullOrEmpty(_windowTitle) ? "" : _windowTitle + " - ") + "XdChat"  ;
+            get => (string.IsNullOrEmpty(_windowTitle) ? "" : _windowTitle + " - ") + "xdchat"  ;
             set {
                 _windowTitle = value;
                 PropChanged(nameof(WindowTitle));

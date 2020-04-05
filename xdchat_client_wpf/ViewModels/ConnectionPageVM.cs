@@ -117,13 +117,13 @@ namespace xdchat_client_wpf.ViewModels {
                    !Connecting;
         }
 
-        [XdChatShared.Events.EventHandler(typeof(ServerPacketDisconnect))]
+        [XdEventHandler(typeof(ServerPacketDisconnect))]
         public void OnDisconnectInfo(PacketReceivedEvent evt) {
             ServerPacketDisconnect packet = (ServerPacketDisconnect) evt.Packet;
             AddLogMessage("Disconnected: " + packet.Text);
         }
         
-        [XdChatShared.Events.EventHandler]
+        [XdEventHandler]
         public void HandleStatusUpdate(ConnectionStatusEvent evt) {
             string message = evt.Info;
             if (evt.Error != null && !IsSocketReadInterrupt(evt.Error) && !(evt.Error is EndOfStreamException)) {

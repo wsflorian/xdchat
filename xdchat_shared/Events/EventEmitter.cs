@@ -18,7 +18,7 @@ namespace XdChatShared.Events {
             List<EventRegistration> registrations = _listeners[listener] = new List<EventRegistration>();
             
             listener.GetType().GetMethods().ToList().ForEach(info => {
-                object[] attributes = info.GetCustomAttributes(typeof(EventHandler), false);
+                object[] attributes = info.GetCustomAttributes(typeof(XdEventHandler), false);
                 
                 if (attributes.Length < 1) return;
                 if (info.GetParameters().Length < 1) {
@@ -32,7 +32,7 @@ namespace XdChatShared.Events {
                     return;
                 }
                 
-                registrations.Add(new EventRegistration((EventHandler) attributes[0], info, listener));
+                registrations.Add(new EventRegistration((XdEventHandler) attributes[0], info, listener));
             });
         }
         
@@ -68,7 +68,6 @@ namespace XdChatShared.Events {
 
                     return moduleContextProvider.AnonymousModuleContext == eventContextProvider.AnonymousModuleContext;
                 })
-                .OrderByDescending(registration => registration.HandlerInfo.Priority)
                 .ToList()
                 .ForEach(registration => {
                     registration.Method.Invoke(registration.Listener, new object[] {ev});

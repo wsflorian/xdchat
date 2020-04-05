@@ -28,7 +28,7 @@ namespace xdchat_server.ClientCon {
             _authTimeout?.Stop();
         }
 
-        [EventHandler(typeof(ClientPacketAuth), true)]
+        [XdEventHandler(typeof(ClientPacketAuth), true)]
         public void HandleAuthPacket(PacketReceivedEvent ev) {
             ClientPacketAuth packet = (ClientPacketAuth) ev.Packet;
             

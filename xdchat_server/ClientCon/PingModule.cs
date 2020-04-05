@@ -36,7 +36,7 @@ namespace xdchat_server.ClientCon {
             this._lastPingSent = DateTime.Now;
         }
         
-        [XdChatShared.Events.EventHandler(typeof(ClientPacketPong), true)]
+        [XdChatShared.Events.XdEventHandler(typeof(ClientPacketPong), true)]
         public void HandlePongPacket(PacketReceivedEvent _) {
             this.Ping = (long) (DateTime.Now - this._lastPingSent).TotalMilliseconds;
             this._lastPingReceived = DateTime.Now;

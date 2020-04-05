@@ -15,7 +15,7 @@ namespace xdchat_client_wpf.ServerCon
         {
         }
 
-        [EventHandler(typeof(ServerPacketPing))]
+        [XdEventHandler(typeof(ServerPacketPing))]
         public void HandlePacketEvent(PacketReceivedEvent evt) {
            //  XdClient.Instance.Connection
            Trace.WriteLine("responding with pong");

@@ -10,7 +10,7 @@ namespace xdchat_server.ClientCon {
         public ChatModule(XdClientConnection context) : base(context, XdServer.Instance) {
         }
         
-        [EventHandler(typeof(ClientPacketChatMessage), true)]
+        [XdEventHandler(typeof(ClientPacketChatMessage), true)]
         public void HandleAuthPacket(PacketReceivedEvent ev) {
             ClientPacketChatMessage packet = (ClientPacketChatMessage) ev.Packet;
             Logger.Log($"<{ev.Client.Mod<AuthModule>().Nickname}>: {packet.Text}");

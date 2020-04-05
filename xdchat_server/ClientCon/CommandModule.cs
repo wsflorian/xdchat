@@ -45,7 +45,7 @@ namespace xdchat_server.ClientCon {
             command.OnCommand(sender, args);
         }
         
-        [EventHandler]
+        [XdEventHandler]
         public void OnConsoleInput(ConsoleInputEvent ev) {
             EmitCommand(ConsoleCommandSender, ev.Input);
         }

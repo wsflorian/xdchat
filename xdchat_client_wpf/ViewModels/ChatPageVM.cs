@@ -90,7 +90,7 @@ namespace xdchat_client_wpf.ViewModels {
             return UserList.FirstOrDefault(e => e.HashedUuid == uuid)?.Nickname ?? "Unknown";
         }
 
-        [XdChatShared.Events.EventHandler(Filter = typeof(ServerPacketClientList))]
+        [XdEventHandler(typeof(ServerPacketClientList))]
         public void HandleUserListUpdate(PacketReceivedEvent evt) {
             ServerPacketClientList packet = (ServerPacketClientList) evt.Packet;
             List<ServerPacketClientList.User> users = new List<ServerPacketClientList.User>(packet.Users) {
@@ -101,7 +101,7 @@ namespace xdchat_client_wpf.ViewModels {
             UserList = new ObservableCollection<ServerPacketClientList.User>(users.OrderBy(user => user.Nickname));
         }
 
-        [XdChatShared.Events.EventHandler(Filter = typeof(ServerPacketChatMessage))]
+        [XdEventHandler(typeof(ServerPacketChatMessage))]
         public void HandleIncomingChatMessage(PacketReceivedEvent evt) {
             ServerPacketChatMessage packet = (ServerPacketChatMessage) evt.Packet;
 

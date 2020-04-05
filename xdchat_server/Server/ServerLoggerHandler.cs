@@ -1,7 +1,6 @@
 ﻿using SimpleLogger.Logging;
 using SimpleLogger.Logging.Formatters;
 using XdChatShared.Misc;
-using XdChatShared;
 
 namespace xdchat_server {
     class ServerLoggerHandler : ILoggerHandler {

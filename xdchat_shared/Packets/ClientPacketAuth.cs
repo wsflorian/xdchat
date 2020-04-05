@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using XdChatShared.Misc;
 
 namespace XdChatShared.Packets {

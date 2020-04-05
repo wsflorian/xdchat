@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using XdChatShared;
 using XdChatShared.Connection;
 
 namespace XdChatShared.Misc {

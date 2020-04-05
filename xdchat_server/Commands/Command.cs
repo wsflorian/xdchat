@@ -3,7 +3,6 @@ using System.Linq;
 using JetBrains.Annotations;
 using xdchat_server.ClientCon;
 using XdChatShared.Misc;
-using XdChatShared;
 
 namespace xdchat_server.Commands {
     public abstract class Command {

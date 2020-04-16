@@ -1,7 +1,8 @@
-﻿using SimpleLogger;
-using xdchat_server.EventsImpl;
+﻿using xdchat_server.EventsImpl;
 using xdchat_server.Server;
+using xdchat_shared.Logger.Impl;
 using XdChatShared.Events;
+using XdChatShared.Logger;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 
@@ -13,7 +14,7 @@ namespace xdchat_server.ClientCon {
         [XdEventHandler(typeof(ClientPacketChatMessage), true)]
         public void HandleAuthPacket(PacketReceivedEvent ev) {
             ClientPacketChatMessage packet = (ClientPacketChatMessage) ev.Packet;
-            Logger.Log($"<{ev.Client.Mod<AuthModule>().Nickname}>: {packet.Text}");
+            XdLogger.Info($"<{ev.Client.Mod<AuthModule>().Nickname}>: {packet.Text}");
             
             if (packet.Text.StartsWith("/")) {
                 XdServer.Instance.Mod<CommandModule>().EmitCommand(ev.Client, packet.Text);

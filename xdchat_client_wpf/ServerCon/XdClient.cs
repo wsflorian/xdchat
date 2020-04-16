@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.Win32;
-using SimpleLogger;
-using SimpleLogger.Logging.Handlers;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
+using xdchat_shared.Logger.Impl;
 using XdChatShared;
+using XdChatShared.Logger;
 using XdChatShared.Misc;
 using XdChatShared.Scheduler;
 
@@ -114,10 +115,12 @@ namespace xdchat_client_wpf.ServerCon {
         public override void Start() {
             string logPath = Environment.GetEnvironmentVariable("LOG_PATH");
             if (logPath != null) {
-                Logger.LoggerHandlerManager.AddHandler(new FileLoggerHandler(new XdLoggerFormatter(), logPath));
+                XdLogger.Instance.Publishers.Add(new FileLogPublisher(logPath));
             }
 
-            Logger.LoggerHandlerManager.AddHandler(new TraceLoggerHandler());
+            XdLogger.Instance.Publishers.Add(new TraceLogPublisher());
+            
+            XdLogger.Info("Client is ready");
         }
 
         public override void Stop() {

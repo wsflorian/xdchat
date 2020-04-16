@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using SimpleLogger;
 using xdchat_server.EventsImpl;
+using xdchat_shared.Logger.Impl;
+using XdChatShared.Logger;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server.Server {
@@ -11,7 +12,7 @@ namespace xdchat_server.Server {
 
         public ConsoleHandler() {
             XdScheduler.QueueAsyncTask(RunReadTask, true);
-            Logger.LoggerHandlerManager.AddHandler(new ServerLoggerHandler(this));
+            XdLogger.Instance.Publishers.Add(new ServerLogPublisher(this));
         }
 
         private void RunReadTask() {

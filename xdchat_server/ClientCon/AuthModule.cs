@@ -1,8 +1,9 @@
-﻿using SimpleLogger;
-using xdchat_server.EventsImpl;
+﻿using xdchat_server.EventsImpl;
 using xdchat_server.Server;
+using xdchat_shared.Logger.Impl;
 using XdChatShared.Misc;
 using XdChatShared.Events;
+using XdChatShared.Logger;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
@@ -69,7 +70,7 @@ namespace xdchat_server.ClientCon {
             this.HashedUuid = Helper.Sha256Hash(packet.Uuid);
             _authTimeout?.Stop();
 
-            Logger.Log($"Client authenticated: {this.Nickname} ({this.Uuid})");
+            XdLogger.Info($"Client authenticated: {this.Nickname} ({this.Uuid})");
             XdServer.Instance.SendUserListUpdate();
         }
 

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using SimpleLogger;
 using xdchat_server.ClientCon;
+using xdchat_shared.Logger.Impl;
 using XdChatShared;
+using XdChatShared.Logger;
 using XdChatShared.Misc;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
@@ -37,12 +38,12 @@ namespace xdchat_server.Server {
 
             this._serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), Helper.DefaultPort);
 
-            Logger.Log("Starting...");
+            XdLogger.Info("Starting...");
             try {
                 this._serverSocket.Start();
             }
             catch (Exception e) {
-                Logger.Log(Logger.Level.Error, $"Cannot start server :( {e}");
+                XdLogger.Error($"Cannot start server :( {e}");
                 return;
             }
             
@@ -50,7 +51,7 @@ namespace xdchat_server.Server {
         }
 
         private async Task RunAcceptTask() {
-            Logger.Log("Started! :)");
+            XdLogger.Info("Started! :)");
             try {
                 while (this._serverSocket != null) {
                     TcpClient tcpClient;
@@ -66,27 +67,27 @@ namespace xdchat_server.Server {
                     });
                 }
             } catch (SocketException) {
-                Logger.Log("Server stopped");
+                XdLogger.Info("Server stopped");
             }
         }
         
         public override void Stop() {
             XdScheduler.CheckIsMainThread();
 
-            Logger.Log("Stopping handlers...");
+            XdLogger.Info("Stopping handlers...");
             _consoleHandler.Stop();
 
-            Logger.Log("Disconnecting clients...");
+            XdLogger.Info("Disconnecting clients...");
             this.Clients.ForEach(client => client.Disconnect("Server has been stopped"));
                 
-            Logger.Log("Stopping socket...");
+            XdLogger.Info("Stopping socket...");
             
             _serverSocket.Stop();
             _serverSocket = null;
             
             this._moduleHolder.UnregisterAll();
             
-            Logger.Log("Exiting...");
+            XdLogger.Info("Exiting...");
             Environment.Exit(0);
         }
 

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
-using SimpleLogger;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
 using xdchat_server.Server;
+using xdchat_shared.Logger.Impl;
 using XdChatShared.Connection;
+using XdChatShared.Logger;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 
@@ -24,7 +25,7 @@ namespace xdchat_server.ClientCon {
             _moduleHolder.RegisterModule<ChatModule>();
             _moduleHolder.RegisterModule<AuthModule>();
             
-            Logger.Log($"Client connected: {this.RemoteIp}");
+            XdLogger.Info($"Client connected: {this.RemoteIp}");
         }
 
         protected override void OnPacketReceived(Packet packet) {
@@ -50,20 +51,20 @@ namespace xdchat_server.ClientCon {
         }
 
         public void Disconnect(string message) {
-            Logger.Log($"Disconnected: {message}");
+            XdLogger.Info($"Disconnected: {message}");
             Send(new ServerPacketDisconnect() { Text = message });
             base.End();
         }
 
         protected override void OnDisconnect(Exception ex) {
             if (ex == null) {
-                Logger.Log($"Client disconnected: {this.RemoteIp}");
+                XdLogger.Info($"Client disconnected: {this.RemoteIp}");
             } else if (ex.GetType() == typeof(EndOfStreamException) || ex.GetType() == typeof(IOException)) {
-                Logger.Log($"Client disconnected ({ex.GetType()}): {this.RemoteIp}");
+                XdLogger.Info($"Client disconnected ({ex.GetType()}): {this.RemoteIp}");
             } else if (ex.GetType() == typeof(ProtocolException)) {
-                Logger.Log($"Client disconnected (ProtocolException): {this.RemoteIp} - {ex.Message}");
+                XdLogger.Info($"Client disconnected (ProtocolException): {this.RemoteIp} - {ex.Message}");
             } else {
-                Logger.Log($"Unknown exception in RunThread: {ex}");
+                XdLogger.Info($"Unknown exception in RunThread: {ex}");
             }
 
             _moduleHolder.UnregisterAll();

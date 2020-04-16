@@ -38,10 +38,6 @@
       <HintPath>..\packages\JetBrains.Annotations.2020.1.0-eap6\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SimpleLogger, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\SimpleLogger.1.0.0\lib\net40\SimpleLogger.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -62,7 +58,6 @@
     <Compile Include="EventsImpl\PacketReceivedEvent.cs" />
     <Compile Include="Models\ChatMessage.cs" />
     <Compile Include="ServerCon\PingModule.cs" />
-    <Compile Include="ServerCon\TraceLoggerHandler.cs" />
     <Compile Include="ServerCon\XdClient.cs" />
     <Compile Include="ServerCon\XdConnectionStatus.cs" />
     <Compile Include="ServerCon\XdServerConnection.cs" />

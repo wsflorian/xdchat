@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using SimpleLogger;
+using xdchat_shared.Logger.Impl;
 using XdChatShared.Modules;
 using XdChatShared.Scheduler;
 
@@ -22,13 +22,13 @@ namespace XdChatShared.Events {
                 
                 if (attributes.Length < 1) return;
                 if (info.GetParameters().Length < 1) {
-                    Logger.Log(Logger.Level.Warning, "EventHandler methods require at least one parameter");
+                    XdLogger.Warn("EventHandler methods require at least one parameter");
                     return;
                 }
 
                 Type parameterType = info.GetParameters()[0].ParameterType;
                 if (!parameterType.IsSubclassOf(typeof(Event))) {
-                    Logger.Log(Logger.Level.Warning, "EventHandler parameter must be of type Event");
+                    XdLogger.Warn("EventHandler parameter must be of type Event");
                     return;
                 }
                 
@@ -46,7 +46,7 @@ namespace XdChatShared.Events {
                     if (registration.HandlerInfo.Filter == null) return true; // Not filter set
 
                     if (!(ev is IEventFilter filter)) {
-                        Logger.Log(Logger.Level.Warning, $"Event method '{registration.Method.Name}' has event filter, but event cannot be filtered");
+                        XdLogger.Warn($"Event method '{registration.Method.Name}' has event filter, but event cannot be filtered");
                         return true; // Event is not filterable
                     }
 
@@ -57,12 +57,12 @@ namespace XdChatShared.Events {
                     
                     IAnonymousContextProvider moduleContextProvider = r.Listener as IAnonymousContextProvider;
                     if (moduleContextProvider == null) {
-                        Logger.Log(Logger.Level.Warning, $"Event method is scoped to context, but listener doesn't provide context (not a module?)");
+                        XdLogger.Warn($"Event method is scoped to context, but listener doesn't provide context (not a module?)");
                         return true;
                     }
 
                     if (!(ev is IAnonymousContextProvider eventContextProvider)) {
-                        Logger.Log(Logger.Level.Warning, $"Event method is scoped to context, but event doesn't provide context");
+                        XdLogger.Warn($"Event method is scoped to context, but event doesn't provide context");
                         return true;
                     }
 

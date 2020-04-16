@@ -2,7 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using SimpleLogger;
+using xdchat_shared.Logger.Impl;
+using XdChatShared.Logger;
 using Timer = System.Timers.Timer;
 
 /* => Threading System <=
@@ -50,7 +51,7 @@ namespace XdChatShared.Scheduler {
                 try {
                     await func.Invoke();
                 } catch (Exception e) {
-                    Logger.Log($"Uncaught exception in task: {e}");
+                    XdLogger.Info($"Uncaught exception in task: {e}");
                 }
             }, CancellationToken.None, longRunning ? TaskCreationOptions.LongRunning : TaskCreationOptions.None, scheduler);
         }

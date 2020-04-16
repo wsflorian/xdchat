@@ -1,9 +1,10 @@
-﻿using SimpleLogger;
+﻿using xdchat_shared.Logger.Impl;
+using XdChatShared.Logger;
 
 namespace xdchat_server.Commands {
     public class ConsoleCommandSender : ICommandSender {
         public void SendMessage(string text) {
-            Logger.Log("> " + text);
+            XdLogger.Info("> " + text);
         }
 
         public string GetName() {

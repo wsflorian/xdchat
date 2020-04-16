@@ -35,7 +35,7 @@ namespace xdchat_client_wpf.ViewModels {
         [UsedImplicitly] public string Nickname {
             get => _nickname;
             set {
-                if (value.Length > Helper.MaxNickLength) return;
+                if (value == null || value.Length > Helper.MaxNickLength) return;
                 _nickname = value;
                 PropChanged(nameof(Nickname));
                 ConnectButtonActionCommand.RaiseCanExecuteChanged();

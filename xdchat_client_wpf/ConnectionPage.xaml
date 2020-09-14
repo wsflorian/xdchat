@@ -23,7 +23,7 @@
             </StackPanel>
             <StackPanel Margin="0,0,0,8" HorizontalAlignment="Stretch">
                 <Label Content="Server Address" Padding="2" FontSize="12" />
-                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=ServerAdress, UpdateSourceTrigger=PropertyChanged}" Name="ServerAddress" IsEnabled="{Binding Path=TextFieldsEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox FontSize="15" TextAlignment="Left" Padding="4" Text="{Binding Path=ServerAddress, UpdateSourceTrigger=PropertyChanged}" Name="ServerAddress" IsEnabled="{Binding Path=TextFieldsEnabled, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <Button Content="{Binding Path=ButtonText, UpdateSourceTrigger=PropertyChanged}" Cursor="Hand" FontSize="15" Padding="0,3,0,3" Command="{Binding ConnectButtonActionCommand, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>

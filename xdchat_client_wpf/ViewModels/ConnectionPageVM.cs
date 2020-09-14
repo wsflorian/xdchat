@@ -23,7 +23,7 @@ namespace xdchat_client_wpf.ViewModels {
         private string _buttonText;
         private ActionCommand _connectButtonActionCommand;
 
-        [UsedImplicitly] public string ServerAdress {
+        [UsedImplicitly] public string ServerAddress {
             get => _serverAddress;
             set {
                 _serverAddress = value;
@@ -77,7 +77,7 @@ namespace xdchat_client_wpf.ViewModels {
             ButtonText = "Connect to Server";
 
             Nickname = XdClient.Instance.Nickname;
-            ServerAdress = XdClient.Instance.HostName != null
+            ServerAddress = XdClient.Instance.HostName != null
                 ? $"{XdClient.Instance.HostName}:{XdClient.Instance.PortName}"
                 : "";
             
@@ -90,7 +90,7 @@ namespace xdchat_client_wpf.ViewModels {
                 XdClient.Instance.Uuid = Guid.NewGuid().ToString();
             }
 
-            if (XdConnection.TryParseEndpoint(ServerAdress, Helper.DefaultPort, out string host, out ushort port)) {
+            if (XdConnection.TryParseEndpoint(ServerAddress, Helper.DefaultPort, out string host, out ushort port)) {
                 XdClient.Instance.HostName = host;
                 XdClient.Instance.PortName = port;
             }
@@ -111,7 +111,7 @@ namespace xdchat_client_wpf.ViewModels {
         
         private bool ConnectButtonClickable() {
             return Validation.IsValidNickname(Nickname) &&
-                   Validation.IsValidHostPort(ServerAdress) &&
+                   Validation.IsValidHostPort(ServerAddress) &&
                    !Connecting;
         }
 

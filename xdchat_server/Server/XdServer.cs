@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using xdchat_server.ClientCon;
+using xdchat_server.Db;
 using xdchat_shared.Logger.Impl;
 using XdChatShared;
-using XdChatShared.Logger;
 using XdChatShared.Misc;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
@@ -20,17 +21,33 @@ namespace xdchat_server.Server {
         
         public List<XdClientConnection> Clients { get; } = new List<XdClientConnection>();
         
+        public ServerConfig Config { get; private set; }
+        
         private ConsoleHandler _consoleHandler;
 
         private TcpListener _serverSocket;
         
+        private XdDatabase Db => new XdDatabase(new DbContextOptionsBuilder()
+            .UseMySql(Config.SqlConnection)
+            .Options);
+
         private XdServer() {
             _moduleHolder = new ModuleHolder<XdServer>(this);
         }
 
         public override void Start() {
             XdScheduler.CheckIsMainThread();
+            
             this._consoleHandler = new ConsoleHandler();
+            
+            this.Config = ServerConfig.load();
+            if (this.Config == null) {
+                ServerConfig.create();
+                XdLogger.Info("config.json was created. Please configure it and restart the server");
+                Environment.Exit(1);
+                return;
+            }
+            
             this._moduleHolder.RegisterModule<CommandModule>();
 
             if (_serverSocket != null)

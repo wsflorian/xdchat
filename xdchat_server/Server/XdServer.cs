@@ -47,7 +47,10 @@ namespace xdchat_server.Server {
                 Environment.Exit(1);
                 return;
             }
-            
+
+            XdLogger.Info("Checking database...");
+            this.Db.Database.EnsureCreated();
+
             this._moduleHolder.RegisterModule<CommandModule>();
 
             if (_serverSocket != null)
@@ -55,7 +58,7 @@ namespace xdchat_server.Server {
 
             this._serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), Helper.DefaultPort);
 
-            XdLogger.Info("Starting...");
+            XdLogger.Info("Starting server...");
             try {
                 this._serverSocket.Start();
             }

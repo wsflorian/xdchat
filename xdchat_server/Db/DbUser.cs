@@ -1,10 +1,26 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace xdchat_server.Db {
     public class DbUser {
-        [Key] [Required] public int Id { get; set; }
-        [Required] public string Uuid { get; set; }
-        [Required] public DbRank Rank { get; set; }
+
+        [Key] public int Id { get; set; }
+        public string Uuid { get; set; }
+        
+        //public int RankId { get; set; }
+        public virtual DbRank Rank { get; set; }
+
+        public static DbUser GetByUuid(XdDatabase db, string uuid) {
+            return db.Users.Include(a => a.Rank)
+                .FirstOrDefault(a => a.Uuid == uuid);
+        }
+
+        public static DbUser Create(XdDatabase db, string uuid) {
+            return db.Users.Add(new DbUser {
+                Uuid = uuid,
+                Rank = db.Ranks.Single(rank => rank.IsDefault)
+            }).Entity;
+        }
     }
 }

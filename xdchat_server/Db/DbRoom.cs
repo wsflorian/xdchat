@@ -2,7 +2,8 @@
 
 namespace xdchat_server.Db {
     public class DbRoom {
-        [Key] [Required] public int Id { get; set; }
-        [Required] public string Name { get; set; }
+        [Key] public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

@@ -6,7 +6,6 @@ using xdchat_server.EventsImpl;
 using xdchat_server.Server;
 using xdchat_shared.Logger.Impl;
 using XdChatShared.Connection;
-using XdChatShared.Logger;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 
@@ -20,7 +19,7 @@ namespace xdchat_server.ClientCon {
 
         public override void Initialize(TcpClient client) {
             base.Initialize(client);
-            
+
             _moduleHolder.RegisterModule<PingModule>();
             _moduleHolder.RegisterModule<ChatModule>();
             _moduleHolder.RegisterModule<AuthModule>();
@@ -66,6 +65,8 @@ namespace xdchat_server.ClientCon {
             } else {
                 XdLogger.Info($"Unknown exception in RunThread: {ex}");
             }
+            
+            XdServer.Instance.EventEmitter.Emit(new ClientDisconnectedEvent(this));
 
             _moduleHolder.UnregisterAll();
             XdServer.Instance.Clients.Remove(this);

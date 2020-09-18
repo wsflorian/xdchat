@@ -1,9 +1,6 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using xdchat_shared.Logger.Impl;
 
 namespace xdchat_server.Server {
     public class ServerConfig {

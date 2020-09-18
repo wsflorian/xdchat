@@ -2,7 +2,6 @@
 using xdchat_server.Server;
 using xdchat_shared.Logger.Impl;
 using XdChatShared.Events;
-using XdChatShared.Logger;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 

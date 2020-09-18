@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using xdchat_server.EventsImpl;
 using xdchat_shared.Logger.Impl;
-using XdChatShared.Logger;
 using XdChatShared.Scheduler;
 
 namespace xdchat_server.Server {

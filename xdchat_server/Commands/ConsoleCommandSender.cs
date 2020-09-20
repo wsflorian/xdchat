@@ -9,5 +9,9 @@ namespace xdchat_server.Commands {
         public string GetName() {
             return "[Console]";
         }
+
+        public bool HasPermission(string permission) {
+            return true;
+        }
     }
 }

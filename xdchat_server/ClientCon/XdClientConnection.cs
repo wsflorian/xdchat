@@ -49,6 +49,10 @@ namespace xdchat_server.ClientCon {
             return this.Mod<AuthModule>().Nickname;
         }
 
+        public bool HasPermission(string permission) {
+            return this.Mod<AuthModule>().DbUser.Rank.HasPermission(permission);
+        }
+        
         public void Disconnect(string message) {
             XdLogger.Info($"Disconnected: {message}");
             Send(new ServerPacketDisconnect() { Text = message });

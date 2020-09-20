@@ -41,6 +41,7 @@ namespace xdchat_server.ClientCon {
         public string HashedUuid { get; private set; }
 
         public DbUserSession DbSession { get; private set; }
+        public DbUser DbUser => DbSession.User;
         
         private Timer _authTimeout;
 

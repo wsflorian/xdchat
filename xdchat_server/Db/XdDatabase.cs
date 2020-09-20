@@ -14,8 +14,8 @@ namespace xdchat_server.Db {
             EntityTypeBuilder<DbRankPermission> rankPerm = modelBuilder.Entity<DbRankPermission>();
             rankPerm.HasKey(o => new {o.RankId, o.Permission});
             rankPerm.HasData(DbRankPermission.All(1, "*"));
-            rankPerm.HasData(DbRankPermission.All(2, "user.kick", "user.whisper", "server.ping"));
-            rankPerm.HasData(DbRankPermission.All(3, "user.whisper", "server.ping"));
+            rankPerm.HasData(DbRankPermission.All(2, "user.kick", "user.whisper", "server.ping", "server.list", "server.help"));
+            rankPerm.HasData(DbRankPermission.All(3, "user.whisper", "server.ping", "server.list", "server.help"));
 
             modelBuilder.Entity<DbRoom>().HasData(new DbRoom {Id = 1, Name = "Default", IsDefault = true});
         }

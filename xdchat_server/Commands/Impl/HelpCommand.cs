@@ -9,6 +9,11 @@ namespace xdchat_server.Commands.Impl {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
+            if (!sender.HasPermission("server.help")) {
+                sender.SendMessage("No permission");
+                return;
+            }
+            
             StringBuilder builder = new StringBuilder();
             XdServer.Instance.Mod<CommandModule>().Commands.ForEach(command => {
                 builder.Append(" /" + command.Name + " - " + command.Description + "\n");

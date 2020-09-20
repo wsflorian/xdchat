@@ -8,6 +8,11 @@ namespace xdchat_server.Commands.Impl {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
+            if (!sender.HasPermission("user.whisper")) {
+                sender.SendMessage("No permission");
+                return;
+            }
+            
             if (args.Count < 2) {
                 sender.SendMessage("Usage: /whisper <nickname> <message>");
                 return;

@@ -23,6 +23,7 @@ namespace xdchat_server.ClientCon {
             Commands.Add(new PingCommand());
             Commands.Add(new HelpCommand());
             Commands.Add(new JoinCommand());
+            Commands.Add(new RoomsCommand());
         }
 
         public void EmitCommand([NotNull] ICommandSender sender, [NotNull] string commandText) {

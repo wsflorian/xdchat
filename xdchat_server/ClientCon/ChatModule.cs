@@ -23,7 +23,8 @@ namespace xdchat_server.ClientCon {
             XdServer.Instance.Broadcast(new ServerPacketChatMessage {
                 HashedUuid = ev.Client.Mod<AuthModule>().HashedUuid,
                 Text = packet.Text
-            }, con => con != ev.Client);
+            }, con => con != ev.Client 
+                      && con.Mod<AuthModule>().DbSession.Room.Id == ev.Client.Mod<AuthModule>().DbSession.Room.Id);
         }
     }
 }

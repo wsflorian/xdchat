@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using xdchat_client_wpf.Annotations;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
@@ -23,6 +24,7 @@ namespace xdchat_client_wpf.ViewModels {
         private string _message;
         private bool _inputEnabled;
         private readonly TextBox _messageBox;
+        private readonly ListBox _messageList;
 
         [UsedImplicitly] public ObservableCollection<ChatMessage> ChatLog {
             get => _chatLog;
@@ -60,6 +62,7 @@ namespace xdchat_client_wpf.ViewModels {
         
         public ChatPageVM(Page chatPage) {
             this._messageBox = (TextBox) chatPage.FindName("MessageBox");
+            this._messageList = (ListBox) chatPage.FindName("MessageList");
             
             ChatLog = new ObservableCollection<ChatMessage>();
             Message = "";
@@ -88,8 +91,18 @@ namespace xdchat_client_wpf.ViewModels {
         }
 
         private void AddChatMessage(string user, string message) {
-            Action<ChatMessage> addMethod = ChatLog.Add;
-            Application.Current?.Dispatcher?.BeginInvoke(addMethod, new ChatMessage(DateTime.Now, message, user));
+            Application.Current?.Dispatcher?.Invoke(() => {
+                if (VisualTreeHelper.GetChildrenCount(this._messageList) <= 0) return;
+                Border border = (Border) VisualTreeHelper.GetChild(this._messageList, 0);
+                ScrollViewer scrollViewer = (ScrollViewer) VisualTreeHelper.GetChild(border, 0);
+                bool wasAtBottom = scrollViewer.VerticalOffset.Equals(scrollViewer.ScrollableHeight);
+
+                ChatLog.Add(new ChatMessage(DateTime.Now, message, user));
+
+                if (wasAtBottom) {
+                    scrollViewer.ScrollToBottom();
+                }
+            });
         }
 
         private string GetUserNameByUuid(string uuid) {

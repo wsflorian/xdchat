@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         
         <ListBox ClipToBounds="False" Grid.Row="0" Grid.Column="0" Margin="0,0,10,10"
-                 ItemsSource="{Binding Path=ChatLog, UpdateSourceTrigger=PropertyChanged}"
+                 ItemsSource="{Binding Path=ChatLog, UpdateSourceTrigger=PropertyChanged}" Name="MessageList"
                  HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>

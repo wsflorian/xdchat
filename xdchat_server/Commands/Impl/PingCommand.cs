@@ -7,6 +7,11 @@ namespace xdchat_server.Commands.Impl {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
+            if (!sender.HasPermission("server.ping")) {
+                sender.SendMessage("No permission");
+                return;
+            }
+            
             if (sender == ConsoleCommandSender) {
                 sender.SendMessage("Console's ping is 0. Always.");
                 return;

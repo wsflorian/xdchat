@@ -7,7 +7,7 @@ namespace xdchat_server.Commands.Impl {
         }
 
         public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (sender != ConsoleCommandSender) {
+            if (!sender.HasPermission("server.stop")) {
                 sender.SendMessage("No permission");
                 return;
             }

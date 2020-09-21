@@ -2,9 +2,10 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace XdChatShared.Misc {
-    public class Helper {
+    public static class Helper {
         public static readonly int MaxNickLength = 15;
         public static readonly ushort DefaultPort = 10000;
         
@@ -23,6 +24,11 @@ namespace XdChatShared.Misc {
         public static dynamic DisposeAndNull(IDisposable disposable) {
             disposable?.Dispose();
             return null;
+        }
+        
+        public static bool CheckWildcard(string wildcard, string compareText) {
+            return Regex.IsMatch(compareText, "^" + Regex.Escape(wildcard)
+                .Replace("\\*", ".*") + "$");
         }
     }
 }

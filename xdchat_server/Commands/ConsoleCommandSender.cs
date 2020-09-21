@@ -1,5 +1,4 @@
 ﻿using xdchat_shared.Logger.Impl;
-using XdChatShared.Logger;
 
 namespace xdchat_server.Commands {
     public class ConsoleCommandSender : ICommandSender {
@@ -9,6 +8,10 @@ namespace xdchat_server.Commands {
 
         public string GetName() {
             return "[Console]";
+        }
+
+        public bool HasPermission(string permission) {
+            return true;
         }
     }
 }

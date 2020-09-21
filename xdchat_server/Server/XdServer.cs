@@ -27,7 +27,7 @@ namespace xdchat_server.Server {
 
         private TcpListener _serverSocket;
         
-        private XdDatabase Db => new XdDatabase(new DbContextOptionsBuilder()
+        public XdDatabase Db => new XdDatabase(new DbContextOptionsBuilder()
             .UseMySql(Config.SqlConnection)
             .Options);
 
@@ -49,8 +49,10 @@ namespace xdchat_server.Server {
             }
 
             XdLogger.Info("Checking database...");
-            this.Db.Database.EnsureCreated();
-
+            using (XdDatabase db = this.Db) {
+                db.Database.EnsureCreated();
+            }
+            
             this._moduleHolder.RegisterModule<CommandModule>();
 
             if (_serverSocket != null)

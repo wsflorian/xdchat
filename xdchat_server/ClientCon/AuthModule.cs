@@ -1,9 +1,11 @@
-﻿using xdchat_server.EventsImpl;
+﻿using System;
+using System.Linq;
+using xdchat_server.Db;
+using xdchat_server.EventsImpl;
 using xdchat_server.Server;
 using xdchat_shared.Logger.Impl;
 using XdChatShared.Misc;
 using XdChatShared.Events;
-using XdChatShared.Logger;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
@@ -37,6 +39,9 @@ namespace xdchat_server.ClientCon {
         public string Nickname { get; private set; }
         public string Uuid { get; private set; }
         public string HashedUuid { get; private set; }
+
+        public DbUserSession DbSession { get; private set; }
+        public DbUser DbUser => DbSession.User;
         
         private Timer _authTimeout;
 
@@ -69,9 +74,32 @@ namespace xdchat_server.ClientCon {
             this.Uuid = packet.Uuid;
             this.HashedUuid = Helper.Sha256Hash(packet.Uuid);
             _authTimeout?.Stop();
+            
+            using (XdDatabase db = XdServer.Instance.Db) {
+                DbUser user = DbUser.GetByUuid(db, this.Uuid) ?? DbUser.Create(db, this.Uuid);
+                
+                this.DbSession = DbUserSession.Create(db, new DbUserSession {
+                    StartTs = DateTime.Now,
+                    Nickname = this.Nickname,
+                    User = user,
+                    Room = db.Rooms.Single(room => room.IsDefault)
+                });
+
+                db.SaveChanges();
+            }
 
             XdLogger.Info($"Client authenticated: {this.Nickname} ({this.Uuid})");
             XdServer.Instance.SendUserListUpdate();
+        }
+
+        [XdEventHandler(null, true)]
+        public void HandleDisconnected(ClientDisconnectedEvent ev) {
+            if (!this.Authenticated) return;
+            
+            using (XdDatabase db = XdServer.Instance.Db) {
+                DbUserSession.EndSession(db, this.DbSession);
+                db.SaveChanges();
+            }
         }
 
         private void HandleTimeout() {

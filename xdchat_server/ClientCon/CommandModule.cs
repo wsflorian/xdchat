@@ -19,7 +19,7 @@ namespace xdchat_server.ClientCon {
             Commands.Add(new ListCommand());
             Commands.Add(new WhisperCommand());
             Commands.Add(new StopCommand());
-            Commands.Add(new SayCommand());
+            Commands.Add(new BroadcastCommand());
             Commands.Add(new PingCommand());
             Commands.Add(new HelpCommand());
         }

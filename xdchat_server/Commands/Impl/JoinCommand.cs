@@ -33,6 +33,7 @@ namespace xdchat_server.Commands.Impl {
                 DbRoom room = db.Rooms.FirstOrDefault(x => EF.Functions.Like(x.Name, roomName));
                 if (room == null) {
                     sender.SendMessage("The chatroom '" + roomName + "' doesn't exist");
+                    sender.SendMessage("You can use /rooms for a list of all available rooms");
                     return;
                 }
                 

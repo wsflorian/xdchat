@@ -39,12 +39,11 @@ namespace xdchat_server.ClientCon {
         public void HandleClientReady(ClientReadyEvent ev) {
             DbUserSession session = ev.Client.Auth.DbSession;
             
+            ev.Client.ClearChat();
+            
             using (XdDatabase db = XdServer.Instance.Db) {
                 DbMessage.GetRecent(db, session.Room.Id, 20).ForEach(msg => {
-                    ev.Client.Send(new ServerPacketChatMessage {
-                        HashedUuid = Helper.Sha256Hash(msg.User.Uuid),
-                        Text = msg.Content
-                    });
+                    ev.Client.SendOldMessage(Helper.Sha256Hash(msg.User.Uuid), msg.TimeStamp, msg.Content);
                 }); // send to client
             }
             

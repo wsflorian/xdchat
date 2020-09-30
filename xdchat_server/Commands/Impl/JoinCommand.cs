@@ -47,13 +47,10 @@ namespace xdchat_server.Commands.Impl {
                 db.Sessions.Update(client.Mod<AuthModule>().DbSession);
                 db.SaveChanges();
                 
-                sender.SendMessage($"=====> Old Messages - {room.Name} <=====");
+                client.ClearChat();
                 
                 DbMessage.GetRecent(db, room.Id, 10).ForEach(msg => {
-                    client.Send(new ServerPacketChatMessage {
-                        HashedUuid = Helper.Sha256Hash(msg.User.Uuid),
-                        Text = msg.Content
-                    });
+                    client.SendOldMessage(Helper.Sha256Hash(msg.User.Uuid), msg.TimeStamp, msg.Content);
                 });
                 
                 sender.SendMessage("You are now in the chatroom: " + room.Name);

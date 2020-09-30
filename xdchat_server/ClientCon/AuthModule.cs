@@ -90,8 +90,8 @@ namespace xdchat_server.ClientCon {
 
             XdLogger.Info($"Client authenticated: {this.Nickname} ({this.Uuid})");
             XdServer.Instance.SendUserListUpdate();
-            
-            ev.Client.SendMessage("Your current chatroom is: " + this.DbSession.Room.Name);
+
+            XdServer.Instance.EventEmitter.Emit(new ClientReadyEvent(ev.Client));
         }
 
         [XdEventHandler(null, true)]

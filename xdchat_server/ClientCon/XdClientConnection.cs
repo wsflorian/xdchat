@@ -43,7 +43,15 @@ namespace xdchat_server.ClientCon {
         }
         
         public void SendMessage(string text) {
-            Send(new ServerPacketChatMessage() { Text = text });
+            Send(new ServerPacketChatMessage { Text = text });
+        }
+
+        public void SendOldMessage(string hashedUuid, DateTime ts, string text) {
+            Send(new ServerPacketOldChatMessage {HashedUuid = hashedUuid, Timestamp = ts, Text = text});
+        }
+        
+        public void ClearChat() {
+            Send(new ServerPacketChatClear());
         }
 
         public string GetName() {

@@ -155,6 +155,10 @@ namespace xdchat_client_wpf.ViewModels {
                     MainWindow.ChatEnabled = true;
                     MainWindow.SelectedIndex = 1;
                     
+                    ChatPageVM chatPageVm = (ChatPageVM)this.MainWindow?.ChatPage.DataContext;
+                    chatPageVm.ChatLog.Clear();
+                    chatPageVm.UserList.Clear();
+                    
                     break;
             }
         }

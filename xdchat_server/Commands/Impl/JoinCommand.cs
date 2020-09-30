@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using xdchat_server.ClientCon;
 using xdchat_server.Db;
 using xdchat_server.Server;
+using XdChatShared.Misc;
+using XdChatShared.Packets;
 
 namespace xdchat_server.Commands.Impl {
     public class JoinCommand : Command {
@@ -37,15 +37,24 @@ namespace xdchat_server.Commands.Impl {
                     return;
                 }
                 
-                XdClientConnection con = (XdClientConnection) sender;
-                if (room.Id == con.Mod<AuthModule>().DbSession.Room.Id) {
+                XdClientConnection client = (XdClientConnection) sender;
+                if (room.Id == client.Mod<AuthModule>().DbSession.Room.Id) {
                     sender.SendMessage("You are already in this chatroom");
                     return;
                 }
                 
-                con.Mod<AuthModule>().DbSession.Room = room;
-                db.Sessions.Update(con.Mod<AuthModule>().DbSession);
+                client.Mod<AuthModule>().DbSession.Room = room;
+                db.Sessions.Update(client.Mod<AuthModule>().DbSession);
                 db.SaveChanges();
+                
+                sender.SendMessage($"=====> Old Messages - {room.Name} <=====");
+                
+                DbMessage.GetRecent(db, room.Id, 10).ForEach(msg => {
+                    client.Send(new ServerPacketChatMessage {
+                        HashedUuid = Helper.Sha256Hash(msg.User.Uuid),
+                        Text = msg.Content
+                    });
+                });
                 
                 sender.SendMessage("You are now in the chatroom: " + room.Name);
             }

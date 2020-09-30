@@ -12,6 +12,7 @@ using XdChatShared.Packets;
 namespace xdchat_server.ClientCon {
     public class XdClientConnection : XdConnection, ICommandSender, IExtendable<XdClientConnection> {
         private readonly ModuleHolder<XdClientConnection> _moduleHolder;
+        public AuthModule Auth => this.Mod<AuthModule>();
 
         public XdClientConnection() {
             _moduleHolder = new ModuleHolder<XdClientConnection>(this);

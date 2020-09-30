@@ -13,5 +13,14 @@ namespace xdchat_server.Db {
         
         public DateTime TimeStamp { get; set; }
         public string Content { get; set; }
+
+        public static void Insert(XdDatabase db, DbRoom room, DbUser user, string message) {
+            db.Messages.Add(new DbMessage {
+                Room = room,
+                User = user,
+                TimeStamp = DateTime.Now,
+                Content = message
+            });
+        }
     }
 }

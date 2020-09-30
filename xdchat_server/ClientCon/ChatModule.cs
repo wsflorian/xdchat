@@ -1,4 +1,5 @@
-﻿using xdchat_server.EventsImpl;
+﻿using xdchat_server.Db;
+using xdchat_server.EventsImpl;
 using xdchat_server.Server;
 using xdchat_shared.Logger.Impl;
 using XdChatShared.Events;
@@ -20,11 +21,16 @@ namespace xdchat_server.ClientCon {
                 return;
             }
 
+            DbUserSession session = ev.Client.Auth.DbSession;
+            using (XdDatabase db = XdServer.Instance.Db) {
+                DbMessage.Insert(db, session.Room, session.User, packet.Text);
+                db.SaveChanges();
+            }
+            
             XdServer.Instance.Broadcast(new ServerPacketChatMessage {
                 HashedUuid = ev.Client.Mod<AuthModule>().HashedUuid,
                 Text = packet.Text
-            }, con => con != ev.Client 
-                      && con.Mod<AuthModule>().DbSession.Room.Id == ev.Client.Mod<AuthModule>().DbSession.Room.Id);
+            }, con => con != ev.Client && con.Auth.DbSession.Room.Id == session.Room.Id);
         }
     }
 }

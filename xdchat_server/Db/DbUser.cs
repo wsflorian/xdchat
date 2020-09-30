@@ -21,7 +21,7 @@ namespace xdchat_server.Db {
         public static DbUser Create(XdDatabase db, string uuid) {
             return db.Users.Add(new DbUser {
                 Uuid = uuid,
-                Rank = db.Ranks.Single(rank => rank.IsDefault)
+                Rank = DbRank.GetDefault(db)
             }).Entity;
         }
     }

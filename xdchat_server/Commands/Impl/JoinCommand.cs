@@ -24,7 +24,7 @@ namespace xdchat_server.Commands.Impl {
             }
 
             if (args.Count < 1) {
-                sender.SendMessage("Usage: join <room>");
+                sender.SendMessage("Usage: join <room> [noclear]");
                 return;
             }
             
@@ -46,9 +46,13 @@ namespace xdchat_server.Commands.Impl {
                 client.Mod<AuthModule>().DbSession.Room = room;
                 db.Sessions.Update(client.Mod<AuthModule>().DbSession);
                 db.SaveChanges();
-                
-                client.ClearChat();
-                
+
+                if (args.Count >= 2 && (args[1].ToLower().Equals("noclear") || args[1].ToLower().Equals("nc"))) {
+                    sender.SendMessage("----- Room Change -----");
+                } else {
+                    client.ClearChat();
+                }
+
                 DbMessage.GetRecent(db, room.Id, 10).ForEach(msg => {
                     client.SendOldMessage(Helper.Sha256Hash(msg.User.Uuid), msg.TimeStamp, msg.Content);
                 });

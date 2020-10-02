@@ -15,14 +15,16 @@ namespace xdchat_server.ClientCon {
         [XdEventHandler(typeof(ClientPacketChatMessage), true)]
         public void HandleChatMessage(PacketReceivedEvent ev) {
             ClientPacketChatMessage packet = (ClientPacketChatMessage) ev.Packet;
-            XdLogger.Info($"<{ev.Client.Mod<AuthModule>().Nickname}>: {packet.Text}");
+            XdClientConnection client = ev.Client;
+            
+            XdLogger.Info($"<{client.Auth.DbSession.Room.Name}/{client.Auth.Nickname}>: {packet.Text}");
             
             if (packet.Text.StartsWith("/")) {
-                XdServer.Instance.Mod<CommandModule>().EmitCommand(ev.Client, packet.Text);
+                XdServer.Instance.Mod<CommandModule>().EmitCommand(client, packet.Text);
                 return;
             }
 
-            DbUserSession session = ev.Client.Auth.DbSession;
+            DbUserSession session = client.Auth.DbSession;
             using (XdDatabase db = XdServer.Instance.Db) {
                 db.Attach(session);
                 DbMessage.Insert(db, session.Room, session.User, packet.Text);
@@ -30,9 +32,9 @@ namespace xdchat_server.ClientCon {
             }
             
             XdServer.Instance.Broadcast(new ServerPacketChatMessage {
-                HashedUuid = ev.Client.Mod<AuthModule>().HashedUuid,
+                HashedUuid = client.Mod<AuthModule>().HashedUuid,
                 Text = packet.Text
-            }, con => con != ev.Client && con.Auth.DbSession.Room.Id == session.Room.Id);
+            }, con => con != client && con.Auth.DbSession.Room.Id == session.Room.Id);
         }
 
         [XdEventHandler(null, true)]

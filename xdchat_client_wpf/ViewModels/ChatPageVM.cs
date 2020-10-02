@@ -90,14 +90,14 @@ namespace xdchat_client_wpf.ViewModels {
             return Message.Trim().Length > 0 && InputEnabled;
         }
 
-        private void AddChatMessage(string user, string message) {
+        private void AddChatMessage(string user, string message, DateTime? time = null) {
             Application.Current?.Dispatcher?.Invoke(() => {
                 if (VisualTreeHelper.GetChildrenCount(this._messageList) <= 0) return;
                 Border border = (Border) VisualTreeHelper.GetChild(this._messageList, 0);
                 ScrollViewer scrollViewer = (ScrollViewer) VisualTreeHelper.GetChild(border, 0);
                 bool wasAtBottom = scrollViewer.VerticalOffset.Equals(scrollViewer.ScrollableHeight);
 
-                ChatLog.Add(new ChatMessage(DateTime.Now, message, user));
+                ChatLog.Add(new ChatMessage(time ?? DateTime.Now, message, user));
 
                 if (wasAtBottom) {
                     scrollViewer.ScrollToBottom();
@@ -127,7 +127,18 @@ namespace xdchat_client_wpf.ViewModels {
 
             AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text);
         }
-        
+
+        [XdEventHandler(typeof(ServerPacketOldChatMessage))]
+        public void HandleOldChatMessage(PacketReceivedEvent ev) {
+            ServerPacketOldChatMessage packet = (ServerPacketOldChatMessage) ev.Packet;
+            AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text, packet.Timestamp);
+        }
+
+        [XdEventHandler(typeof(ServerPacketChatClear))]
+        public void HandleChatClear(PacketReceivedEvent ev) {
+            Application.Current.Dispatcher.Invoke(() => ChatLog.Clear());
+        }
+
         protected virtual void PropChanged(string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

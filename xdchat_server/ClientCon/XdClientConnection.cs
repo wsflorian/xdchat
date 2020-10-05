@@ -12,6 +12,7 @@ using XdChatShared.Packets;
 namespace xdchat_server.ClientCon {
     public class XdClientConnection : XdConnection, ICommandSender, IExtendable<XdClientConnection> {
         private readonly ModuleHolder<XdClientConnection> _moduleHolder;
+        public AuthModule Auth => this.Mod<AuthModule>();
 
         public XdClientConnection() {
             _moduleHolder = new ModuleHolder<XdClientConnection>(this);
@@ -42,7 +43,15 @@ namespace xdchat_server.ClientCon {
         }
         
         public void SendMessage(string text) {
-            Send(new ServerPacketChatMessage() { Text = text });
+            Send(new ServerPacketChatMessage { Text = text });
+        }
+
+        public void SendOldMessage(string hashedUuid, DateTime ts, string text) {
+            Send(new ServerPacketOldChatMessage {HashedUuid = hashedUuid, Timestamp = ts, Text = text});
+        }
+        
+        public void ClearChat() {
+            Send(new ServerPacketChatClear());
         }
 
         public string GetName() {

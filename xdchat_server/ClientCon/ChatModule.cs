@@ -1,7 +1,9 @@
-﻿using xdchat_server.EventsImpl;
+﻿using xdchat_server.Db;
+using xdchat_server.EventsImpl;
 using xdchat_server.Server;
 using xdchat_shared.Logger.Impl;
 using XdChatShared.Events;
+using XdChatShared.Misc;
 using XdChatShared.Modules;
 using XdChatShared.Packets;
 
@@ -11,19 +13,43 @@ namespace xdchat_server.ClientCon {
         }
         
         [XdEventHandler(typeof(ClientPacketChatMessage), true)]
-        public void HandleAuthPacket(PacketReceivedEvent ev) {
+        public void HandleChatMessage(PacketReceivedEvent ev) {
             ClientPacketChatMessage packet = (ClientPacketChatMessage) ev.Packet;
-            XdLogger.Info($"<{ev.Client.Mod<AuthModule>().Nickname}>: {packet.Text}");
+            XdClientConnection client = ev.Client;
+            
+            XdLogger.Info($"<{client.Auth.DbSession.Room.Name}/{client.Auth.Nickname}>: {packet.Text}");
             
             if (packet.Text.StartsWith("/")) {
-                XdServer.Instance.Mod<CommandModule>().EmitCommand(ev.Client, packet.Text);
+                XdServer.Instance.Mod<CommandModule>().EmitCommand(client, packet.Text);
                 return;
             }
 
+            DbUserSession session = client.Auth.DbSession;
+            using (XdDatabase db = XdServer.Instance.Db) {
+                db.Attach(session);
+                DbMessage.Insert(db, session.Room, session.User, packet.Text);
+                db.SaveChanges();
+            }
+            
             XdServer.Instance.Broadcast(new ServerPacketChatMessage {
-                HashedUuid = ev.Client.Mod<AuthModule>().HashedUuid,
+                HashedUuid = client.Mod<AuthModule>().HashedUuid,
                 Text = packet.Text
-            }, con => con != ev.Client);
+            }, con => con != client && con.Auth.DbSession.Room.Id == session.Room.Id);
+        }
+
+        [XdEventHandler(null, true)]
+        public void HandleClientReady(ClientReadyEvent ev) {
+            DbUserSession session = ev.Client.Auth.DbSession;
+            
+            ev.Client.ClearChat();
+            
+            using (XdDatabase db = XdServer.Instance.Db) {
+                DbMessage.GetRecent(db, session.Room.Id, 20).ForEach(msg => {
+                    ev.Client.SendOldMessage(Helper.Sha256Hash(msg.User.Uuid), msg.TimeStamp, msg.Content);
+                }); // send to client
+            }
+            
+            ev.Client.SendMessage("Your current chatroom is: " + session.Room.Name);
         }
     }
 }

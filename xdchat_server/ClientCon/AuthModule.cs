@@ -90,6 +90,8 @@ namespace xdchat_server.ClientCon {
 
             XdLogger.Info($"Client authenticated: {this.Nickname} ({this.Uuid})");
             XdServer.Instance.SendUserListUpdate();
+
+            XdServer.Instance.EventEmitter.Emit(new ClientReadyEvent(ev.Client));
         }
 
         [XdEventHandler(null, true)]

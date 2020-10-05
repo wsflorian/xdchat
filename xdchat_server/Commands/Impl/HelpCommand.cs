@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using xdchat_server.ClientCon;
 using xdchat_server.Server;
@@ -15,9 +16,11 @@ namespace xdchat_server.Commands.Impl {
             }
             
             StringBuilder builder = new StringBuilder();
-            XdServer.Instance.Mod<CommandModule>().Commands.ForEach(command => {
-                builder.Append(" /" + command.Name + " - " + command.Description + "\n");
-            });
+            XdServer.Instance.Mod<CommandModule>().Commands
+                .OrderBy(command => command.Name)
+                .ToList()
+                .ForEach(command => builder.Append(" /" + command.Name + " - " + command.Description + "\n"));
+            
             sender.SendMessage(builder.ToString());
         }
     }

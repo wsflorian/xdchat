@@ -12,14 +12,16 @@ namespace xdchat_server.Db {
         public virtual DbRank Rank { get; set; }
 
         public static DbUser GetByUuid(XdDatabase db, string uuid) {
-            return db.Users.Include(a => a.Rank)
+            return db.Users
+                .Include(a => a.Rank)
+                .Include(a => a.Rank.Permissions)
                 .FirstOrDefault(a => a.Uuid == uuid);
         }
 
         public static DbUser Create(XdDatabase db, string uuid) {
             return db.Users.Add(new DbUser {
                 Uuid = uuid,
-                Rank = db.Ranks.Single(rank => rank.IsDefault)
+                Rank = DbRank.GetDefault(db)
             }).Entity;
         }
     }

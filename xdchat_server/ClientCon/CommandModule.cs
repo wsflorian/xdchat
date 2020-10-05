@@ -23,6 +23,8 @@ namespace xdchat_server.ClientCon {
             Commands.Add(new PingCommand());
             Commands.Add(new HelpCommand());
             Commands.Add(new RankHandlerCommand());
+            Commands.Add(new JoinCommand());
+            Commands.Add(new RoomsCommand());
         }
 
         public void EmitCommand([NotNull] ICommandSender sender, [NotNull] string commandText) {
@@ -31,7 +33,7 @@ namespace xdchat_server.ClientCon {
             string commandName = args[0];
             if (commandName.StartsWith("/"))
                 commandName = commandName.Substring(1);
-            
+
             args.RemoveAt(0);
 
             Command command = Commands
@@ -45,7 +47,7 @@ namespace xdchat_server.ClientCon {
 
             command.OnCommand(sender, args);
         }
-        
+
         [XdEventHandler]
         public void OnConsoleInput(ConsoleInputEvent ev) {
             EmitCommand(ConsoleCommandSender, ev.Input);

@@ -8,15 +8,12 @@ namespace xdchat_server.Commands.Impl
     {
         private Dictionary<string, Command> Commands = new Dictionary<string, Command>()
         {
-            { "ranks", new RankCommand() },
+            { "ranks", new RanksCommand() },
             { "rank", new RankCommand() },
             // {"user", new UserCommand()},
             // {"help", new PermHelpCommand()}
         };
         
-        private Command RanksCommand = new RanksCommand();
-        //private Command RankCommand = new RanksCommand();
-        //private Command UserCommand = new UserCommand();
         public RankHandlerCommand() : base("perm", "Everything about ranks try /perm help") {
         }
 

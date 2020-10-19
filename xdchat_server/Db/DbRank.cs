@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,12 @@ namespace xdchat_server.Db {
         
         public bool HasPermission(string comparePerm) {
             return Permissions.Any(perm => Helper.CheckWildcard(perm.Permission, comparePerm));
+        }
+
+        public static DbRank GetRank(XdDatabase db, string rank)
+        {
+            return db.Ranks.Include(r => r.Permissions)
+                .FirstOrDefault(r => EF.Functions.Like(rank, r.Name));
         }
     }
 }

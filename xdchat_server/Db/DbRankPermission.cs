@@ -11,5 +11,11 @@ namespace xdchat_server.Db {
         public static List<DbRankPermission> All(int rankId, params string[] permissions) {
             return permissions.Select(perm => new DbRankPermission {RankId = rankId, Permission = perm}).ToList();
         }
+
+        public override bool Equals(object obj)
+        {
+            var rankPerm = obj as DbRankPermission;
+            return rankPerm != null && (this.Permission == rankPerm.Permission && this.RankId == rankPerm.RankId);
+        }
     }
 }

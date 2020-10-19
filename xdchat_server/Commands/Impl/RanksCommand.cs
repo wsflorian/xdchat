@@ -19,19 +19,13 @@ namespace xdchat_server.Commands.Impl
                 return;
             }
             
-            StringBuilder builder = new StringBuilder();
-            builder.Append($"List of ranks:");
-
-            using (XdDatabase db = XdServer.Instance.Db) {
-                foreach (var rank in db.Ranks)
-                {
-                    builder.Append($"\n - {rank.Name}");
-                }
-
-                db.SaveChanges();
+            using (XdDatabase db = XdServer.Instance.Db)
+            {
+                sender.SendMessage(
+                    "List of ranks:" + 
+                    string.Join("\n", db.Ranks.Select(rank => " - " + rank.Name)));
             }
-
-            sender.SendMessage(builder.ToString());
+            
         }
 
         public string Uuid { get; set; }

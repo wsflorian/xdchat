@@ -12,19 +12,14 @@ namespace xdchat_server.Commands.Impl
     {
         private const string UsageString = "Correct usage: /perm rank <rank> [<add/remove> <permission>]";
 
-        public RankCommand() : base("rank", "Shows you all permissions of a rank.")
+        public RankCommand() : base("rank", "server.rank.permissions","Shows you all permissions of a rank.")
         { }
 
         public const string AddArg = "add";
         public const string RemArg = "remove";
 
-        public override void OnCommand(ICommandSender sender, List<string> args)
+        protected override void OnCommand(ICommandSender sender, List<string> args)
         {
-            if (!sender.HasPermission("server.rank.permissions")) {
-                sender.SendMessage("No permission");
-                return;
-            }
-
             if (args.Count == 0)
             {
                 sender.SendMessage(UsageString);

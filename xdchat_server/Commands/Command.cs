@@ -19,11 +19,13 @@ namespace xdchat_server.Commands {
         protected static ConsoleCommandSender ConsoleCommandSender => XdServer.Instance.Mod<CommandModule>().ConsoleCommandSender;
         
         public string Name { get; }
+        public string Permission { get; }
         public string Description { get; }
         public List<string> AlternateNames { get; }
 
-        protected Command([NotNull] string name, [NotNull] string description, params string[] aliases) {
+        protected Command([NotNull] string name, [NotNull] string permission, [NotNull] string description, params string[] aliases) {
             this.Name = name;
+            this.Permission = permission;
             this.Description = description;
             this.AlternateNames = new List<string>(aliases);
         }
@@ -32,8 +34,17 @@ namespace xdchat_server.Commands {
             return Helper.EqualsIgnoreCase(Name, name) 
                    || AlternateNames.Any(alternateName => Helper.EqualsIgnoreCase(alternateName, name));
         }
+
+        public void Invoke([NotNull] ICommandSender sender, [NotNull] List<string> args) {
+            if (!sender.HasPermission(this.Permission)) {
+                sender.SendMessage("No permission");
+                return;
+            }
+            
+            this.OnCommand(sender, args);
+        }
         
-        public abstract void OnCommand([NotNull] ICommandSender sender, [NotNull] List<string> args);
+        protected abstract void OnCommand([NotNull] ICommandSender sender, [NotNull] List<string> args);
         
         [NotNull] 
         protected static string JoinArguments([NotNull] IEnumerable<string> args, int from, int to) {

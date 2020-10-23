@@ -8,17 +8,12 @@ using XdChatShared.Misc;
 
 namespace xdchat_server.Commands.Impl {
     public class JoinCommand : Command {
-        public JoinCommand() : base("join", "Join a chatroom", "j") {
+        public JoinCommand() : base("join", "user.join", "Join a chatroom", "j") {
         }
 
-        public override void OnCommand(ICommandSender sender, List<string> args) {
+        protected override void OnCommand(ICommandSender sender, List<string> args) {
             if (sender is ConsoleCommandSender) {
                 sender.SendMessage("The console is already in every room");
-                return;
-            }
-            
-            if (!sender.HasPermission("user.join")) {
-                sender.SendMessage("No permission");
                 return;
             }
 

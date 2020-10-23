@@ -45,7 +45,7 @@ namespace xdchat_server.ClientCon {
                 return;
             }
 
-            command.OnCommand(sender, args);
+            command.Invoke(sender, args);
         }
 
         [XdEventHandler]

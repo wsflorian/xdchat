@@ -14,10 +14,10 @@ namespace xdchat_server.Commands.Impl
             // {"help", new PermHelpCommand()}
         };
         
-        public RankHandlerCommand() : base("perm", "Everything about ranks try /perm help") {
+        public RankHandlerCommand() : base("perm", "server.perm", "Everything about ranks try /perm help") {
         }
 
-        public override void OnCommand(ICommandSender sender, List<string> args)
+        protected override void OnCommand(ICommandSender sender, List<string> args)
         {
             if (args.Count == 0)
             {
@@ -27,7 +27,7 @@ namespace xdchat_server.Commands.Impl
 
             if (Commands.TryGetValue(args[0], out var command))
             {
-                command.OnCommand(sender, args.Skip(1).ToList());
+                command.Invoke(sender, args.Skip(1).ToList());
             }
             else
             {

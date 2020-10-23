@@ -3,15 +3,10 @@ using xdchat_server.ClientCon;
 
 namespace xdchat_server.Commands.Impl {
     public class PingCommand : Command {
-        public PingCommand() : base("ping", "Show your ping") {
+        public PingCommand() : base("ping", "server.ping", "Show your ping") {
         }
 
-        public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (!sender.HasPermission("server.ping")) {
-                sender.SendMessage("No permission");
-                return;
-            }
-            
+        protected override void OnCommand(ICommandSender sender, List<string> args) {
             if (sender == ConsoleCommandSender) {
                 sender.SendMessage("Console's ping is 0. Always.");
                 return;

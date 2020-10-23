@@ -12,16 +12,11 @@ namespace xdchat_server.Commands.Impl
     {
         private const string UsageString = "Correct usage: /perm user <rank> [<user>]";
 
-        public UserCommand() : base("user", "Shows you the current rank of a user.")
+        public UserCommand() : base("user","user.rank.get", "Shows you the current rank of a user.")
         { }
 
-        public override void OnCommand(ICommandSender sender, List<string> args)
+        protected override void OnCommand(ICommandSender sender, List<string> args)
         {
-            if (!sender.HasPermission("user.rank.get")) {
-                sender.SendMessage("No permission");
-                return;
-            }
-
             if (args.Count == 0)
             {
                 sender.SendMessage(UsageString);
@@ -41,11 +36,11 @@ namespace xdchat_server.Commands.Impl
                 switch (args.Count)
                 {
                     case 1:
-                        HandleGetRank(sender, args, user.Auth.DbUser);
+                        HandleGetRank(sender, args, user.Auth.GetDbUser(db));
                         return;
                     
                     case 2:
-                        db.Attach(user.Auth.DbUser);
+                        db.Attach(user.Auth.GetDbUser(db));
                         HandleRankChange(); 
                         db.SaveChanges();
                         return;

@@ -4,15 +4,10 @@ using xdchat_server.Server;
 
 namespace xdchat_server.Commands.Impl {
     public class WhisperCommand : Command {
-        public WhisperCommand() : base("whisper", "Send a private message to another user","msg", "w") {
+        public WhisperCommand() : base("whisper", "user.whisper", "Send a private message to another user","msg", "w") {
         }
 
-        public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (!sender.HasPermission("user.whisper")) {
-                sender.SendMessage("No permission");
-                return;
-            }
-            
+        protected override void OnCommand(ICommandSender sender, List<string> args) {
             if (args.Count < 2) {
                 sender.SendMessage("Usage: /whisper <nickname> <message>");
                 return;

@@ -5,14 +5,9 @@ using xdchat_server.Server;
 
 namespace xdchat_server.Commands.Impl {
     public class ListCommand : Command {
-        public ListCommand() : base("list", "Show a list of all connected users") { }
+        public ListCommand() : base("list", "server.list","Show a list of all connected users") { }
 
-        public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (!sender.HasPermission("server.list")) {
-                sender.SendMessage("No permission");
-                return;
-            }
-            
+        protected override void OnCommand(ICommandSender sender, List<string> args) {
             List<XdClientConnection> clients = XdServer.Instance.GetAuthenticatedClients();
             StringBuilder builder = new StringBuilder();
 

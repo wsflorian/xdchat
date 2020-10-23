@@ -3,15 +3,10 @@ using xdchat_server.Server;
 
 namespace xdchat_server.Commands.Impl {
     public class BroadcastCommand: Command {
-        public BroadcastCommand() : base("broadcast", "Broadcast a message", "bc", "say") {
+        public BroadcastCommand() : base("broadcast", "server.broadcast","Broadcast a message", "bc", "say") {
         }
 
-        public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (!sender.HasPermission("server.broadcast")) {
-                sender.SendMessage("No permission");
-                return;
-            }
-            
+        protected override void OnCommand(ICommandSender sender, List<string> args) {
             string message = $"[Broadcast] {JoinArguments(args, 0, args.Count)}";
             
             sender.SendMessage(message);

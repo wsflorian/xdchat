@@ -10,7 +10,7 @@ namespace xdchat_server.Commands.Impl
         {
             { "ranks", new RanksCommand() },
             { "rank", new RankCommand() },
-            // {"user", new UserCommand()},
+            { "user", new UserCommand() },
             // {"help", new PermHelpCommand()}
         };
         

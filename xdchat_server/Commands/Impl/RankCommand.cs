@@ -24,13 +24,6 @@ namespace xdchat_server.Commands.Impl
                 sender.SendMessage("No permission");
                 return;
             }
-            
-            // has rank name
-            
-            // load rank
-            // rank doesnt exist
-            
-            // 1, 3
 
             if (args.Count == 0)
             {

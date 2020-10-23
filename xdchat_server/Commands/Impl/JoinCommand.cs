@@ -5,7 +5,6 @@ using xdchat_server.ClientCon;
 using xdchat_server.Db;
 using xdchat_server.Server;
 using XdChatShared.Misc;
-using XdChatShared.Packets;
 
 namespace xdchat_server.Commands.Impl {
     public class JoinCommand : Command {
@@ -38,13 +37,14 @@ namespace xdchat_server.Commands.Impl {
                 }
                 
                 XdClientConnection client = (XdClientConnection) sender;
-                if (room.Id == client.Mod<AuthModule>().DbSession.Room.Id) {
+                DbUserSession session = client.Auth.GetDbSession(db);
+                if (room.Id == session.Id) {
                     sender.SendMessage("You are already in this chatroom");
                     return;
                 }
                 
-                client.Mod<AuthModule>().DbSession.Room = room;
-                db.Sessions.Update(client.Mod<AuthModule>().DbSession);
+                session.Room = room;
+                db.Sessions.Update(session);
                 db.SaveChanges();
 
                 if (args.Count >= 2 && (args[1].ToLower().Equals("noclear") || args[1].ToLower().Equals("nc"))) {

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace xdchat_server.Db {
     public class DbUser {
-
         [Key] public int Id { get; set; }
         public string Uuid { get; set; }
         
@@ -17,7 +16,7 @@ namespace xdchat_server.Db {
                 .Include(a => a.Rank.Permissions)
                 .FirstOrDefault(a => a.Uuid == uuid);
         }
-
+        
         public static DbUser Create(XdDatabase db, string uuid) {
             return db.Users.Add(new DbUser {
                 Uuid = uuid,

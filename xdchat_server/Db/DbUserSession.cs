@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace xdchat_server.Db {
     public class DbUserSession {
@@ -17,6 +18,10 @@ namespace xdchat_server.Db {
         public static void EndSession(XdDatabase db, DbUserSession session) {
             session.EndTs = DateTime.Now;
             db.Sessions.Update(session);
+        }
+
+        public static DbUserSession GetById(XdDatabase db, int id) {
+            return db.Sessions.First(session => session.Id == id);
         }
     }
 }

@@ -40,8 +40,7 @@ namespace xdchat_server.ClientCon {
         public string Uuid { get; private set; }
         public string HashedUuid { get; private set; }
 
-        public DbUserSession DbSession { get; private set; }
-        public DbUser DbUser => DbSession.User;
+        public int DbSessionId { get; private set; }
         
         private Timer _authTimeout;
 
@@ -77,13 +76,13 @@ namespace xdchat_server.ClientCon {
             
             using (XdDatabase db = XdServer.Instance.Db) {
                 DbUser user = DbUser.GetByUuid(db, this.Uuid) ?? DbUser.Create(db, this.Uuid);
-                
-                this.DbSession = DbUserSession.Create(db, new DbUserSession {
+                DbUserSession session = DbUserSession.Create(db, new DbUserSession {
                     StartTs = DateTime.Now,
                     Nickname = this.Nickname,
                     User = user,
                     Room = db.Rooms.Single(room => room.IsDefault)
                 });
+                this.DbSessionId = session.Id;
 
                 db.SaveChanges();
             }
@@ -99,7 +98,7 @@ namespace xdchat_server.ClientCon {
             if (!this.Authenticated) return;
             
             using (XdDatabase db = XdServer.Instance.Db) {
-                DbUserSession.EndSession(db, this.DbSession);
+                DbUserSession.EndSession(db, this.GetDbSession(db));
                 db.SaveChanges();
             }
         }
@@ -112,6 +111,14 @@ namespace xdchat_server.ClientCon {
         
         public ServerPacketClientList.User ToClientListUser() {
             return new ServerPacketClientList.User(Nickname, HashedUuid);
+        }
+
+        public DbUserSession GetDbSession(XdDatabase db) {
+            return DbUserSession.GetById(db, this.DbSessionId);
+        }
+
+        public DbUser GetDbUser(XdDatabase db) {
+            return DbUser.GetByUuid(db, this.Uuid);
         }
     }
 }

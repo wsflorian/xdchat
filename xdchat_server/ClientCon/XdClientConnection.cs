@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Sockets;
 using xdchat_server.Commands;
+using xdchat_server.Db;
 using xdchat_server.EventsImpl;
 using xdchat_server.Server;
 using xdchat_shared.Logger.Impl;
@@ -59,12 +60,12 @@ namespace xdchat_server.ClientCon {
         }
 
         public bool HasPermission(string permission) {
-            return this.Mod<AuthModule>().DbUser.Rank.HasPermission(permission);
+            return XdDatabase.CachedUserRank.Get(this.Auth.Uuid).HasPermission(permission);
         }
         
         public void Disconnect(string message) {
             XdLogger.Info($"Disconnected: {message}");
-            Send(new ServerPacketDisconnect() { Text = message });
+            Send(new ServerPacketDisconnect { Text = message });
             base.End();
         }
 

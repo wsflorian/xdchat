@@ -3,6 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using xdchat_server.Commands;
 using xdchat_server.Commands.Impl;
+using xdchat_server.Commands.Impl.Perm;
 using xdchat_server.EventsImpl;
 using xdchat_server.Server;
 using XdChatShared.Events;

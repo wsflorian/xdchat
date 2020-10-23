@@ -23,5 +23,9 @@ namespace xdchat_server.Db {
         public static DbUserSession GetById(XdDatabase db, int id) {
             return db.Sessions.First(session => session.Id == id);
         }
+
+        public static void Update(XdDatabase db, DbUserSession session) {
+            db.Sessions.Update(session);
+        }
     }
 }

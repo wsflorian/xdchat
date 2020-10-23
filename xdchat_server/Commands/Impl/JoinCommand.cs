@@ -39,7 +39,7 @@ namespace xdchat_server.Commands.Impl {
                 }
                 
                 session.Room = room;
-                db.Sessions.Update(session);
+                DbUserSession.Update(db, session);
                 db.SaveChanges();
 
                 if (args.Count >= 2 && (args[1].ToLower().Equals("noclear") || args[1].ToLower().Equals("nc"))) {

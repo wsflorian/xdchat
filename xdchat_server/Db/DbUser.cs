@@ -23,5 +23,9 @@ namespace xdchat_server.Db {
                 Rank = DbRank.GetDefault(db)
             }).Entity;
         }
+
+        public static void Update(XdDatabase db, DbUser user) {
+            db.Users.Update(user);
+        }
     }
 }

@@ -47,6 +47,16 @@ namespace xdchat_server.ClientCon {
             Send(new ServerPacketChatMessage { Text = text });
         }
 
+        public void SendMessage(string text, string copyText) {
+            int copyTextIndex = text.IndexOf(copyText, StringComparison.Ordinal);
+            if (copyTextIndex == -1) 
+                throw new ArgumentException("CopyText not found in text");
+            Send(new ServerPacketChatMessage {
+                Text = text,
+                CopyRange = (copyTextIndex, copyText.Length)
+            });
+        }
+
         public void SendOldMessage(string hashedUuid, DateTime ts, string text) {
             Send(new ServerPacketOldChatMessage {HashedUuid = hashedUuid, Timestamp = ts, Text = text});
         }

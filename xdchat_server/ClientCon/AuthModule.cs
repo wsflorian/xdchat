@@ -82,9 +82,10 @@ namespace xdchat_server.ClientCon {
                     User = user,
                     Room = db.Rooms.Single(room => room.IsDefault)
                 });
-                this.DbSessionId = session.Id;
-
+                
                 db.SaveChanges();
+                
+                this.DbSessionId = session.Id;
             }
 
             XdLogger.Info($"Client authenticated: {this.Nickname} ({this.Uuid})");

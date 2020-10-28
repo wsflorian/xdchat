@@ -43,7 +43,7 @@ namespace xdchat_server.ClientCon {
         public void HandleClientReady(ClientReadyEvent ev) {
             using (XdDatabase db = XdServer.Instance.Db) {
                 DbUserSession session = ev.Client.Auth.GetDbSession(db);
-            
+
                 ev.Client.ClearChat();
 
                 DbMessage.GetRecent(db, session.Room.Id, 20).ForEach(msg => {

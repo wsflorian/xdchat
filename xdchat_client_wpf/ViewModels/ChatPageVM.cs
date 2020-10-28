@@ -140,7 +140,7 @@ namespace xdchat_client_wpf.ViewModels {
         public void HandleIncomingChatMessage(PacketReceivedEvent evt) {
             ServerPacketChatMessage packet = (ServerPacketChatMessage) evt.Packet;
 
-            AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text, null, packet.CopyText);
+            AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text, null, packet.RelevantText);
         }
 
         [XdEventHandler(typeof(ServerPacketOldChatMessage))]

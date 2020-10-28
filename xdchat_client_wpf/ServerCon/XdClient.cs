@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.Win32;
@@ -8,7 +7,6 @@ using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
 using xdchat_shared.Logger.Impl;
 using XdChatShared;
-using XdChatShared.Logger;
 using XdChatShared.Misc;
 using XdChatShared.Scheduler;
 

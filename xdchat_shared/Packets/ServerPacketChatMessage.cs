@@ -7,7 +7,7 @@ namespace XdChatShared.Packets {
         public string Text { get; set; }
 
         [JsonIgnore]
-        public string CopyText => RelevantRange == null
+        public string RelevantText => RelevantRange == null
                 ? null
                 : Text.Substring(RelevantRange.Value.Item1,RelevantRange.Value.Item2);
         public (int, int)? RelevantRange { get; set; }

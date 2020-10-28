@@ -26,6 +26,7 @@ namespace xdchat_server.ClientCon {
             Commands.Add(new RankHandlerCommand());
             Commands.Add(new JoinCommand());
             Commands.Add(new RoomsCommand());
+            Commands.Add(new WebAdminCommand());
         }
 
         public void EmitCommand([NotNull] ICommandSender sender, [NotNull] string commandText) {

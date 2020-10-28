@@ -55,6 +55,7 @@ namespace xdchat_server.Commands.Impl.Perm {
             
             user.Rank = rank;
             DbUser.Update(db, user);
+            sender.SendMessage($"Rank of user {args[0]} was changed to {user.Rank.Name}");
         }
     }
 }

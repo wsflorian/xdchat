@@ -29,7 +29,7 @@ namespace xdchat_server.Db {
         public DbSet<DbRoom> Rooms { get; set; }
         public DbSet<DbMessage> Messages { get; set; }
 
-        public DbSet<XdWebToken> WebTokens { get; set; }
+        public DbSet<DbWebToken> WebTokens { get; set; }
 
         public static XdDatabaseCache<string, DbRank> CachedUserRank { get; } = 
             new XdDatabaseCache<string, DbRank>((db, uuid) => DbUser.GetByUuid(db, uuid).Rank);

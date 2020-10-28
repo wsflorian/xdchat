@@ -18,7 +18,7 @@ namespace xdchat_server.Commands.Impl {
             XdClientConnection client = (XdClientConnection) sender;
             using (XdDatabase db = XdServer.Instance.Db) {
                 DbUser dbUser = client.Auth.GetDbUser(db);
-                XdWebToken token = XdWebToken.Create(db, new XdWebToken {
+                DbWebToken token = DbWebToken.Create(db, new DbWebToken {
                     Token = GenerateToken(),
                     ExpiryTimeStamp = DateTime.Now.AddHours(1),
                     UserId = dbUser.Id

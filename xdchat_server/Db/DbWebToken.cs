@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace xdchat_server.Db {
-    public class XdWebToken {
+    public class DbWebToken {
         [Key] public int Id { get; set; }
         
         public int UserId { get; set; }
@@ -12,7 +12,7 @@ namespace xdchat_server.Db {
         public string Token { get; set; }
         public DateTime ExpiryTimeStamp;
 
-        public static XdWebToken Create(XdDatabase db, XdWebToken token) {
+        public static DbWebToken Create(XdDatabase db, DbWebToken token) {
             return db.WebTokens.Add(token).Entity;
         }
 

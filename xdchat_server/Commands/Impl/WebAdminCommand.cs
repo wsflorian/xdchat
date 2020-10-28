@@ -24,7 +24,7 @@ namespace xdchat_server.Commands.Impl {
                     UserId = dbUser.Id
                 });
 
-                client.SendMessage($"Use the the following token to login: {token.Token}", token.Token);
+                client.SendMessage($"Use the following token to login: {token.Token}", token.Token);
             }
         }
 

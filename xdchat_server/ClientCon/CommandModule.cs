@@ -30,7 +30,8 @@ namespace xdchat_server.ClientCon {
 
         public void EmitCommand([NotNull] ICommandSender sender, [NotNull] string commandText) {
             List<string> args = new List<string>(commandText.Split(" "));
-
+            args.RemoveAll(s => s.Length == 0);
+                
             string commandName = args[0];
             if (commandName.StartsWith("/"))
                 commandName = commandName.Substring(1);

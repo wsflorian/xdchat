@@ -47,13 +47,13 @@ namespace xdchat_server.ClientCon {
             Send(new ServerPacketChatMessage { Text = text });
         }
 
-        public void SendMessage(string text, string copyText) {
-            int copyTextIndex = text.IndexOf(copyText, StringComparison.Ordinal);
+        public void SendMessage(string text, string relevantText) {
+            int copyTextIndex = text.IndexOf(relevantText, StringComparison.Ordinal);
             if (copyTextIndex == -1) 
                 throw new ArgumentException("CopyText not found in text");
             Send(new ServerPacketChatMessage {
                 Text = text,
-                CopyRange = (copyTextIndex, copyText.Length)
+                RelevantRange = (copyTextIndex, relevantText.Length)
             });
         }
 

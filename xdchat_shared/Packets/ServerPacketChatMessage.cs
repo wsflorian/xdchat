@@ -7,10 +7,10 @@ namespace XdChatShared.Packets {
         public string Text { get; set; }
 
         [JsonIgnore]
-        public string CopyText => CopyRange == null
+        public string CopyText => RelevantRange == null
                 ? null
-                : Text.Substring(CopyRange.Value.Item1,CopyRange.Value.Item2);
-        public (int, int)? CopyRange { get; set; }
+                : Text.Substring(RelevantRange.Value.Item1,RelevantRange.Value.Item2);
+        public (int, int)? RelevantRange { get; set; }
 
         public override string Validate() {
             if (HashedUuid != null && !Validation.IsHex(HashedUuid, 64)) {
@@ -21,7 +21,7 @@ namespace XdChatShared.Packets {
                 return "Text is invalid";
             }
 
-            if (CopyRange != null && !Validation.IsSubstringRange(Text, CopyRange.Value.Item1, CopyRange.Value.Item2)) {
+            if (RelevantRange != null && !Validation.IsSubstringRange(Text, RelevantRange.Value.Item1, RelevantRange.Value.Item2)) {
                 return "CopyRange is invalid";
             }
 

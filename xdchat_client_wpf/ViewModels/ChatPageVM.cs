@@ -90,19 +90,34 @@ namespace xdchat_client_wpf.ViewModels {
             return Message.Trim().Length > 0 && InputEnabled;
         }
 
-        private void AddChatMessage(string user, string message, DateTime? time = null) {
+        private void AddChatMessage(string user, string message, DateTime? time = null, string relevantText = null) {
             Application.Current?.Dispatcher?.Invoke(() => {
                 if (VisualTreeHelper.GetChildrenCount(this._messageList) <= 0) return;
                 Border border = (Border) VisualTreeHelper.GetChild(this._messageList, 0);
                 ScrollViewer scrollViewer = (ScrollViewer) VisualTreeHelper.GetChild(border, 0);
                 bool wasAtBottom = scrollViewer.VerticalOffset.Equals(scrollViewer.ScrollableHeight);
 
-                ChatLog.Add(new ChatMessage(time ?? DateTime.Now, message, user));
+                ChatMessage chatMessage = new ChatMessage(time ?? DateTime.Now, message, user);
+                
+                AddCopyHandler(chatMessage.ContextMenu, "Copy text", message);
+                if (relevantText != null) {
+                    AddCopyHandler(chatMessage.ContextMenu, "Copy relevant text", relevantText);
+                }
+                
+                ChatLog.Add(chatMessage);
 
                 if (wasAtBottom) {
                     scrollViewer.ScrollToBottom();
                 }
             });
+        }
+
+        private static void AddCopyHandler(ContextMenu menu, string title, string textToCopy) {
+            MenuItem menuItem = new MenuItem {
+                Header = title
+            };
+            menuItem.Click += (sender, args) => Clipboard.SetText(textToCopy);
+            menu.Items.Add(menuItem);
         }
 
         private string GetUserNameByUuid(string uuid) {
@@ -125,7 +140,7 @@ namespace xdchat_client_wpf.ViewModels {
         public void HandleIncomingChatMessage(PacketReceivedEvent evt) {
             ServerPacketChatMessage packet = (ServerPacketChatMessage) evt.Packet;
 
-            AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text);
+            AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text, null, packet.CopyText);
         }
 
         [XdEventHandler(typeof(ServerPacketOldChatMessage))]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls;
 using xdchat_client_wpf.Annotations;
 
 namespace xdchat_client_wpf.Models {
@@ -8,10 +9,14 @@ namespace xdchat_client_wpf.Models {
         [UsedImplicitly] public string Message { get; }
         [UsedImplicitly] public string User { get; }
 
+        [UsedImplicitly] [JetBrains.Annotations.CanBeNull]
+        public ContextMenu ContextMenu { set; get; }
+
         public ChatMessage(DateTime timeStamp, string message, string user) {
             TimeStamp = timeStamp;
             Message = message;
             User = user;
+            ContextMenu = new ContextMenu();
         }
     }
 }

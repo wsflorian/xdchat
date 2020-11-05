@@ -13,8 +13,8 @@ namespace XdChatShared.Misc {
             return IPAddress.TryParse(input, out _) || HostnameRegex.IsMatch(input);
         }
 
-        public static bool IsValidHostPort(string input) {
-            return XdConnection.TryParseEndpoint(input, 0, out _, out _);
+        public static bool IsValidEndpoint(string input) {
+            return XdConnection.TryParseEndpoint(input, 0, out _, out _, out _);
         }
 
         public static bool IsValidMessageText(string text, params char[] exceptions) {

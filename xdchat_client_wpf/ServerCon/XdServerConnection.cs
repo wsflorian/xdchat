@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Net.Sockets;
 using xdchat_client_wpf.EventsImpl;
 using XdChatShared.Connection;
@@ -13,8 +15,8 @@ namespace xdchat_client_wpf.ServerCon {
             _moduleHolder = new ModuleHolder<XdServerConnection>(this);
         }
 
-        public override void Initialize(TcpClient client) {
-            base.Initialize(client);
+        public override void Initialize(TcpClient client, Stream stream) {
+            base.Initialize(client, stream);
 
             _moduleHolder.RegisterModule<PingModule>();
             SendAuth(XdClient.Instance.Nickname, XdClient.Instance.Uuid);

@@ -90,12 +90,12 @@ namespace xdchat_client_wpf.ViewModels {
                 XdClient.Instance.Uuid = Guid.NewGuid().ToString();
             }
 
-            if (XdConnection.TryParseEndpoint(ServerAddress, Helper.DefaultPort, out string host, out ushort port)) {
+            if (XdConnection.TryParseEndpoint(ServerAddress, Helper.DefaultPort, out string host, out ushort port, out bool ssl)) {
                 XdClient.Instance.HostName = host;
                 XdClient.Instance.PortName = port;
             }
 
-            XdScheduler.QueueAsyncTask(XdClient.Instance.Connect);
+            XdScheduler.QueueAsyncTask(() => XdClient.Instance.Connect(ssl));
 
             AddLogMessage("Connecting...");
         }
@@ -111,7 +111,7 @@ namespace xdchat_client_wpf.ViewModels {
         
         private bool ConnectButtonClickable() {
             return Validation.IsValidNickname(Nickname) &&
-                   Validation.IsValidHostPort(ServerAddress) &&
+                   Validation.IsValidEndpoint(ServerAddress) &&
                    !Connecting;
         }
 

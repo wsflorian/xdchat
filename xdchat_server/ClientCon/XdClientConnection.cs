@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Security;
 using System.Net.Sockets;
 using xdchat_server.Commands;
 using xdchat_server.EventsImpl;
@@ -17,9 +18,7 @@ namespace xdchat_server.ClientCon {
             _moduleHolder = new ModuleHolder<XdClientConnection>(this);
         }
 
-        public override void Initialize(TcpClient client) {
-            base.Initialize(client);
-
+        public override void Initialize(TcpClient client, Stream stream) {
             _moduleHolder.RegisterModule<PingModule>();
             _moduleHolder.RegisterModule<ChatModule>();
             _moduleHolder.RegisterModule<AuthModule>();

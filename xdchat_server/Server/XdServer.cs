@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using xdchat_server.ClientCon;
@@ -26,6 +29,8 @@ namespace xdchat_server.Server {
         private ConsoleHandler _consoleHandler;
 
         private TcpListener _serverSocket;
+
+        private X509Certificate TlsCertificate;
         
         public XdDatabase Db => new XdDatabase(new DbContextOptionsBuilder()
             .UseMySql(Config.SqlConnection)
@@ -40,9 +45,9 @@ namespace xdchat_server.Server {
             
             this._consoleHandler = new ConsoleHandler();
             
-            this.Config = ServerConfig.load();
+            this.Config = ServerConfig.Load();
             if (this.Config == null) {
-                ServerConfig.create();
+                ServerConfig.Create();
                 XdLogger.Info("config.json was created. Please configure it and restart the server");
                 Environment.Exit(1);
                 return;
@@ -51,6 +56,11 @@ namespace xdchat_server.Server {
             XdLogger.Info("Checking database...");
             using (XdDatabase db = this.Db) {
                 db.Database.EnsureCreated();
+            }
+
+            if (this.Config.TlsEnabled) {
+                XdLogger.Info("Loading TLS certificate...");
+                TlsCertificate = X509Certificate.CreateFromCertFile(this.Config.TlsCertFile);
             }
             
             this._moduleHolder.RegisterModule<CommandModule>();
@@ -82,14 +92,41 @@ namespace xdchat_server.Server {
                     } catch (ObjectDisposedException) {
                         break; // Server stopped
                     }
+
+                    Stream stream;
+                    if (this.Config.TlsEnabled) {
+                        stream = await InitSsl(tcpClient);
+                    } else {
+                        stream = tcpClient.GetStream();
+                    }
+
+                    if (stream == null) { // Failed to initialise stream
+                        Helper.DisposeAndNull(tcpClient);
+                        continue;
+                    }
+
                     XdScheduler.QueueSyncTask(() => {
                         XdClientConnection client = new XdClientConnection();
-                        client.Initialize(tcpClient);
+                        client.Initialize(tcpClient, stream);
                         this.Clients.Add(client);
                     });
                 }
             } catch (SocketException) {
                 XdLogger.Info("Server stopped");
+            }
+        }
+
+        private async Task<Stream> InitSsl(TcpClient tcpClient) {
+            SslStream sslStream = null;
+            try {
+                sslStream = new SslStream(tcpClient.GetStream(), false);
+                await sslStream.AuthenticateAsServerAsync(TlsCertificate, false, true);
+
+                return sslStream;
+            } catch (Exception ex) {
+                sslStream?.Close();
+                XdLogger.Error($"Failed to initialize SSL connection. Connection will be closed. {ex}");
+                return null;
             }
         }
         

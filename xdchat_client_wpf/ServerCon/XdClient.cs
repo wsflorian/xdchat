@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.Win32;
@@ -72,7 +75,7 @@ namespace xdchat_client_wpf.ServerCon {
 
         public string UuidShort => Uuid.Substring(0, 8);
 
-        public async Task Connect() {
+        public async Task Connect(bool ssl) {
             XdScheduler.CheckIsNotMainThread();
 
             if (Connection != null)
@@ -85,12 +88,18 @@ namespace xdchat_client_wpf.ServerCon {
 
                 // Connection is done async because it can block up to 30 seconds (timeout)
                 TcpClient client = new TcpClient(HostName, PortName);
+                Stream stream;
+                if (ssl) {
+                    stream = await InitSsl(client);
+                } else {
+                    stream = client.GetStream();
+                }
 
                 // Future actions are done sync again
                 await XdScheduler.QueueSyncTask(() => {
                     UpdateStatus(XdConnectionStatus.Authenticating, $"Authenticating as {Nickname} ({UuidShort})");
                     this.Connection = new XdServerConnection();
-                    this.Connection.Initialize(client);
+                    this.Connection.Initialize(client, stream);
                     UpdateStatus(XdConnectionStatus.Connected, "Connection established");
                 });
             }
@@ -98,6 +107,12 @@ namespace xdchat_client_wpf.ServerCon {
                 await XdScheduler.QueueSyncTask(() =>
                     UpdateStatus(XdConnectionStatus.NotConnected, "Connection failed", e));
             }
+        }
+
+        private async Task<Stream> InitSsl(TcpClient client) {
+            SslStream sslStream = new SslStream(client.GetStream(), false);
+            await sslStream.AuthenticateAsClientAsync(HostName);
+            return sslStream;
         }
 
         public void Disconnect() {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using JetBrains.Annotations;
@@ -18,10 +19,10 @@ namespace XdChatShared.Connection {
 
         public bool Connected => this.Client != null && this.Client.Connected;
 
-        public virtual void Initialize(TcpClient client) {
+        public virtual void Initialize(TcpClient client, Stream stream) {
             this.Client = client;
             this.RemoteIp = ((IPEndPoint) client.Client.RemoteEndPoint).Address.ToString();
-            this._messageStream = new StringMessageStream(client.GetStream());
+            this._messageStream = new StringMessageStream(stream);
 
             XdScheduler.QueueAsyncTask(RunReadTask, true);
         }
@@ -60,8 +61,19 @@ namespace XdChatShared.Connection {
             _messageStream?.WriteMessage(Packet.ToJson(packet));
         }
         
-        // Format: hostname[:port] (e.g. 2.3.4.5, 1.2.3.4:1234)
-        public static bool TryParseEndpoint([NotNull] string input, ushort defaultPort, out string host, out ushort port) {
+        // Format: (tls:// | plain://)hostname[:port] (e.g. 2.3.4.5, 1.2.3.4:1234)
+        public static bool TryParseEndpoint([NotNull] string input, ushort defaultPort, out string host, out ushort port, out bool ssl) {
+            if (input.StartsWith("tls://")) {
+                ssl = true;
+                input = input.Substring(6);
+            } else {
+                ssl = false;
+
+                if (input.StartsWith("plain://")) {
+                    input = input.Substring(8);
+                }
+            }
+            
             int portIndex = input.IndexOf(':');
             
             if (portIndex == -1) {

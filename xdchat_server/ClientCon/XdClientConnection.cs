@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
 using xdchat_server.Commands;
+using xdchat_server.Db;
 using xdchat_server.EventsImpl;
 using xdchat_server.Server;
 using xdchat_shared.Logger.Impl;
@@ -13,6 +14,7 @@ using XdChatShared.Packets;
 namespace xdchat_server.ClientCon {
     public class XdClientConnection : XdConnection, ICommandSender, IExtendable<XdClientConnection> {
         private readonly ModuleHolder<XdClientConnection> _moduleHolder;
+        public AuthModule Auth => this.Mod<AuthModule>();
 
         public XdClientConnection() {
             _moduleHolder = new ModuleHolder<XdClientConnection>(this);
@@ -41,7 +43,25 @@ namespace xdchat_server.ClientCon {
         }
         
         public void SendMessage(string text) {
-            Send(new ServerPacketChatMessage() { Text = text });
+            Send(new ServerPacketChatMessage { Text = text });
+        }
+
+        public void SendMessage(string text, string relevantText) {
+            int copyTextIndex = text.IndexOf(relevantText, StringComparison.Ordinal);
+            if (copyTextIndex == -1) 
+                throw new ArgumentException("CopyText not found in text");
+            Send(new ServerPacketChatMessage {
+                Text = text,
+                RelevantRange = (copyTextIndex, relevantText.Length)
+            });
+        }
+
+        public void SendOldMessage(string hashedUuid, DateTime ts, string text) {
+            Send(new ServerPacketOldChatMessage {HashedUuid = hashedUuid, Timestamp = ts, Text = text});
+        }
+        
+        public void ClearChat() {
+            Send(new ServerPacketChatClear());
         }
 
         public string GetName() {
@@ -49,12 +69,12 @@ namespace xdchat_server.ClientCon {
         }
 
         public bool HasPermission(string permission) {
-            return this.Mod<AuthModule>().DbUser.Rank.HasPermission(permission);
+            return XdDatabase.CachedUserRank.Get(this.Auth.Uuid).HasPermission(permission);
         }
         
         public void Disconnect(string message) {
             XdLogger.Info($"Disconnected: {message}");
-            Send(new ServerPacketDisconnect() { Text = message });
+            Send(new ServerPacketDisconnect { Text = message });
             base.End();
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -46,6 +47,17 @@ namespace XdChatShared.Misc {
             return validatables
                 .Select(validatable => validatable.Validate())
                 .FirstOrDefault(error => error != null);
+        }
+
+        public static bool IsInNormalDateRange(DateTime ts) {
+            return ts >= DateTime.Parse("01/01/1900") && ts < DateTime.Parse("01/01/2100");
+        }
+        
+        public static bool IsSubstringRange(string text, int startInclusive, int length) {
+            int endExclusive = startInclusive + length;
+            return startInclusive >= 0 && startInclusive < text.Length
+                                       && endExclusive > 0 && endExclusive <= text.Length
+                                       && startInclusive < endExclusive;
         }
     }
 

@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace XdChatShared.Misc {
     public static class Helper {
         public static readonly int MaxNickLength = 15;
-        public static readonly ushort DefaultPort = 10000;
+        public static readonly ushort DefaultPort = 22222;
         
         public static string Sha256Hash(string value) {
             using (SHA256 hash = SHA256.Create()) {

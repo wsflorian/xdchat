@@ -3,6 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using xdchat_server.Commands;
 using xdchat_server.Commands.Impl;
+using xdchat_server.Commands.Impl.Perm;
 using xdchat_server.EventsImpl;
 using xdchat_server.Server;
 using XdChatShared.Events;
@@ -22,15 +23,20 @@ namespace xdchat_server.ClientCon {
             Commands.Add(new BroadcastCommand());
             Commands.Add(new PingCommand());
             Commands.Add(new HelpCommand());
+            Commands.Add(new RankHandlerCommand());
+            Commands.Add(new JoinCommand());
+            Commands.Add(new RoomsCommand());
+            Commands.Add(new WebAdminCommand());
         }
 
         public void EmitCommand([NotNull] ICommandSender sender, [NotNull] string commandText) {
             List<string> args = new List<string>(commandText.Split(" "));
-
+            args.RemoveAll(s => s.Length == 0);
+                
             string commandName = args[0];
             if (commandName.StartsWith("/"))
                 commandName = commandName.Substring(1);
-            
+
             args.RemoveAt(0);
 
             Command command = Commands
@@ -42,9 +48,9 @@ namespace xdchat_server.ClientCon {
                 return;
             }
 
-            command.OnCommand(sender, args);
+            command.Invoke(sender, args);
         }
-        
+
         [XdEventHandler]
         public void OnConsoleInput(ConsoleInputEvent ev) {
             EmitCommand(ConsoleCommandSender, ev.Input);

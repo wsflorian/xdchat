@@ -17,11 +17,11 @@
         </Grid.RowDefinitions>
         
         <ListBox ClipToBounds="False" Grid.Row="0" Grid.Column="0" Margin="0,0,10,10"
-                 ItemsSource="{Binding Path=ChatLog, UpdateSourceTrigger=PropertyChanged}"
+                 ItemsSource="{Binding Path=ChatLog, UpdateSourceTrigger=PropertyChanged}" Name="MessageList"
                  HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
+                    <Grid ContextMenu="{Binding Path=ContextMenu}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
@@ -33,7 +33,7 @@
                         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
                             <TextBlock FontSize="12" Text="{Binding User}" FontWeight="Bold" />
                             <TextBlock FontSize="12" Text=" at " Foreground="Gray" />
-                            <TextBlock FontSize="12" Text="{Binding TimeStamp}" Foreground="Gray" />
+                            <TextBlock FontSize="12" Text="{Binding TimeStamp, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}" Foreground="Gray" />
                         </StackPanel>
                         
                         <TextBlock Grid.Column="0" Grid.Row="1" FontSize="12"

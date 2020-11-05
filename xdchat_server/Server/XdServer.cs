@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -151,12 +152,12 @@ namespace xdchat_server.Server {
         }
 
         public XdClientConnection GetClientByNickname(string nickname) {
-            return GetAuthenticatedClients().Find(con =>
+            return GetAuthenticatedClients().FirstOrDefault(con =>
                 string.Compare(con.Mod<AuthModule>().Nickname, nickname, StringComparison.OrdinalIgnoreCase) == 0);
         }
 
         public XdClientConnection GetClientByUuid(string uuid) {
-            return GetAuthenticatedClients().Find(con => con.Mod<AuthModule>().Uuid == uuid);
+            return GetAuthenticatedClients().FirstOrDefault(con => con.Mod<AuthModule>().Uuid == uuid);
         }
 
         public List<XdClientConnection> GetAuthenticatedClients() {

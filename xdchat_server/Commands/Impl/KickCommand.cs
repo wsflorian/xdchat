@@ -4,14 +4,9 @@ using xdchat_server.Server;
 
 namespace xdchat_server.Commands.Impl {
     public class KickCommand : Command {
-        public KickCommand() : base("kick", "Kick a connected user") {}
+        public KickCommand() : base("kick", "user.kick","Kick a connected user") {}
 
-        public override void OnCommand(ICommandSender sender, List<string> args) {
-            if (!sender.HasPermission("user.kick")) {
-                sender.SendMessage("No permission");
-                return;
-            }
-
+        protected override void OnCommand(ICommandSender sender, List<string> args) {
             if (args.Count < 1) {
                 sender.SendMessage("Usage: kick <nickname> [message]");
                 return;

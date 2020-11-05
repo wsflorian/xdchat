@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using xdchat_client_wpf.Annotations;
 using xdchat_client_wpf.EventsImpl;
 using xdchat_client_wpf.Models;
@@ -23,6 +24,7 @@ namespace xdchat_client_wpf.ViewModels {
         private string _message;
         private bool _inputEnabled;
         private readonly TextBox _messageBox;
+        private readonly ListBox _messageList;
 
         [UsedImplicitly] public ObservableCollection<ChatMessage> ChatLog {
             get => _chatLog;
@@ -60,6 +62,7 @@ namespace xdchat_client_wpf.ViewModels {
         
         public ChatPageVM(Page chatPage) {
             this._messageBox = (TextBox) chatPage.FindName("MessageBox");
+            this._messageList = (ListBox) chatPage.FindName("MessageList");
             
             ChatLog = new ObservableCollection<ChatMessage>();
             Message = "";
@@ -87,9 +90,34 @@ namespace xdchat_client_wpf.ViewModels {
             return Message.Trim().Length > 0 && InputEnabled;
         }
 
-        private void AddChatMessage(string user, string message) {
-            Action<ChatMessage> addMethod = ChatLog.Add;
-            Application.Current?.Dispatcher?.BeginInvoke(addMethod, new ChatMessage(DateTime.Now, message, user));
+        private void AddChatMessage(string user, string message, DateTime? time = null, string relevantText = null) {
+            Application.Current?.Dispatcher?.Invoke(() => {
+                if (VisualTreeHelper.GetChildrenCount(this._messageList) <= 0) return;
+                Border border = (Border) VisualTreeHelper.GetChild(this._messageList, 0);
+                ScrollViewer scrollViewer = (ScrollViewer) VisualTreeHelper.GetChild(border, 0);
+                bool wasAtBottom = scrollViewer.VerticalOffset.Equals(scrollViewer.ScrollableHeight);
+
+                ChatMessage chatMessage = new ChatMessage(time ?? DateTime.Now, message, user);
+                
+                AddCopyHandler(chatMessage.ContextMenu, "Copy text", message);
+                if (relevantText != null) {
+                    AddCopyHandler(chatMessage.ContextMenu, "Copy relevant text", relevantText);
+                }
+                
+                ChatLog.Add(chatMessage);
+
+                if (wasAtBottom) {
+                    scrollViewer.ScrollToBottom();
+                }
+            });
+        }
+
+        private static void AddCopyHandler(ContextMenu menu, string title, string textToCopy) {
+            MenuItem menuItem = new MenuItem {
+                Header = title
+            };
+            menuItem.Click += (sender, args) => Clipboard.SetText(textToCopy);
+            menu.Items.Add(menuItem);
         }
 
         private string GetUserNameByUuid(string uuid) {
@@ -112,9 +140,20 @@ namespace xdchat_client_wpf.ViewModels {
         public void HandleIncomingChatMessage(PacketReceivedEvent evt) {
             ServerPacketChatMessage packet = (ServerPacketChatMessage) evt.Packet;
 
-            AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text);
+            AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text, null, packet.RelevantText);
         }
-        
+
+        [XdEventHandler(typeof(ServerPacketOldChatMessage))]
+        public void HandleOldChatMessage(PacketReceivedEvent ev) {
+            ServerPacketOldChatMessage packet = (ServerPacketOldChatMessage) ev.Packet;
+            AddChatMessage(GetUserNameByUuid(packet.HashedUuid), packet.Text, packet.Timestamp);
+        }
+
+        [XdEventHandler(typeof(ServerPacketChatClear))]
+        public void HandleChatClear(PacketReceivedEvent ev) {
+            Application.Current.Dispatcher.Invoke(() => ChatLog.Clear());
+        }
+
         protected virtual void PropChanged(string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

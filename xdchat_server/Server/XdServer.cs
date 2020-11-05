@@ -93,13 +93,8 @@ namespace xdchat_server.Server {
                     } catch (ObjectDisposedException) {
                         break; // Server stopped
                     }
-
-                    Stream stream;
-                    if (this.Config.TlsEnabled) {
-                        stream = await InitSsl(tcpClient);
-                    } else {
-                        stream = tcpClient.GetStream();
-                    }
+                    
+                    Stream stream = this.Config.TlsEnabled ? InitSsl(tcpClient) : tcpClient.GetStream();
 
                     if (stream == null) { // Failed to initialise stream
                         Helper.DisposeAndNull(tcpClient);
@@ -117,11 +112,11 @@ namespace xdchat_server.Server {
             }
         }
 
-        private async Task<Stream> InitSsl(TcpClient tcpClient) {
+        private Stream InitSsl(TcpClient tcpClient) {
             SslStream sslStream = null;
             try {
                 sslStream = new SslStream(tcpClient.GetStream(), false);
-                await sslStream.AuthenticateAsServerAsync(TlsCertificate, false, true);
+                sslStream.AuthenticateAsServer(TlsCertificate, false, true);
 
                 return sslStream;
             } catch (Exception ex) {

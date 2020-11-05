@@ -21,6 +21,8 @@ namespace xdchat_server.ClientCon {
         }
 
         public override void Initialize(TcpClient client, Stream stream) {
+            base.Initialize(client, stream);
+            
             _moduleHolder.RegisterModule<PingModule>();
             _moduleHolder.RegisterModule<ChatModule>();
             _moduleHolder.RegisterModule<AuthModule>();

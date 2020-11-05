@@ -9,7 +9,7 @@ namespace xdchat_server.Db {
         public virtual DbUser User { get; set; }
         
         public string Token { get; set; }
-        public DateTime ExpiryTimeStamp;
+        public DateTime ExpiryTimeStamp { get; set; }
 
         public static DbWebToken Create(XdDatabase db, DbWebToken token) {
             return db.WebTokens.Add(token).Entity;

@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using JetBrains.Annotations;
+using xdchat_shared.Logger.Impl;
 using XdChatShared.Misc;
 using XdChatShared.Packets;
 using XdChatShared.Scheduler;
@@ -31,6 +32,7 @@ namespace XdChatShared.Connection {
             try {
                 while (this.Client != null && this.Client.Connected) {
                     Packet packet = Packet.FromJson(_messageStream.ReadMessage());
+                    
                     XdScheduler.QueueSyncTask(() => { OnPacketReceived(packet); });
                 }
 
@@ -61,17 +63,19 @@ namespace XdChatShared.Connection {
             _messageStream?.WriteMessage(Packet.ToJson(packet));
         }
         
-        // Format: (tls:// | plain://)hostname[:port] (e.g. 2.3.4.5, 1.2.3.4:1234)
+        // Format: <xdchat:// | xdchats://>hostname[:port] (e.g. 2.3.4.5, 1.2.3.4:1234)
         public static bool TryParseEndpoint([NotNull] string input, ushort defaultPort, out string host, out ushort port, out bool ssl) {
-            if (input.StartsWith("tls://")) {
-                ssl = true;
-                input = input.Substring(6);
-            } else {
+            if (input.StartsWith("xdchat://")) {
                 ssl = false;
-
-                if (input.StartsWith("plain://")) {
-                    input = input.Substring(8);
-                }
+                input = input.Substring(9);
+            } else if (input.StartsWith("xdchats://")) {
+                ssl = true;
+                input = input.Substring(10);
+            } else {
+                host = null;
+                port = 0;
+                ssl = false;
+                return false;
             }
             
             int portIndex = input.IndexOf(':');

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -87,12 +85,7 @@ namespace xdchat_client_wpf.ServerCon {
 
                 // Connection is done async because it can block up to 30 seconds (timeout)
                 TcpClient client = new TcpClient(HostName, PortName);
-                Stream stream;
-                if (ssl) {
-                    stream = await InitSsl(client);
-                } else {
-                    stream = client.GetStream();
-                }
+                Stream stream = ssl ? InitSsl(client) : client.GetStream();
 
                 // Future actions are done sync again
                 await XdScheduler.QueueSyncTask(() => {
@@ -101,16 +94,24 @@ namespace xdchat_client_wpf.ServerCon {
                     this.Connection.Initialize(client, stream);
                     UpdateStatus(XdConnectionStatus.Connected, "Connection established");
                 });
-            }
-            catch (SocketException e) {
+            } catch (Exception e) {
                 await XdScheduler.QueueSyncTask(() =>
                     UpdateStatus(XdConnectionStatus.NotConnected, "Connection failed", e));
             }
         }
 
-        private async Task<Stream> InitSsl(TcpClient client) {
-            SslStream sslStream = new SslStream(client.GetStream(), false);
-            await sslStream.AuthenticateAsClientAsync(HostName);
+        private Stream InitSsl(TcpClient client) {
+            SslStream sslStream = new SslStream(client.GetStream(), false,
+                ((sender, certificate, chain, errors) => {
+                    if (errors == SslPolicyErrors.None)
+                        return true;
+
+                    XdLogger.Info($"Certificate error: {errors}");
+
+                    // Do not allow this client to communicate with unauthenticated servers.
+                    return true;
+                }));
+            sslStream.AuthenticateAsClient(HostName);
             return sslStream;
         }
 

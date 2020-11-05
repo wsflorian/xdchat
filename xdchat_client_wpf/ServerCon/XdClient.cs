@@ -19,6 +19,7 @@ namespace xdchat_client_wpf.ServerCon {
         private const string RegistryNicknameValueName = "nickname";
         private const string RegistryHostValueName = "hostName";
         private const string RegistryPortValueName = "portName";
+        private const string RegistrySslValueName = "ssl";
 
         private XdClient() {
         }
@@ -56,7 +57,7 @@ namespace xdchat_client_wpf.ServerCon {
                 Registry.SetValue(RegistryPath, RegistryUuidValueName, value);
             }
         }
-
+        
         public string HostName {
             get => (string) Registry.GetValue(RegistryPath, RegistryHostValueName, null);
             set => Registry.SetValue(RegistryPath, RegistryHostValueName, value);
@@ -70,9 +71,14 @@ namespace xdchat_client_wpf.ServerCon {
             set => Registry.SetValue(RegistryPath, RegistryPortValueName, (int) value);
         }
 
+        public bool Ssl {
+            get => Registry.GetValue(RegistryPath, RegistrySslValueName, "false").Equals("true");
+            set => Registry.SetValue(RegistryPath, RegistrySslValueName, value ? "true" : "false");
+        }
+
         public string UuidShort => Uuid.Substring(0, 8);
 
-        public async Task Connect(bool ssl) {
+        public async Task Connect() {
             XdScheduler.CheckIsNotMainThread();
 
             if (Connection != null)
@@ -84,8 +90,8 @@ namespace xdchat_client_wpf.ServerCon {
                     UpdateStatus(XdConnectionStatus.Connecting, $"Connecting to {HostName}:{PortName}"));
 
                 // Connection is done async because it can block up to 30 seconds (timeout)
-                TcpClient client = new TcpClient(HostName, PortName);
-                Stream stream = ssl ? InitSsl(client) : client.GetStream();
+                TcpClient client = new TcpClient(this.HostName, this.PortName);
+                Stream stream = this.Ssl ? InitSsl(client) : client.GetStream();
 
                 // Future actions are done sync again
                 await XdScheduler.QueueSyncTask(() => {

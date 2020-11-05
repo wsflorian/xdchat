@@ -77,9 +77,13 @@ namespace xdchat_client_wpf.ViewModels {
             ButtonText = "Connect to Server";
 
             Nickname = XdClient.Instance.Nickname;
-            ServerAddress = XdClient.Instance.HostName != null
-                ? $"{XdClient.Instance.HostName}:{XdClient.Instance.PortName}"
-                : "";
+
+            if (XdClient.Instance.HostName != null) {
+                string proto = XdClient.Instance.Ssl ? "xdchats://" : "xdchat://";
+                ServerAddress = $"{proto}{XdClient.Instance.HostName}:{XdClient.Instance.PortName}";
+            } else {
+                ServerAddress = "";
+            }
             
             XdClient.Instance.EventEmitter.RegisterListener(this);
         }
@@ -93,10 +97,10 @@ namespace xdchat_client_wpf.ViewModels {
             if (XdConnection.TryParseEndpoint(ServerAddress, Helper.DefaultPort, out string host, out ushort port, out bool ssl)) {
                 XdClient.Instance.HostName = host;
                 XdClient.Instance.PortName = port;
+                XdClient.Instance.Ssl = ssl;
             }
 
-            XdScheduler.QueueAsyncTask(() => XdClient.Instance.Connect(ssl));
-
+            XdScheduler.QueueAsyncTask(XdClient.Instance.Connect);
             AddLogMessage("Connecting...");
         }
 

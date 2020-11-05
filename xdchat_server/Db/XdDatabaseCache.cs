@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using xdchat_server.Server;
 
 namespace xdchat_server.Db {
@@ -17,6 +18,12 @@ namespace xdchat_server.Db {
 
             using (XdDatabase db = XdServer.Instance.Db) {
                 return _cache[key] = _loader(db, key);
+            }
+        }
+
+        public void Remove(TKey key) {
+            if (_cache.ContainsKey(key)) {
+                _cache.Remove(key);
             }
         }
         

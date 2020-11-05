@@ -97,6 +97,8 @@ namespace xdchat_server.ClientCon {
         [XdEventHandler(null, true)]
         public void HandleDisconnected(ClientDisconnectedEvent ev) {
             if (!this.Authenticated) return;
+
+            XdDatabase.CachedUserRank.Remove(this.Uuid);
             
             using (XdDatabase db = XdServer.Instance.Db) {
                 DbUserSession.EndSession(db, this.GetDbSession(db));

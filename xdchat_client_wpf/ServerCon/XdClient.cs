@@ -101,16 +101,7 @@ namespace xdchat_client_wpf.ServerCon {
         }
 
         private Stream InitSsl(TcpClient client) {
-            SslStream sslStream = new SslStream(client.GetStream(), false,
-                ((sender, certificate, chain, errors) => {
-                    if (errors == SslPolicyErrors.None)
-                        return true;
-
-                    XdLogger.Info($"Certificate error: {errors}");
-
-                    // Do not allow this client to communicate with unauthenticated servers.
-                    return true;
-                }));
+            SslStream sslStream = new SslStream(client.GetStream(), false);
             sslStream.AuthenticateAsClient(HostName);
             return sslStream;
         }

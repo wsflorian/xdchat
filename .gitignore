@@ -9,6 +9,7 @@ nuget.config
 /xdchat_server/bin
 /xdchat_server/obj
 /xdchat_server/runtimes
+/xdchat_server/tls
 
 /xdchat_shared/bin
 /xdchat_shared/obj

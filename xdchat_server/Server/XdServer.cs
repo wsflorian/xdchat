@@ -61,7 +61,9 @@ namespace xdchat_server.Server {
 
             if (this.Config.TlsEnabled) {
                 XdLogger.Info("Loading TLS certificate...");
-                TlsCertificate = X509Certificate.CreateFromCertFile(this.Config.TlsCertFile);
+
+                X509Certificate cert = new X509Certificate(this.Config.TlsCertFile, "", X509KeyStorageFlags.Exportable);
+                TlsCertificate = new X509Certificate2(cert.Export(X509ContentType.Pkcs12));
             }
             
             this._moduleHolder.RegisterModule<CommandModule>();

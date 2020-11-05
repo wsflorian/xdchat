@@ -60,7 +60,9 @@ namespace XdChatShared.Connection {
         public void Send([NotNull] Packet packet) {
             XdScheduler.CheckIsMainThread();
 
-            _messageStream?.WriteMessage(Packet.ToJson(packet));
+            try {
+                _messageStream?.WriteMessage(Packet.ToJson(packet));
+            } catch (ObjectDisposedException) {} // This can happen if client closes connection quickly
         }
         
         // Format: <xdchat:// | xdchats://>hostname[:port] (e.g. 2.3.4.5, 1.2.3.4:1234)

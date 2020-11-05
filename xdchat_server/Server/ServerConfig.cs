@@ -8,6 +8,9 @@ namespace xdchat_server.Server {
         
         public string SqlConnection { get; set; }
         
+        public string ServerHost { get; set; }
+        public ushort ServerPort { get; set; }
+        
         public bool TlsEnabled { get; set; }
         public string TlsCertFile { get; set; }
         
@@ -20,6 +23,8 @@ namespace xdchat_server.Server {
         public static void Create() {
             string configText = JsonConvert.SerializeObject(new ServerConfig() {
                 SqlConnection = "server=<name>;userid=<username>;password=<password>;database=<database>;",
+                ServerHost = "127.0.0.1",
+                ServerPort = 22222,
                 TlsEnabled = false,
                 TlsCertFile = null
             }, Formatting.Indented);

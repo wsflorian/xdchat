@@ -69,7 +69,7 @@ namespace xdchat_server.Server {
             if (_serverSocket != null)
                 throw new InvalidOperationException("Server is already running");
 
-            this._serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), Helper.DefaultPort);
+            this._serverSocket = new TcpListener(IPAddress.Parse(this.Config.ServerHost), this.Config.ServerPort);
 
             XdLogger.Info("Starting server...");
             try {

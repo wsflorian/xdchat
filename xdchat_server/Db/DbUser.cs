@@ -9,6 +9,9 @@ namespace xdchat_server.Db {
         
         //public int RankId { get; set; }
         public virtual DbRank Rank { get; set; }
+        
+        public virtual DbUserSession LastSession { get; set; }
+        public int LastSessionId { get; set; }
 
         public static DbUser GetByUuid(XdDatabase db, string uuid) {
             return db.Users
@@ -25,6 +28,11 @@ namespace xdchat_server.Db {
         }
 
         public static void Update(XdDatabase db, DbUser user) {
+            db.Users.Update(user);
+        }
+
+        public static void SetLastSession(XdDatabase db, DbUser user, DbUserSession session) {
+            user.LastSessionId = session.Id;
             db.Users.Update(user);
         }
     }

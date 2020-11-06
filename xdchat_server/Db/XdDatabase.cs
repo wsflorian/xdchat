@@ -17,6 +17,11 @@ namespace xdchat_server.Db {
             rankPerm.HasData(DbRankPermission.All(2, "user.kick", "user.whisper", "server.ping", "server.list", "server.help"));
             rankPerm.HasData(DbRankPermission.All(3, "user.whisper", "server.ping", "server.list", "server.help"));
 
+            modelBuilder.Entity<DbUser>()
+                .HasOne(u => u.LastSession)
+                .WithOne(s => s.User)
+                .HasForeignKey<DbUserSession>(s => s.UserId);
+
             modelBuilder.Entity<DbRoom>().HasData(new DbRoom {Id = 1, Name = "Default", IsDefault = true});
         }
 

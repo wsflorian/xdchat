@@ -73,7 +73,7 @@ namespace xdchat_server.ClientCon {
             this.Uuid = packet.Uuid;
             this.HashedUuid = Helper.Sha256Hash(packet.Uuid);
             _authTimeout?.Stop();
-            
+
             using (XdDatabase db = XdServer.Instance.Db) {
                 DbUser user = DbUser.GetByUuid(db, this.Uuid) ?? DbUser.Create(db, this.Uuid);
                 DbUserSession session = DbUserSession.Create(db, new DbUserSession {
@@ -82,9 +82,12 @@ namespace xdchat_server.ClientCon {
                     User = user,
                     Room = db.Rooms.Single(room => room.IsDefault)
                 });
-                
+
                 db.SaveChanges();
                 
+                DbUser.SetLastSession(db, user, session);
+                db.SaveChanges();
+
                 this.DbSessionId = session.Id;
             }
 

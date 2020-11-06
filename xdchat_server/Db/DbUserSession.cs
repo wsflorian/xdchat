@@ -6,11 +6,15 @@ using Microsoft.EntityFrameworkCore;
 namespace xdchat_server.Db {
     public class DbUserSession {
         [Key] public int Id { get; set; }
-        public DbUser User { get; set; }
+        
+        public int UserId { get; set; }
+        public virtual DbUser User { get; set; }
         public DateTime StartTs { get; set; }
         public DateTime? EndTs { get; set; }
         public string Nickname { get; set; }
-        public DbRoom Room { get; set; }
+        
+        public int RoomId { get; set; }
+        public virtual DbRoom Room { get; set; }
 
         public static DbUserSession Create(XdDatabase db, DbUserSession session) {
             return db.Sessions.Add(session).Entity;

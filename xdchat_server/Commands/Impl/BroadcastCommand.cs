@@ -9,7 +9,6 @@ namespace xdchat_server.Commands.Impl {
         protected override void OnCommand(ICommandSender sender, List<string> args) {
             string message = $"[Broadcast] {JoinArguments(args, 0, args.Count)}";
             
-            sender.SendMessage(message);
             XdServer.Instance.Clients.ForEach(client => {
                 client.SendMessage(message);
             });
